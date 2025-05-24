@@ -11,3 +11,5 @@
 *.pyc
 # MkDocs build output
 /site/
+.venv/
+homelab_airflow_dags/logs/

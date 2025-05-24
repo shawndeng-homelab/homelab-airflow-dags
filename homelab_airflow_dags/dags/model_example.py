@@ -39,7 +39,7 @@ dag = DAG(
 
 
 def check_environment(**context):
-    """"检查环境变量和 Python 路径"""
+    """检查环境变量和 Python 路径"""
     print("=" * 50)
     print("Environment Check")
     print("=" * 50)

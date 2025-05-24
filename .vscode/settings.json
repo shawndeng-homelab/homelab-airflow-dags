@@ -1,19 +1,18 @@
 {
   "terminal.integrated.env.linux": {
-    "AIRFLOW_HOME": "${workspaceFolder}/airflow",
+    "AIRFLOW_HOME": "${workspaceFolder}/homelab_airflow_dags",
     "AIRFLOW_VERSION": "2.10.5",
     "PYTHON_VERSION": "3.10",
     "CONSTRAINT_URL": "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.10.txt"
   },
   "terminal.integrated.env.osx": {
-
-    "AIRFLOW_HOME": "${workspaceFolder}/airflow",
+    "AIRFLOW_HOME": "${workspaceFolder}/homelab_airflow_dags",
     "AIRFLOW_VERSION": "2.10.5",
     "PYTHON_VERSION": "3.10",
     "CONSTRAINT_URL": "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.10.txt"
   },
   "terminal.integrated.env.windows": {
-    "AIRFLOW_HOME": "${workspaceFolder}/airflow",
+    "AIRFLOW_HOME": "${workspaceFolder}/homelab_airflow_dags",
     "AIRFLOW_VERSION": "2.10.5",
     "PYTHON_VERSION": "3.10",
     "CONSTRAINT_URL": "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.10.txt"
