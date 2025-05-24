@@ -11,6 +11,7 @@ requires-python = ">=3.10,<3.12.99"
 dependencies = [
     "apache-airflow==2.10.5",
     "dag-factory>=0.22.0",
+    "fake-useragent>=2.2.0",
 ]
 
 [project.optional-dependencies]
