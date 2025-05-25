@@ -23,9 +23,12 @@ from airflow.models import XCom
 
 
 try:
-    from airflow.jobs import BaseJob
+    from airflow.jobs.job import Job as BaseJob
 except Exception:
-    from airflow.jobs.base_job import BaseJob
+    try:
+        from airflow.jobs.base_job import BaseJob
+    except Exception:
+        from airflow.jobs import BaseJob
 import logging
 import os
 from datetime import datetime
