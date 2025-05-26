@@ -2,7 +2,6 @@ from datetime import datetime
 from datetime import timedelta
 
 from airflow import DAG
-from airflow.models import Variable
 from airflow.operators.bash import BashOperator
 
 
@@ -24,10 +23,6 @@ dag = DAG(
     tags=["dependencies"],
 )
 
-requirements_url = Variable.get(
-    "requirements_url",
-    "https://raw.githubusercontent.com/shawndeng-homelab/homelab-airflow-dags/master/requirements.txt",
-)
 
 bash_command = """
 set -e
@@ -36,7 +31,7 @@ set -e
 PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 AIRFLOW_VERSION=$(python3 -c 'import airflow; print(airflow.__version__)')
 
-REQUIREMENTS_URL= f"{requirements_url}"
+REQUIREMENTS_URL= "https://raw.githubusercontent.com/shawndeng-homelab/homelab-airflow-dags/master/requirements.txt"
 CONSTRAINTS_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
 
 echo "Python版本: ${PYTHON_VERSION}"
