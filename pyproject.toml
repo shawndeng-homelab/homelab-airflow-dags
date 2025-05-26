@@ -41,7 +41,7 @@ build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 120
-include = ["pyproject.toml", "homelab_airflow_dags/**/*.py"]
+include = ["pyproject.toml", "homelab_airflow_dags/**/*.py", "airflow/**/*.py"]
 target-version = "py310"
 
 [tool.ruff.lint]

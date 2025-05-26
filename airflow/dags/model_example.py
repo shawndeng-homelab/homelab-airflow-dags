@@ -10,7 +10,8 @@ from airflow.operators.python import PythonOperator
 
 # 测试从 lib 导入
 try:
-    from fake_useragent import UserAgent
+    from fake_useragent import UserAgent  # noqa: F401
+
     LIB_IMPORT_SUCCESS = True
 except ImportError as e:
     LIB_IMPORT_SUCCESS = False
@@ -18,28 +19,28 @@ except ImportError as e:
 
 # 默认参数
 default_args = {
-    'owner': 'homelab',
-    'depends_on_past': False,
-    'start_date': datetime(2024, 1, 1),
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    "owner": "homelab",
+    "depends_on_past": False,
+    "start_date": datetime(2024, 1, 1),
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "retries": 1,
+    "retry_delay": timedelta(minutes=5),
 }
 
 # 定义 DAG
 dag = DAG(
-    'test_deployment',
+    "test_deployment",
     default_args=default_args,
-    description='Test DAG for deployment verification',
+    description="Test DAG for deployment verification",
     schedule_interval=timedelta(hours=1),
     catchup=False,
-    tags=['test', 'deployment'],
+    tags=["test", "deployment"],
 )
 
 
 def check_environment(**context):
-    """检查环境变量和 Python 路径"""
+    """检查环境变量和 Python 路径"""  # noqa: D415
     print("=" * 50)
     print("Environment Check")
     print("=" * 50)
@@ -63,13 +64,13 @@ def check_environment(**context):
 
 # 任务定义
 t1 = BashOperator(
-    task_id='print_date',
-    bash_command='date',
+    task_id="print_date",
+    bash_command="date",
     dag=dag,
 )
 
 t2 = PythonOperator(
-    task_id='check_environment',
+    task_id="check_environment",
     python_callable=check_environment,
     dag=dag,
 )

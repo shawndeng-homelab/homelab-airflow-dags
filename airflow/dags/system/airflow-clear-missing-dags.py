@@ -3,8 +3,9 @@ A maintenance workflow that you can deploy into Airflow to periodically clean ou
 
 airflow trigger_dag airflow-clear-missing-dags
 
-"""
-from airflow.models import DAG, DagModel
+"""  # noqa: E501, D212
+
+from airflow.models import DAG, DagModel  # noqa: I001
 from airflow.operators.python_operator import PythonOperator
 from airflow import settings
 from datetime import timedelta
@@ -29,14 +30,14 @@ ALERT_EMAIL_ADDRESSES = []
 ENABLE_DELETE = True
 
 default_args = {
-    'owner': DAG_OWNER_NAME,
-    'depends_on_past': False,
-    'email': ALERT_EMAIL_ADDRESSES,
-    'email_on_failure': True,
-    'email_on_retry': False,
-    'start_date': START_DATE,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=1)
+    "owner": DAG_OWNER_NAME,
+    "depends_on_past": False,
+    "email": ALERT_EMAIL_ADDRESSES,
+    "email_on_failure": True,
+    "email_on_retry": False,
+    "start_date": START_DATE,
+    "retries": 1,
+    "retry_delay": timedelta(minutes=1),
 }
 
 dag = DAG(
@@ -44,16 +45,15 @@ dag = DAG(
     default_args=default_args,
     schedule_interval=SCHEDULE_INTERVAL,
     start_date=START_DATE,
-    tags=['teamclairvoyant', 'airflow-maintenance-dags']
+    tags=["teamclairvoyant", "airflow-maintenance-dags"],
 )
-if hasattr(dag, 'doc_md'):
+if hasattr(dag, "doc_md"):
     dag.doc_md = __doc__
-if hasattr(dag, 'catchup'):
+if hasattr(dag, "catchup"):
     dag.catchup = False
 
 
-def clear_missing_dags_fn(**context):
-
+def clear_missing_dags_fn(**context):  # noqa: D103
     logging.info("Starting to run Clear Process")
 
     try:
@@ -75,37 +75,30 @@ def clear_missing_dags_fn(**context):
     entries_to_delete = []
     for dag in dags:
         # Check if it is a zip-file
-        if dag.fileloc is not None and '.zip/' in dag.fileloc:
-            index = dag.fileloc.rfind('.zip/') + len('.zip')
+        if dag.fileloc is not None and ".zip/" in dag.fileloc:
+            index = dag.fileloc.rfind(".zip/") + len(".zip")
             fileloc = dag.fileloc[0:index]
         else:
             fileloc = dag.fileloc
 
         if fileloc is None:
             logging.info(
-                "After checking DAG '" + str(dag) +
-                "', the fileloc was set to None so assuming the Python " +
-                "definition file DOES NOT exist"
+                "After checking DAG '"
+                + str(dag)
+                + "', the fileloc was set to None so assuming the Python "
+                + "definition file DOES NOT exist"
             )
             entries_to_delete.append(dag)
         elif not os.path.exists(fileloc):
-            logging.info(
-                "After checking DAG '" + str(dag) +
-                "', the Python definition file DOES NOT exist: " + fileloc
-            )
+            logging.info("After checking DAG '" + str(dag) + "', the Python definition file DOES NOT exist: " + fileloc)
             entries_to_delete.append(dag)
         else:
-            logging.info(
-                "After checking DAG '" + str(dag) +
-                "', the Python definition file does exist: " + fileloc
-            )
+            logging.info("After checking DAG '" + str(dag) + "', the Python definition file does exist: " + fileloc)
 
     logging.info("Process will be Deleting the DAG(s) from the DB:")
     for entry in entries_to_delete:
         logging.info("\tEntry: " + str(entry))
-    logging.info(
-        "Process will be Deleting " + str(len(entries_to_delete)) + " DAG(s)"
-    )
+    logging.info("Process will be Deleting " + str(len(entries_to_delete)) + " DAG(s)")
 
     if ENABLE_DELETE:
         logging.info("Performing Delete...")
@@ -120,7 +113,5 @@ def clear_missing_dags_fn(**context):
 
 
 clear_missing_dags = PythonOperator(
-    task_id='clear_missing_dags',
-    python_callable=clear_missing_dags_fn,
-    provide_context=True,
-    dag=dag)
+    task_id="clear_missing_dags", python_callable=clear_missing_dags_fn, provide_context=True, dag=dag
+)
