@@ -51,7 +51,7 @@ def update_with_uv_and_constraints():
         subprocess.run([sys.executable, "-m", "pip", "install", "uv"], check=True)
 
     # 构建命令
-    cmd = ["uv", "pip", "install", "-r", requirements_url, "--constraint", constraints_url, "--upgrade", "--system"]
+    cmd = ["uv", "pip", "install", "-r", requirements_url, "--constraint", constraints_url, "--upgrade", "--user"]
 
     print(f"\n执行命令: {' '.join(cmd)}")
 
