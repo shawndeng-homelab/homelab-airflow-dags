@@ -1,11 +1,8 @@
-import subprocess
-import sys
 from datetime import datetime
 from datetime import timedelta
 
-import airflow
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 
 
 default_args = {
@@ -27,66 +24,44 @@ dag = DAG(
 )
 
 
-def update_with_uv_and_constraints():
-    """使用uv和约束文件更新依赖"""  # noqa: D415
-    # URL配置
-    requirements_url = (
-        "https://raw.githubusercontent.com/shawndeng-homelab/homelab-airflow-dags/master/requirements.txt"
-    )
+bash_command = """
+set -e
 
-    # 自动构建约束文件URL
-    python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-    airflow_version = airflow.__version__
-    constraints_url = f"https://raw.githubusercontent.com/apache/airflow/constraints-{airflow_version}/constraints-{python_version}.txt"
+# 设置变量
+PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+AIRFLOW_VERSION=$(python3 -c 'import airflow; print(airflow.__version__)')
 
-    print(f"Python版本: {python_version}")
-    print(f"Airflow版本: {airflow_version}")
-    print(f"约束文件: {constraints_url}")
+REQUIREMENTS_URL="https://raw.githubusercontent.com/shawndeng-homelab/homelab-airflow-dags/master/requirements.txt"
+CONSTRAINTS_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
 
-    # 构建命令
-    cmd = [
-        sys.executable,
-        "-m",
-        "pip",
-        "install",
-        "-r",
-        requirements_url,
-        "--constraint",
-        constraints_url,
-        "--upgrade",
-        "--user",
-    ]
+echo "Python版本: ${PYTHON_VERSION}"
+echo "Airflow版本: ${AIRFLOW_VERSION}"
+echo "约束文件: ${CONSTRAINTS_URL}"
 
-    print(f"\n执行命令: {' '.join(cmd)}")
+# 下载 requirements.txt 到临时文件
+TEMP_REQ="/tmp/requirements_$$.txt"
+curl -sL "${REQUIREMENTS_URL}" -o "${TEMP_REQ}"
 
-    # 执行安装
-    result = subprocess.run(cmd, capture_output=True, text=True)
+# 下载 constraints.txt 到临时文件
+TEMP_CONST="/tmp/constraints_$$.txt"
+curl -sL "${CONSTRAINTS_URL}" -o "${TEMP_CONST}"
 
-    if result.stdout:
-        print("\n输出:")
-        print(result.stdout)
+# 使用 pip 安装
+echo "开始安装依赖..."
+python3 -m pip install -r "${TEMP_REQ}" --constraint "${TEMP_CONST}" --upgrade --user || \
+python3 -m pip install -r "${TEMP_REQ}" --constraint "${TEMP_CONST}" --upgrade
 
-    if result.stderr:
-        print("\n错误/警告:")
-        print(result.stderr)
+# 清理临时文件
+rm -f "${TEMP_REQ}" "${TEMP_CONST}"
 
-    if result.returncode != 0:
-        raise Exception(f"依赖更新失败，返回码: {result.returncode}")
+# 显示安装结果
+echo ""
+echo "=== 更新完成，当前主要包版本 ==="
+python3 -m pip list --format freeze | grep -iE "(airflow|pandas|numpy|sqlalchemy|celery)" || true
+"""
 
-    # 显示结果
-    print("\n=== 更新完成，当前主要包版本 ===")
-    list_cmd = ["uv", "pip", "list", "--format", "freeze"]
-    list_result = subprocess.run(list_cmd, capture_output=True, text=True)
-
-    # 只显示一些关键包
-    for line in list_result.stdout.split("\n"):
-        if any(pkg in line.lower() for pkg in ["airflow", "pandas", "numpy", "sqlalchemy", "celery"]):
-            print(line)
-
-
-# 单一任务
-update_task = PythonOperator(
+update_task = BashOperator(
     task_id="update_dependencies",
-    python_callable=update_with_uv_and_constraints,
+    bash_command=bash_command,
     dag=dag,
 )
