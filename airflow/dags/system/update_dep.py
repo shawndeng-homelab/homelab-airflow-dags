@@ -46,6 +46,7 @@ def update_with_uv_and_constraints():
     # 构建命令
     cmd = [
         sys.executable,
+        "-m",
         "pip",
         "install",
         "-r",
