@@ -43,15 +43,18 @@ def update_with_uv_and_constraints():
     print(f"Airflow版本: {airflow_version}")
     print(f"约束文件: {constraints_url}")
 
-    # 确保uv已安装
-    try:
-        subprocess.run(["uv", "--version"], check=True, capture_output=True)
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print("安装uv...")
-        subprocess.run([sys.executable, "-m", "pip", "install", "uv"], check=True)
-
     # 构建命令
-    cmd = ["uv", "pip", "install", "-r", requirements_url, "--constraint", constraints_url, "--upgrade", "--user"]
+    cmd = [
+        sys.executable,
+        "pip",
+        "install",
+        "-r",
+        requirements_url,
+        "--constraint",
+        constraints_url,
+        "--upgrade",
+        "--user",
+    ]
 
     print(f"\n执行命令: {' '.join(cmd)}")
 
