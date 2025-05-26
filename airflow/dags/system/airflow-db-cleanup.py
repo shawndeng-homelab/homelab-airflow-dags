@@ -361,7 +361,7 @@ def cleanup_function(**context):  # noqa: D103
             )
         else:
             logging.warn(
-                "You've opted to skip printing the db entries to be deleted. Set PRINT_DELETES to True to show entries!!!"
+                "You've opted to skip printing the db entries to be deleted. Set PRINT_DELETES to True to show entries!!!"  # noqa: E501
             )  # noqa: E501
 
         if ENABLE_DELETE:

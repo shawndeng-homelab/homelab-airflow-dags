@@ -202,12 +202,12 @@ if [ ! -f """
     echo "Finished Running Cleanup Process"
 
     echo "Deleting lock file..."
-    rm -f """
+    rm -f """  # noqa: W605
     + str(LOG_CLEANUP_PROCESS_LOCK_FILE)
     + """
     REMOVE_LOCK_FILE_EXIT_CODE=$?
     if [ "${REMOVE_LOCK_FILE_EXIT_CODE}" != "0" ]; then
-        echo "Error removing the lock file. Check file permissions. To re-run the DAG, ensure that the lock file has been deleted ("""
+        echo "Error removing the lock file. Check file permissions. To re-run the DAG, ensure that the lock file has been deleted ("""  # noqa: E501
     + str(LOG_CLEANUP_PROCESS_LOCK_FILE)
     + """)."
         exit ${REMOVE_LOCK_FILE_EXIT_CODE}
