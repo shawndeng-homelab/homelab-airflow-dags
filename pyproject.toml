@@ -7,11 +7,12 @@ authors = [
 ]
 license = "MIT"
 readme = "README.md"
-requires-python = "==3.12"
+requires-python = "==3.12.*"
 dependencies = [
     "apache-airflow==2.10.5",
     "dag-factory>=0.22.0",
     "fake-useragent>=2.2.0",
+    "requests>=2.32.3",
 ]
 
 [project.optional-dependencies]
