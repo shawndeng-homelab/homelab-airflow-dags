@@ -22,7 +22,7 @@ SCHEDULE_INTERVAL = "@daily"
 # Who is listed as the owner of this DAG in the Airflow Web Server
 DAG_OWNER = "operations"
 # List of email address to send the SLA report & the email subject
-EMAIL_ADDRESSES = []
+EMAIL_ADDRESSES = ["shawndeng1109@qq.com"]
 EMAIL_SUBJECT = f"Airflow SLA Report - {date.today().strftime('%b %d, %Y')}"
 # Timeframes to calculate the metrics on in days
 SHORT_TIMEFRAME_IN_DAYS = 1
