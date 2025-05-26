@@ -14,7 +14,7 @@ default_args = {
 }
 
 dag = DAG(
-    "update_dependencies",
+    "sync_deps",
     default_args=default_args,
     description="更新全局的依赖",
     schedule_interval="@daily",
@@ -61,7 +61,7 @@ python3 -m pip list --format freeze | grep -iE "(airflow|pandas|numpy|sqlalchemy
 """
 
 update_task = BashOperator(
-    task_id="update_dependencies",
+    task_id="sync_deps",
     bash_command=bash_command,
     dag=dag,
 )  # noqa: W292
