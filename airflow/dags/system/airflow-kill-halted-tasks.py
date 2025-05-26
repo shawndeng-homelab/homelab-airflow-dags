@@ -10,10 +10,10 @@ the task is complete.
 airflow trigger_dag airflow-kill-halted-tasks
 
 """  # noqa: D205, D212
-
 from airflow.models import DAG, DagModel, DagRun, TaskInstance  # noqa: I001
 from airflow import settings
-from airflow.operators.python_operator import PythonOperator, ShortCircuitOperator
+from airflow.operators.python_operator \
+    import PythonOperator, ShortCircuitOperator
 from airflow.operators.email_operator import EmailOperator
 from sqlalchemy import and_
 from datetime import datetime, timedelta
@@ -47,13 +47,13 @@ ENABLE_KILL = True
 DEBUG = False
 
 default_args = {
-    "owner": DAG_OWNER_NAME,
-    "email": ALERT_EMAIL_ADDRESSES,
-    "email_on_failure": True,
-    "email_on_retry": False,
-    "start_date": START_DATE,
-    "retries": 1,
-    "retry_delay": timedelta(minutes=1),
+    'owner': DAG_OWNER_NAME,
+    'email': ALERT_EMAIL_ADDRESSES,
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'start_date': START_DATE,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=1)
 }
 
 dag = DAG(
@@ -61,11 +61,11 @@ dag = DAG(
     default_args=default_args,
     schedule_interval=SCHEDULE_INTERVAL,
     start_date=START_DATE,
-    tags=["teamclairvoyant", "airflow-maintenance-dags"],
+    tags=['teamclairvoyant', 'airflow-maintenance-dags']
 )
-if hasattr(dag, "doc_md"):
+if hasattr(dag, 'doc_md'):
     dag.doc_md = __doc__
-if hasattr(dag, "catchup"):
+if hasattr(dag, 'catchup'):
     dag.catchup = False
 
 
@@ -79,9 +79,9 @@ cpu_time_regex = "([\w:.]+)"  # noqa: W605
 command_regex = "(.+)"
 
 # When Search Command is:  ps -o pid -o cmd -u `whoami` | grep 'airflow run'
-full_regex = "\s*" + pid_regex + "\s+" + command_regex  # noqa: W605
+full_regex = '\s*' + pid_regex + '\s+' + command_regex  # noqa: W605
 
-airflow_run_regex = ".*run\s([\w._-]*)\s([\w._-]*)\s([\w:.-]*).*"  # noqa: W605
+airflow_run_regex = '.*run\s([\w._-]*)\s([\w._-]*)\s([\w:.-]*).*'  # noqa: W605
 
 
 def parse_process_linux_string(line):  # noqa: D103
@@ -91,7 +91,9 @@ def parse_process_linux_string(line):  # noqa: D103
     if DEBUG:
         for index in range(0, (len(full_regex_match.groups()) + 1)):
             group = full_regex_match.group(index)
-            logging.info("DEBUG: index: " + str(index) + ", group: " + str(group))
+            logging.info(
+                "DEBUG: index: " + str(index) + ", group: " + str(group)
+            )
     pid = full_regex_match.group(1)
     command = full_regex_match.group(2).strip()
     process = {"pid": pid, "command": command}
@@ -102,7 +104,9 @@ def parse_process_linux_string(line):  # noqa: D103
     if DEBUG:
         for index in range(0, (len(airflow_run_regex_match.groups()) + 1)):
             group = airflow_run_regex_match.group(index)
-            logging.info("DEBUG: index: " + str(index) + ", group: " + str(group))
+            logging.info(
+                "DEBUG: index: " + str(index) + ", group: " + str(group)
+            )
     process["airflow_dag_id"] = airflow_run_regex_match.group(1)
     process["airflow_task_id"] = airflow_run_regex_match.group(2)
     process["airflow_execution_date"] = airflow_run_regex_match.group(3)
@@ -117,9 +121,16 @@ def kill_halted_tasks_function(**context):  # noqa: D103
     logging.info("Finished Getting Configurations\n")
 
     logging.info("Configurations:")
-    logging.info("send_process_killed_email:      " + str(SEND_PROCESS_KILLED_EMAIL))
-    logging.info("process_killed_email_subject:   " + str(PROCESS_KILLED_EMAIL_SUBJECT))
-    logging.info("process_killed_email_addresses: " + str(PROCESS_KILLED_EMAIL_ADDRESSES))
+    logging.info(
+        "send_process_killed_email:      " + str(SEND_PROCESS_KILLED_EMAIL)
+    )
+    logging.info(
+        "process_killed_email_subject:   " + str(PROCESS_KILLED_EMAIL_SUBJECT)
+    )
+    logging.info(
+        "process_killed_email_addresses: " +
+        str(PROCESS_KILLED_EMAIL_ADDRESSES)
+    )
     logging.info("enable_kill:                    " + str(ENABLE_KILL))
     logging.info("debug:                          " + str(DEBUG))
     logging.info("session:                        " + str(session))
@@ -129,17 +140,21 @@ def kill_halted_tasks_function(**context):  # noqa: D103
     logging.info("Running Cleanup Process...")
     logging.info("")
 
-    process_search_command = "ps -o pid -o cmd -u `whoami` | grep 'airflow run'"
+    process_search_command = (
+        "ps -o pid -o cmd -u `whoami` | grep 'airflow run'"
+    )
     logging.info("Running Search Process: " + process_search_command)
     search_output = os.popen(process_search_command).read()
     logging.info("Search Process Output: ")
     logging.info(search_output)
 
-    logging.info("Filtering out: Empty Lines, Grep processes, and this DAGs Run.")
+    logging.info(
+        "Filtering out: Empty Lines, Grep processes, and this DAGs Run."
+    )
     search_output_filtered = [
-        line
-        for line in search_output.split("\n")
-        if line is not None and line.strip() != "" and " grep " not in line and DAG_ID not in line
+        line for line in search_output.split("\n") if line is not None
+        and line.strip() != "" and ' grep ' not in line
+        and DAG_ID not in line
     ]
     logging.info("Search Process Output (with Filter): ")
     for line in search_output_filtered:
@@ -147,7 +162,7 @@ def kill_halted_tasks_function(**context):  # noqa: D103
     logging.info("")
 
     logging.info("Searching through running processes...")
-    airflow_timezone_not_required_versions = ["1.7", "1.8", "1.9"]
+    airflow_timezone_not_required_versions = ['1.7', '1.8', '1.9']
     processes_to_kill = []
     for line in search_output_filtered:
         logging.info("")
@@ -155,25 +170,40 @@ def kill_halted_tasks_function(**context):  # noqa: D103
 
         logging.info("Checking: " + str(process))
         exec_date_str = (process["airflow_execution_date"]).replace("T", " ")
-        if "." not in exec_date_str:
+        if '.' not in exec_date_str:
             # Add milliseconds if they are missing.
-            exec_date_str = exec_date_str + ".0"
-        execution_date_to_search_for = datetime.strptime(exec_date_str, "%Y-%m-%d %H:%M:%S.%f")
+            exec_date_str = exec_date_str + '.0'
+        execution_date_to_search_for = datetime.strptime(
+            exec_date_str, '%Y-%m-%d %H:%M:%S.%f'
+        )
         # apache-airflow version >= 1.10 requires datetime field values with
         # timezone
         if airflow_version[:3] not in airflow_timezone_not_required_versions:
-            execution_date_to_search_for = pytz.utc.localize(execution_date_to_search_for)
+            execution_date_to_search_for = pytz.utc.localize(
+                execution_date_to_search_for
+            )
 
-        logging.info("Execution Date to Search For: " + str(execution_date_to_search_for))
+        logging.info(
+            "Execution Date to Search For: " +
+            str(execution_date_to_search_for)
+        )
 
         # Checking to make sure the DAG is available and active
         if DEBUG:
             logging.info("DEBUG: Listing All DagModels: ")
             for dag in session.query(DagModel).all():
-                logging.info("DEBUG: dag: " + str(dag) + ", dag.is_active: " + str(dag.is_active))
+                logging.info(
+                    "DEBUG: dag: " + str(dag) + ", dag.is_active: " +
+                    str(dag.is_active)
+                )
             logging.info("")
-        logging.info("Getting dag where DagModel.dag_id == '" + str(process["airflow_dag_id"]) + "'")
-        dag = session.query(DagModel).filter(DagModel.dag_id == process["airflow_dag_id"]).first()
+        logging.info(
+            "Getting dag where DagModel.dag_id == '" +
+            str(process["airflow_dag_id"]) + "'"
+        )
+        dag = session.query(DagModel).filter(
+            DagModel.dag_id == process["airflow_dag_id"]
+        ).first()
         logging.info("dag: " + str(dag))
         if dag is None:
             kill_reason = "DAG was not found in metastore."
@@ -194,28 +224,31 @@ def kill_halted_tasks_function(**context):  # noqa: D103
         # Checking to make sure the DagRun is available and in a running state
         if DEBUG:
             dag_run_relevant_states = ["queued", "running", "up_for_retry"]
-            logging.info("DEBUG: Listing All Relevant DAG Runs (With State: " + str(dag_run_relevant_states) + "): ")
-            for dag_run in session.query(DagRun).filter(DagRun.state.in_(dag_run_relevant_states)).all():
-                logging.info("DEBUG: dag_run: " + str(dag_run) + ", dag_run.state: " + str(dag_run.state))
+            logging.info(
+                "DEBUG: Listing All Relevant DAG Runs (With State: " +
+                str(dag_run_relevant_states) + "): "
+            )
+            for dag_run in session.query(DagRun).filter(
+                DagRun.state.in_(dag_run_relevant_states)
+            ).all():
+                logging.info(
+                    "DEBUG: dag_run: " + str(dag_run) + ", dag_run.state: " +
+                    str(dag_run.state)
+                )
             logging.info("")
         logging.info(
-            "Getting dag_run where DagRun.dag_id == '"
-            + str(process["airflow_dag_id"])
-            + "' AND DagRun.execution_date == '"
-            + str(execution_date_to_search_for)
-            + "'"
+            "Getting dag_run where DagRun.dag_id == '" +
+            str(process["airflow_dag_id"]) +
+            "' AND DagRun.execution_date == '" +
+            str(execution_date_to_search_for) + "'"
         )
 
-        dag_run = (
-            session.query(DagRun)
-            .filter(
-                and_(
-                    DagRun.dag_id == process["airflow_dag_id"],
-                    DagRun.execution_date == execution_date_to_search_for,
-                )
+        dag_run = session.query(DagRun).filter(
+            and_(
+                DagRun.dag_id == process["airflow_dag_id"],
+                DagRun.execution_date == execution_date_to_search_for,
             )
-            .first()
-        )
+        ).first()
 
         logging.info("dag_run: " + str(dag_run))
         if dag_run is None:
@@ -230,11 +263,9 @@ def kill_halted_tasks_function(**context):  # noqa: D103
         # is the dag_run in a running state?
         if dag_run.state not in dag_run_states_required:
             kill_reason = (
-                "DAG RUN was found to not be in the states '"
-                + str(dag_run_states_required)
-                + "', but rather was in the state '"
-                + str(dag_run.state)
-                + "'."
+                "DAG RUN was found to not be in the states '" +
+                str(dag_run_states_required) +
+                "', but rather was in the state '" + str(dag_run.state) + "'."
             )
             process["kill_reason"] = kill_reason
             processes_to_kill.append(process)
@@ -244,42 +275,44 @@ def kill_halted_tasks_function(**context):  # noqa: D103
 
         # Checking to ensure TaskInstance is available and in a running state
         if DEBUG:
-            task_instance_relevant_states = ["queued", "running", "up_for_retry"]
+            task_instance_relevant_states = [
+                "queued", "running", "up_for_retry"
+            ]
             logging.info(
-                "DEBUG: Listing All Relevant TaskInstances (With State: " + str(task_instance_relevant_states) + "): "
+                "DEBUG: Listing All Relevant TaskInstances (With State: " +
+                str(task_instance_relevant_states) + "): "
             )
-            for task_instance in (
-                session.query(TaskInstance).filter(TaskInstance.state.in_(task_instance_relevant_states)).all()
-            ):
+            for task_instance in session.query(TaskInstance).filter(
+                TaskInstance.state.in_(task_instance_relevant_states)
+            ).all():
                 logging.info(
-                    "DEBUG: task_instance: " + str(task_instance) + ", task_instance.state: " + str(task_instance.state)
+                    "DEBUG: task_instance: " + str(task_instance) +
+                    ", task_instance.state: " + str(task_instance.state)
                 )
             logging.info("")
         logging.info(
-            "Getting task_instance where TaskInstance.dag_id == '"
-            + str(process["airflow_dag_id"])
-            + "' AND TaskInstance.task_id == '"
-            + str(process["airflow_task_id"])
-            + "' AND TaskInstance.execution_date == '"
-            + str(execution_date_to_search_for)
-            + "'"
+            "Getting task_instance where TaskInstance.dag_id == '" +
+            str(process["airflow_dag_id"]) +
+            "' AND TaskInstance.task_id == '" +
+            str(process["airflow_task_id"]) +
+            "' AND TaskInstance.execution_date == '" +
+            str(execution_date_to_search_for) + "'"
         )
 
-        task_instance = (
-            session.query(TaskInstance)
-            .filter(
-                and_(
-                    TaskInstance.dag_id == process["airflow_dag_id"],
-                    TaskInstance.task_id == process["airflow_task_id"],
-                    TaskInstance.execution_date == execution_date_to_search_for,
-                )
+        task_instance = session.query(TaskInstance).filter(
+            and_(
+                TaskInstance.dag_id == process["airflow_dag_id"],
+                TaskInstance.task_id == process["airflow_task_id"],
+                TaskInstance.execution_date == execution_date_to_search_for,
             )
-            .first()
-        )
+        ).first()
 
         logging.info("task_instance: " + str(task_instance))
         if task_instance is None:
-            kill_reason = "Task Instance was not found in metastore. Marking process to be killed."
+            kill_reason = (
+                "Task Instance was not found in metastore. Marking process "
+                "to be killed."
+            )
             process["kill_reason"] = kill_reason
             processes_to_kill.append(process)
             logging.warn(kill_reason)
@@ -290,11 +323,10 @@ def kill_halted_tasks_function(**context):  # noqa: D103
         # is task_instance queued, running or up for retry?
         if task_instance.state not in task_instance_states_required:
             kill_reason = (
-                "The TaskInstance was found to not be in the states '"
-                + str(task_instance_states_required)
-                + "', but rather was in the state '"
-                + str(task_instance.state)
-                + "'."
+                "The TaskInstance was found to not be in the states '" +
+                str(task_instance_states_required) +
+                "', but rather was in the state '" +
+                str(task_instance.state) + "'."
             )
             process["kill_reason"] = kill_reason
             processes_to_kill.append(process)
@@ -322,7 +354,10 @@ def kill_halted_tasks_function(**context):  # noqa: D103
                 logging.info("Running Command: " + str(kill_command))
                 output = os.popen(kill_command).read()
                 logging.info("kill output: " + str(output))
-            context["ti"].xcom_push(key="kill_halted_tasks.processes_to_kill", value=processes_to_kill)
+            context['ti'].xcom_push(
+                key='kill_halted_tasks.processes_to_kill',
+                value=processes_to_kill
+            )
             logging.info("Finished Performing Kill")
         else:
             logging.info("No Processes Marked to Kill Found")
@@ -334,34 +369,55 @@ def kill_halted_tasks_function(**context):  # noqa: D103
 
 
 kill_halted_tasks_op = PythonOperator(
-    task_id="kill_halted_tasks", python_callable=kill_halted_tasks_function, provide_context=True, dag=dag
-)
+    task_id='kill_halted_tasks',
+    python_callable=kill_halted_tasks_function,
+    provide_context=True,
+    dag=dag)
 
 
 def branch_function(**context):  # noqa: D103
-    logging.info("Deciding whether to send an email about tasks that were killed by " + "this DAG...")
-    logging.info("SEND_PROCESS_KILLED_EMAIL: '" + str(SEND_PROCESS_KILLED_EMAIL) + "'")
-    logging.info("PROCESS_KILLED_EMAIL_ADDRESSES: " + str(PROCESS_KILLED_EMAIL_ADDRESSES))
+    logging.info(
+        "Deciding whether to send an email about tasks that were killed by " +
+        "this DAG..."
+    )
+    logging.info(
+        "SEND_PROCESS_KILLED_EMAIL: '" +
+        str(SEND_PROCESS_KILLED_EMAIL) + "'"
+    )
+    logging.info(
+        "PROCESS_KILLED_EMAIL_ADDRESSES: " +
+        str(PROCESS_KILLED_EMAIL_ADDRESSES)
+    )
     logging.info("ENABLE_KILL: " + str(ENABLE_KILL))
 
     if not SEND_PROCESS_KILLED_EMAIL:
-        logging.info("Skipping sending an email since SEND_PROCESS_KILLED_EMAIL is " + "set to false")
+        logging.info(
+            "Skipping sending an email since SEND_PROCESS_KILLED_EMAIL is " +
+            "set to false"
+        )
         # False = short circuit the dag and don't execute downstream tasks
         return False
     if len(PROCESS_KILLED_EMAIL_ADDRESSES) == 0:
-        logging.info("Skipping sending an email since PROCESS_KILLED_EMAIL_ADDRESSES " + "is empty")
+        logging.info(
+            "Skipping sending an email since PROCESS_KILLED_EMAIL_ADDRESSES " +
+            "is empty"
+        )
         # False = short circuit the dag and don't execute downstream tasks
         return False
 
-    processes_to_kill = context["ti"].xcom_pull(
-        task_ids=kill_halted_tasks_op.task_id, key="kill_halted_tasks.processes_to_kill"
+    processes_to_kill = context['ti'].xcom_pull(
+        task_ids=kill_halted_tasks_op.task_id,
+        key='kill_halted_tasks.processes_to_kill'
     )
     logging.info("processes_to_kill from xcom_pull: " + str(processes_to_kill))
     if processes_to_kill is not None and len(processes_to_kill) > 0:
         logging.info("There were processes to kill")
         if ENABLE_KILL:
             logging.info("enable_kill is set to true")
-            logging.info("Opting to send an email to alert the users that processes " + "were killed")
+            logging.info(
+                "Opting to send an email to alert the users that processes " +
+                "were killed"
+            )
             # True = don't short circuit the dag and execute downstream tasks
             return True
         else:
@@ -369,14 +425,18 @@ def branch_function(**context):  # noqa: D103
     else:
         logging.info("Processes to kill list was either None or Empty")
 
-    logging.info("Opting to skip sending an email since no processes were killed")
+    logging.info(
+        "Opting to skip sending an email since no processes were killed"
+    )
     # False = short circuit the dag and don't execute downstream tasks
     return False
 
 
 email_or_not_branch = ShortCircuitOperator(
-    task_id="email_or_not_branch", python_callable=branch_function, provide_context=True, dag=dag
-)
+    task_id="email_or_not_branch",
+    python_callable=branch_function,
+    provide_context=True,
+    dag=dag)
 
 
 send_processes_killed_email = EmailOperator(
@@ -452,8 +512,7 @@ send_processes_killed_email = EmailOperator(
     </body>
 </html>
     """,
-    dag=dag,
-)
+    dag=dag)
 
 
 kill_halted_tasks_op.set_downstream(email_or_not_branch)
