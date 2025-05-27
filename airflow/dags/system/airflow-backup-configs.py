@@ -4,9 +4,8 @@ backups of various Airflow configurations and files.
 
 airflow trigger_dag airflow-backup-configs
 
-"""  # noqa: D205, D212
-
-from airflow.models import DAG, Variable  # noqa: I001
+"""
+from airflow.models import DAG, Variable
 from airflow.operators.python_operator import PythonOperator
 from airflow.configuration import conf
 from datetime import datetime, timedelta
@@ -14,7 +13,6 @@ import os
 import airflow
 import logging
 import subprocess
-
 # airflow-backup-configs
 DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")
 # How often to Run. @daily - Once a day at Midnight
@@ -27,18 +25,23 @@ ALERT_EMAIL_ADDRESSES = []
 # Format options: https://www.tutorialspoint.com/python/time_strftime.htm
 BACKUP_FOLDER_DATE_FORMAT = "%Y%m%d%H%M%S"
 BACKUP_HOME_DIRECTORY = Variable.get("airflow_backup_config__backup_home_directory", "/tmp/airflow_backups")
-BACKUPS_ENABLED = {"dag_directory": True, "log_directory": True, "airflow_cfg": True, "pip_packages": True}
+BACKUPS_ENABLED = {
+    "dag_directory": True,
+    "log_directory": True,
+    "airflow_cfg": True,
+    "pip_packages": True
+}
 # How many backups to retain (not including the one that was just taken)
 BACKUP_RETENTION_COUNT = 7
 
 default_args = {
-    "owner": DAG_OWNER_NAME,
-    "email": ALERT_EMAIL_ADDRESSES,
-    "email_on_failure": True,
-    "email_on_retry": False,
-    "start_date": START_DATE,
-    "retries": 1,
-    "retry_delay": timedelta(minutes=1),
+    'owner': DAG_OWNER_NAME,
+    'email': ALERT_EMAIL_ADDRESSES,
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'start_date': START_DATE,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=1)
 }
 
 dag = DAG(
@@ -46,15 +49,15 @@ dag = DAG(
     default_args=default_args,
     schedule_interval=SCHEDULE_INTERVAL,
     start_date=START_DATE,
-    tags=["teamclairvoyant", "airflow-maintenance-dags"],
+    tags=['teamclairvoyant', 'airflow-maintenance-dags']
 )
-if hasattr(dag, "doc_md"):
+if hasattr(dag, 'doc_md'):
     dag.doc_md = __doc__
-if hasattr(dag, "catchup"):
+if hasattr(dag, 'catchup'):
     dag.catchup = False
 
 
-def print_configuration_fn(**context):  # noqa: D103
+def print_configuration_fn(**context):
     logging.info("Executing print_configuration_fn")
 
     logging.info("Loading Configurations...")
@@ -62,25 +65,40 @@ def print_configuration_fn(**context):  # noqa: D103
     BACKUP_DIRECTORY = BACKUP_HOME_DIRECTORY + "/" + BACKUP_FOLDER_DATE + "/"
 
     logging.info("Configurations:")
-    logging.info("BACKUP_FOLDER_DATE_FORMAT:    " + str(BACKUP_FOLDER_DATE_FORMAT))
+    logging.info(
+        "BACKUP_FOLDER_DATE_FORMAT:    " + str(BACKUP_FOLDER_DATE_FORMAT)
+    )
     logging.info("BACKUP_FOLDER_DATE:           " + str(BACKUP_FOLDER_DATE))
     logging.info("BACKUP_HOME_DIRECTORY:        " + str(BACKUP_HOME_DIRECTORY))
     logging.info("BACKUP_DIRECTORY:             " + str(BACKUP_DIRECTORY))
-    logging.info("BACKUP_RETENTION_COUNT:       " + str(BACKUP_RETENTION_COUNT))
+    logging.info(
+        "BACKUP_RETENTION_COUNT:       " + str(BACKUP_RETENTION_COUNT)
+    )
     logging.info("")
 
     logging.info("Pushing to XCom for Downstream Processes")
-    context["ti"].xcom_push(key="backup_configs.backup_home_directory", value=BACKUP_HOME_DIRECTORY)
-    context["ti"].xcom_push(key="backup_configs.backup_directory", value=BACKUP_DIRECTORY)
-    context["ti"].xcom_push(key="backup_configs.backup_retention_count", value=BACKUP_RETENTION_COUNT)
+    context["ti"].xcom_push(
+        key="backup_configs.backup_home_directory",
+        value=BACKUP_HOME_DIRECTORY
+    )
+    context["ti"].xcom_push(
+        key="backup_configs.backup_directory",
+        value=BACKUP_DIRECTORY
+    )
+    context["ti"].xcom_push(
+        key="backup_configs.backup_retention_count",
+        value=BACKUP_RETENTION_COUNT
+    )
 
 
 print_configuration_op = PythonOperator(
-    task_id="print_configuration", python_callable=print_configuration_fn, provide_context=True, dag=dag
-)
+    task_id='print_configuration',
+    python_callable=print_configuration_fn,
+    provide_context=True,
+    dag=dag)
 
 
-def execute_shell_cmd(cmd):  # noqa: D103
+def execute_shell_cmd(cmd):
     logging.info("Executing Command: `" + cmd + "`")
     proc = subprocess.Popen(cmd, shell=True, universal_newlines=True)
     proc.communicate()
@@ -89,15 +107,17 @@ def execute_shell_cmd(cmd):  # noqa: D103
         exit(exit_code)
 
 
-def delete_old_backups_fn(**context):  # noqa: D103
+def delete_old_backups_fn(**context):
     logging.info("Executing delete_old_backups_fn")
 
     logging.info("Loading Configurations...")
     BACKUP_HOME_DIRECTORY = context["ti"].xcom_pull(
-        task_ids=print_configuration_op.task_id, key="backup_configs.backup_home_directory"
+        task_ids=print_configuration_op.task_id,
+        key='backup_configs.backup_home_directory'
     )
     BACKUP_RETENTION_COUNT = context["ti"].xcom_pull(
-        task_ids=print_configuration_op.task_id, key="backup_configs.backup_retention_count"
+        task_ids=print_configuration_op.task_id,
+        key='backup_configs.backup_retention_count'
     )
 
     logging.info("Configurations:")
@@ -106,7 +126,10 @@ def delete_old_backups_fn(**context):  # noqa: D103
     logging.info("")
 
     if BACKUP_RETENTION_COUNT < 0:
-        logging.info("Retention is less then 0. Assuming to allow infinite backups. Skipping...")
+        logging.info(
+            "Retention is less then 0. Assuming to allow infinite backups. "
+            "Skipping..."
+        )
         return
 
     backup_folders = [
@@ -120,7 +143,9 @@ def delete_old_backups_fn(**context):  # noqa: D103
 
     cnt = 0
     for backup_folder in backup_folders:
-        logging.info("cnt = " + str(cnt) + ", backup_folder = " + str(backup_folder))
+        logging.info(
+            "cnt = " + str(cnt) + ", backup_folder = " + str(backup_folder)
+        )
         if cnt > BACKUP_RETENTION_COUNT:
             logging.info("Deleting Backup Folder: " + str(backup_folder))
             execute_shell_cmd("rm -rf " + str(backup_folder))
@@ -128,18 +153,21 @@ def delete_old_backups_fn(**context):  # noqa: D103
 
 
 delete_old_backups_op = PythonOperator(
-    task_id="delete_old_backups", python_callable=delete_old_backups_fn, provide_context=True, dag=dag
-)
+    task_id='delete_old_backups',
+    python_callable=delete_old_backups_fn,
+    provide_context=True,
+    dag=dag)
 
 
-def general_backup_fn(**context):  # noqa: D103
+def general_backup_fn(**context):
     logging.info("Executing general_backup_fn")
 
     logging.info("Loading Configurations...")
     PATH_TO_BACKUP = context["params"].get("path_to_backup")
     TARGET_DIRECTORY_NAME = context["params"].get("target_directory_name")
     BACKUP_DIRECTORY = context["ti"].xcom_pull(
-        task_ids=print_configuration_op.task_id, key="backup_configs.backup_directory"
+        task_ids=print_configuration_op.task_id,
+        key='backup_configs.backup_directory'
     )
 
     logging.info("Configurations:")
@@ -151,21 +179,19 @@ def general_backup_fn(**context):  # noqa: D103
     execute_shell_cmd("mkdir -p " + str(BACKUP_DIRECTORY))
 
     execute_shell_cmd(
-        "cp -r -n "
-        + str(PATH_TO_BACKUP)
-        + " "
-        + str(BACKUP_DIRECTORY)
-        + (TARGET_DIRECTORY_NAME if TARGET_DIRECTORY_NAME is not None else "")
+        "cp -r -n " + str(PATH_TO_BACKUP) + " " + str(BACKUP_DIRECTORY) +
+        (TARGET_DIRECTORY_NAME if TARGET_DIRECTORY_NAME is not None else "")
     )
 
 
-def pip_packages_backup_fn(**context):  # noqa: D103
+def pip_packages_backup_fn(**context):
     logging.info("Executing pip_packages_backup_fn")
 
     logging.info("Loading Configurations...")
 
     BACKUP_DIRECTORY = context["ti"].xcom_pull(
-        task_ids=print_configuration_op.task_id, key="backup_configs.backup_directory"
+        task_ids=print_configuration_op.task_id,
+        key='backup_configs.backup_directory'
     )
 
     logging.info("Configurations:")
@@ -178,50 +204,49 @@ def pip_packages_backup_fn(**context):  # noqa: D103
 
 if BACKUPS_ENABLED.get("dag_directory"):
     backup_op = PythonOperator(
-        task_id="backup_dag_directory",
+        task_id='backup_dag_directory',
         python_callable=general_backup_fn,
         params={"path_to_backup": conf.get("core", "DAGS_FOLDER")},
         provide_context=True,
-        dag=dag,
-    )
+        dag=dag)
     print_configuration_op.set_downstream(backup_op)
     backup_op.set_downstream(delete_old_backups_op)
 
 if BACKUPS_ENABLED.get("log_directory"):
     try:
         BASE_LOG_FOLDER = conf.get("core", "BASE_LOG_FOLDER")
-    except Exception as e:  # noqa: F841
+    except Exception as e:
         BASE_LOG_FOLDER = conf.get("logging", "BASE_LOG_FOLDER")
 
     backup_op = PythonOperator(
-        task_id="backup_log_directory",
+        task_id='backup_log_directory',
         python_callable=general_backup_fn,
-        params={"path_to_backup": BASE_LOG_FOLDER, "target_directory_name": "logs"},
+        params={
+            "path_to_backup": BASE_LOG_FOLDER,
+            "target_directory_name": "logs"
+        },
         provide_context=True,
-        dag=dag,
-    )
+        dag=dag)
     print_configuration_op.set_downstream(backup_op)
     backup_op.set_downstream(delete_old_backups_op)
 
 if BACKUPS_ENABLED.get("airflow_cfg"):
     backup_op = PythonOperator(
-        task_id="backup_airflow_cfg",
+        task_id='backup_airflow_cfg',
         python_callable=general_backup_fn,
         params={
-            "path_to_backup": (
-                os.environ.get("AIRFLOW_HOME") if os.environ.get("AIRFLOW_HOME") is not None else "~/airflow/"
-            )
-            + "/airflow.cfg"  # noqa: E501
+            "path_to_backup": (os.environ.get('AIRFLOW_HOME') if os.environ.get('AIRFLOW_HOME') is not None else "~/airflow/") + "/airflow.cfg"
         },
         provide_context=True,
-        dag=dag,
-    )
+        dag=dag)
     print_configuration_op.set_downstream(backup_op)
     backup_op.set_downstream(delete_old_backups_op)
 
 if BACKUPS_ENABLED.get("pip_packages"):
     backup_op = PythonOperator(
-        task_id="backup_pip_packages", python_callable=pip_packages_backup_fn, provide_context=True, dag=dag
-    )
+        task_id='backup_pip_packages',
+        python_callable=pip_packages_backup_fn,
+        provide_context=True,
+        dag=dag)
     print_configuration_op.set_downstream(backup_op)
     backup_op.set_downstream(delete_old_backups_op)

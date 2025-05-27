@@ -3,9 +3,8 @@ A maintenance workflow that you can deploy into Airflow to periodically delete b
 
 airflow trigger_dag airflow-delete-broken-dags
 
-"""  # noqa: D212
-
-from airflow.models import DAG, ImportError  # noqa: I001
+"""
+from airflow.models import DAG, ImportError
 from airflow.operators.python_operator import PythonOperator
 from airflow import settings
 from datetime import timedelta
@@ -30,13 +29,13 @@ ALERT_EMAIL_ADDRESSES = []
 ENABLE_DELETE = True
 
 default_args = {
-    "owner": DAG_OWNER_NAME,
-    "email": ALERT_EMAIL_ADDRESSES,
-    "email_on_failure": True,
-    "email_on_retry": False,
-    "start_date": START_DATE,
-    "retries": 1,
-    "retry_delay": timedelta(minutes=1),
+    'owner': DAG_OWNER_NAME,
+    'email': ALERT_EMAIL_ADDRESSES,
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'start_date': START_DATE,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=1)
 }
 
 dag = DAG(
@@ -44,15 +43,16 @@ dag = DAG(
     default_args=default_args,
     schedule_interval=SCHEDULE_INTERVAL,
     start_date=START_DATE,
-    tags=["teamclairvoyant", "airflow-maintenance-dags"],
+    tags=['teamclairvoyant', 'airflow-maintenance-dags']
 )
-if hasattr(dag, "doc_md"):
+if hasattr(dag, 'doc_md'):
     dag.doc_md = __doc__
-if hasattr(dag, "catchup"):
+if hasattr(dag, 'catchup'):
     dag.catchup = False
 
 
-def delete_broken_dag_files(**context):  # noqa: D103
+def delete_broken_dag_files(**context):
+
     logging.info("Starting to run Clear Process")
 
     try:
@@ -72,10 +72,14 @@ def delete_broken_dag_files(**context):  # noqa: D103
 
     errors = session.query(ImportError).all()
 
-    logging.info("Process will be removing broken DAG file(s) from the file system:")
+    logging.info(
+        "Process will be removing broken DAG file(s) from the file system:"
+    )
     for error in errors:
         logging.info("\tFile: " + str(error.filename))
-    logging.info("Process will be Deleting " + str(len(errors)) + " DAG file(s)")
+    logging.info(
+        "Process will be Deleting " + str(len(errors)) + " DAG file(s)"
+    )
 
     if ENABLE_DELETE:
         logging.info("Performing Delete...")
@@ -91,5 +95,7 @@ def delete_broken_dag_files(**context):  # noqa: D103
 
 
 delete_broken_dag_files = PythonOperator(
-    task_id="delete_broken_dag_files", python_callable=delete_broken_dag_files, provide_context=True, dag=dag
-)
+    task_id='delete_broken_dag_files',
+    python_callable=delete_broken_dag_files,
+    provide_context=True,
+    dag=dag)
