@@ -20,7 +20,7 @@ dag = DAG(
     schedule_interval="@daily",
     start_date=datetime(2025, 5, 26),
     catchup=False,
-    tags=["dependencies", "system"],
+    tags=["dependencies"],
 )
 
 
