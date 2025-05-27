@@ -1,0 +1,19 @@
+# https://taskfile.dev
+version: '3'
+
+tasks:
+  lint:
+    desc: Run linters
+    cmds:
+      - uvx ruff check --fix .     # 先修复可以自动修复的问题
+      - uvx ruff format .          # 然后格式化
+      - uvx ruff check .           # 最后再检查一次确保没有遗留问题
+
+  lint-watch:
+    desc: Watch files and run linters 
+    cmds:
+      - uvx ruff check --watch .   # 监视文件变化并运行检查
+
+  export-deps:
+    cmds:
+      - uv pip compile pyproject.toml --no-deps --output-file requirements.txt

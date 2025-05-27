@@ -124,7 +124,7 @@ def delete_old_backups_fn(**context):  # noqa: D103
         if cnt > BACKUP_RETENTION_COUNT:
             logging.info("Deleting Backup Folder: " + str(backup_folder))
             execute_shell_cmd("rm -rf " + str(backup_folder))
-        cnt += 1
+        cnt += 1  # noqa: SIM113
 
 
 delete_old_backups_op = PythonOperator(
@@ -211,7 +211,7 @@ if BACKUPS_ENABLED.get("airflow_cfg"):
             "path_to_backup": (
                 os.environ.get("AIRFLOW_HOME") if os.environ.get("AIRFLOW_HOME") is not None else "~/airflow/"
             )
-            + "/airflow.cfg"  # noqa: E501
+            + "/airflow.cfg"  # noqa: E501, RUF100
         },
         provide_context=True,
         dag=dag,

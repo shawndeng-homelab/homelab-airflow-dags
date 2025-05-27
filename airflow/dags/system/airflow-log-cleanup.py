@@ -224,7 +224,7 @@ else
 fi
 
 """
-)  # noqa: E501, W605
+)  # noqa: E501, RUF100, W605
 
 for log_cleanup_id in range(1, NUMBER_OF_WORKERS + 1):
     for dir_id, directory in enumerate(DIRECTORIES_TO_DELETE):

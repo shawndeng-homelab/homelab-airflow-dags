@@ -175,7 +175,7 @@ create_log_cleanup_script = BashOperator(
 for host in AIRFLOW_HOSTS.split(","):
     for DIR_ID, DIRECTORY in enumerate(DIRECTORIES_TO_DELETE):
         LOG_CLEANUP_COMMAND = (
-            f"{TEMP_LOG_CLEANUP_SCRIPT_PATH} {DIRECTORY} {DEFAULT_MAX_LOG_AGE_IN_DAYS} {str(ENABLE_DELETE).lower()}"  # noqa: E501
+            f"{TEMP_LOG_CLEANUP_SCRIPT_PATH} {DIRECTORY} {DEFAULT_MAX_LOG_AGE_IN_DAYS} {str(ENABLE_DELETE).lower()}"  # noqa: E501, RUF100
         )
         cleanup_task = BashOperator(
             task_id=f"airflow_log_cleanup_{host}_dir_{DIR_ID}",

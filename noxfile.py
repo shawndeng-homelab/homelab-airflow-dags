@@ -18,9 +18,11 @@ Typical usage example:
     nox -s docs    # Build documentation
     nox -s docs-serve  # Serve documentation locally
 """
-import nox
 import shutil
 from pathlib import Path
+
+import nox
+
 
 # 支持的 Python 版本范围
 MIN_PYTHON = "3.10"
@@ -35,7 +37,7 @@ PYTHON_VERSIONS = [
 
 def install_with_uv(session: nox.Session, extras: list[str] | None = None) -> None:
     """Helper function to install packages using uv.
-    
+
     Args:
         session: Nox session object for running commands
         extras: Optional list of extra dependency groups to install (e.g. ["dev", "docs"])
@@ -107,7 +109,7 @@ def test_all(session: nox.Session) -> None:
 
     # 确定是否是最新的 Python 版本
     is_latest_python = session.python == PYTHON_VERSIONS[-1]
-    
+
     # 构建测试命令
     test_args = ["-v", "tests"]
     if is_latest_python:

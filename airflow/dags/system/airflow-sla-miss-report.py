@@ -235,7 +235,7 @@ def sla_daily_miss(sla_run_detail):
             daily_sla_miss_pct_df["slamiss_count_datewise"] * 100 / daily_sla_miss_pct_df["total_count"]
         ).round(2)
         daily_sla_miss_pct_df["sla_miss_percent(missed_tasks/total_tasks)"] = daily_sla_miss_pct_df.apply(
-            lambda x: "%s%s(%s/%s)" % (x["sla_miss_percent"], "% ", x["slamiss_count_datewise"], x["total_count"]),
+            lambda x: "%s%s(%s/%s)" % (x["sla_miss_percent"], "% ", x["slamiss_count_datewise"], x["total_count"]),  # noqa: UP031
             axis=1,
         )
 
@@ -255,7 +255,7 @@ def sla_daily_miss(sla_run_detail):
         )
 
         daily_sla_miss_df_pct_kpi["top_pct_violator"] = daily_sla_miss_df_pct_kpi.apply(
-            lambda x: "%s: %s (%s%s" % (x["dag_id"], x["task_id"], x["pct_violator"], "%)"),
+            lambda x: "%s: %s (%s%s" % (x["dag_id"], x["task_id"], x["pct_violator"], "%)"),  # noqa: UP031
             axis=1,
         )
 
@@ -265,7 +265,7 @@ def sla_daily_miss(sla_run_detail):
         )
 
         daily_slamiss_df_absolute_kpi["top_absolute_violator"] = daily_slamiss_df_absolute_kpi.apply(
-            lambda x: "%s: %s (%s/%s)" % (x["dag_id"], x["task_id"], x["size"], x["totalcount"]),
+            lambda x: "%s: %s (%s/%s)" % (x["dag_id"], x["task_id"], x["size"], x["totalcount"]),  # noqa: UP031
             axis=1,
         )
 
@@ -356,7 +356,7 @@ def sla_hourly_miss(sla_run_detail):
         ).round(2)
 
         sla_miss_pct_past_day_hourly["sla_miss_percent(missed_tasks/total_tasks)"] = sla_miss_pct_past_day_hourly.apply(
-            lambda x: "%s%s(%s/%s)"
+            lambda x: "%s%s(%s/%s)"  # noqa: UP031
             % (
                 x["sla_miss_percent"].astype(int),
                 "% ",
@@ -397,7 +397,7 @@ def sla_hourly_miss(sla_run_detail):
         )
 
         sla_miss_pct_past_day_hourly["top_pct_violator"] = sla_miss_pct_past_day_hourly.apply(
-            lambda x: "%s: %s (%s%s" % (x["dag_id"], x["task_id"], x["pct_violator"], "%)"),
+            lambda x: "%s: %s (%s%s" % (x["dag_id"], x["task_id"], x["pct_violator"], "%)"),  # noqa: UP031
             axis=1,
         )
 
@@ -410,7 +410,7 @@ def sla_hourly_miss(sla_run_detail):
             .head(1)
         )
         sla_miss_absolute_kpi_past_day_hourly["top_absolute_violator"] = sla_miss_absolute_kpi_past_day_hourly.apply(
-            lambda x: "%s: %s (%s/%s)" % (x["dag_id"], x["task_id"], x["size"], x["totalcount"]),
+            lambda x: "%s: %s (%s/%s)" % (x["dag_id"], x["task_id"], x["size"], x["totalcount"]),  # noqa: UP031
             axis=1,
         )
 
@@ -431,7 +431,8 @@ def sla_hourly_miss(sla_run_detail):
             sla_avg_execution_time_hourly["duration"].round(0).astype(int).astype(str)
         )
         sla_avg_execution_time_hourly["longest_running_task"] = sla_avg_execution_time_hourly.apply(
-            lambda x: "%s: %s (%ss)" % (x["dag_id"], x["task_id"], x["duration"]), axis=1
+            lambda x: f"{x['dag_id']}: {x['task_id']} ({x['duration']}s)",
+            axis=1,
         )
 
         sla_longest_running_task_hourly = sla_avg_execution_time_hourly.filter(
@@ -556,9 +557,9 @@ def sla_dag_miss(sla_run_detail, serialized_dags_slas):
         )
         dag_obs7_sladpercent_onedayprior = sla_miss_pct(dag_sla_count_df_onedayprior, dag_sla_totalcount_one_day_prior)
 
-        dag_obs7_sladetailed_week = f"In the past {str(LONG_TIMEFRAME_IN_DAYS)} days, {dag_obs5_sladpercent_weekprior}% of the tasks have missed their SLA"  # noqa: E501
-        dag_obs6_sladetailed_threeday = f"In the past {str(MEDIUM_TIMEFRAME_IN_DAYS)} days, {dag_obs6_sladpercent_threedayprior}% of the tasks have missed their SLA"  # noqa: E501
-        dag_obs5_sladetailed_oneday = f"In the past {str(SHORT_TIMEFRAME_IN_DAYS)} days, {dag_obs7_sladpercent_onedayprior}% of the tasks have missed their SLA"  # noqa: E501
+        dag_obs7_sladetailed_week = f"In the past {str(LONG_TIMEFRAME_IN_DAYS)} days, {dag_obs5_sladpercent_weekprior}% of the tasks have missed their SLA"  # noqa: E501, RUF010
+        dag_obs6_sladetailed_threeday = f"In the past {str(MEDIUM_TIMEFRAME_IN_DAYS)} days, {dag_obs6_sladpercent_threedayprior}% of the tasks have missed their SLA"  # noqa: E501, RUF010
+        dag_obs5_sladetailed_oneday = f"In the past {str(SHORT_TIMEFRAME_IN_DAYS)} days, {dag_obs7_sladpercent_onedayprior}% of the tasks have missed their SLA"  # noqa: E501, RUF010
 
         dag_sla_miss_pct_df_week_prior = pd.merge(
             pd.merge(dag_sla_count_df_weekprior, dag_sla_totalcount_week_prior, on=["dag_id", "task_id"]),
