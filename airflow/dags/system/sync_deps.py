@@ -6,7 +6,7 @@ from airflow.operators.bash import BashOperator
 
 
 default_args = {
-    "owner": "admin",
+    "owner": "airflow",
     "depends_on_past": False,
     "email_on_failure": True,
     "retries": 1,
@@ -16,7 +16,7 @@ default_args = {
 dag = DAG(
     "sync_deps",
     default_args=default_args,
-    description="更新全局的依赖",
+    description="updade airflow dependencies",
     schedule_interval="@daily",
     start_date=datetime(2025, 5, 26),
     catchup=False,
