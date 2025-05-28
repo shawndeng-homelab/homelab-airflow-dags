@@ -3,8 +3,6 @@ repos:
   rev: 0.7.8
   hooks:
   - id: uv-lock     # Update the uv lockfile
-  - id: uv-export     # export the uv lockfile to a different format
-    args: [--frozen, --output-file=requirements.txt]
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.14.0
