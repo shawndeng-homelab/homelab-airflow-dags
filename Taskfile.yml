@@ -9,11 +9,16 @@ tasks:
       - uvx ruff format .          # 然后格式化
       - uvx ruff check .           # 最后再检查一次确保没有遗留问题
 
-  lint-watch:
+  lint:watch:
     desc: Watch files and run linters 
     cmds:
       - uvx ruff check --watch .   # 监视文件变化并运行检查
 
-  export-deps:
+  export:deps:
     cmds:
       - uv pip compile pyproject.toml --no-deps --output-file requirements.txt
+
+  pre-commit:
+    desc: Run pre-commit hooks
+    cmds:
+      - uvx pre-commit run --all-files
