@@ -1,22 +1,18 @@
 repos:
-- repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.7.8
-  hooks:
-  - id: uv-lock     # Update the uv lockfile
-
-- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.14.0
-  hooks:
-  - id: pretty-format-yaml
-    args: [--autofix, --indent, '2']
-
-- repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.33.0
-  hooks:
-  - id: check-github-workflows
-    args: [--verbose]
-
-- repo: https://github.com/rhysd/actionlint
-  rev: v1.7.7
-  hooks:
-  - id: actionlint   # lint github actions
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.7.8
+    hooks:
+      - id: uv-lock # Update the uv lockfile
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.14.0
+    hooks:
+      - id: yamlfmt
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.33.0
+    hooks:
+      - id: check-github-workflows
+        args: [--verbose]
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint # lint github actions

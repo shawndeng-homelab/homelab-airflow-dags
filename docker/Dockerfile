@@ -19,4 +19,6 @@ COPY --chown=airflow:root . /tmp/homelab-airflow-dags
 RUN uv pip install -e /tmp/homelab-airflow-dags
 WORKDIR /opt/airflow
 RUN rm -rf /opt/airflow/dags \
-  && ln -s /tmp/homelab-airflow-dags/homelab_airflow_dags/dags /opt/airflow/dags
+  && ln -s /tmp/homelab-airflow-dags/homelab_airflow_dags/dags /opt/airflow/dags \
+  && ln -s /tmp/homelab-airflow-dags/homelab_airflow_dags/config /opt/airflow/config \
+  && ln -s /tmp/homelab-airflow-dags/homelab_airflow_dags/plugins /opt/airflow/plugins \
