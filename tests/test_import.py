@@ -3,13 +3,14 @@
 import importlib
 import pkgutil
 
-import homelab_airflow_dags # noqa
+import homelab_airflow_dags
+
 
 def test_imports():
     """Test import modules."""
     prefix = "{}.".format(homelab_airflow_dags.__name__) # noqa
     iter_packages = pkgutil.walk_packages(
-        homelab_airflow_dags.__path__,  # noqa
+        homelab_airflow_dags.__path__,
         prefix,
     )
     for _, name, _ in iter_packages:
