@@ -1,3 +1,9 @@
+## 0.3.1 (2025-05-29)
+
+### Fix
+
+- fix dag load and fix docs build
+
 ## 0.3.0 (2025-05-28)
 
 ### Feat
