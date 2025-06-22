@@ -1,3 +1,9 @@
+## 0.3.3 (2025-06-22)
+
+### Fix
+
+- fix github aciton for docker build
+
 ## 0.3.2 (2025-06-22)
 
 ### Fix
