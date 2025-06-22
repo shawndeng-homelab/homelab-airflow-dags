@@ -4,9 +4,9 @@ vars:
   package_name: homelab_airflow_dags
   python_min_version: '3.10'
   python_max_version: &dev_version '3.12'
-  # 默认的开发版本
-
   python_dev_version: *dev_version
+  nexus_url: https://nexus.shawndeng.cc/repository/pypi-hosted/
+dotenv: ['.env']
 tasks:
   init:
     desc: Initialize the project
@@ -60,22 +60,68 @@ tasks:
     cmds:
       - echo "Testing with Python {{.version}}..."
       - uvx --python {{.version}} --with ".[dev]" pytest --cov={{.package_name}} --cov-report=xml --cov-report=term-missing -v tests/
+  test:watch:
+    desc: Watch files and run tests
+    cmds:
+      - uvx --with ".[dev]" ptw --runner "pytest -vx"
   docs:
     desc: Build and view documentation
     cmds:
       - uvx --with ".[docs]" mkdocs serve
-  export:deps:
+  docs:build:
+    desc: Build documentation
     cmds:
-      - uv pip compile pyproject.toml --no-deps --output-file requirements.txt
+      - uvx --with ".[docs]" mkdocs build
   deploy:gh-pages:
     desc: Deploy documentation to GitHub Pages
     cmds:
       - uvx --with ".[docs]" mkdocs gh-deploy --force
-  deploy:pypi:
-    desc: Deploy package to PyPI
+  # 构建相关任务
+
+  build:
+    desc: Build package distribution files
     cmds:
       - uv build
+  # 发布相关任务 - 使用已构建的包
+
+  publish:pypi:
+    desc: Publish existing package to PyPI
+    cmds:
       - uv publish
+  publish:nexus:
+    desc: Publish existing package to Nexus
+    env:
+      UV_PUBLISH_USERNAME: '{{.NEXUS_USERNAME}}'
+      UV_PUBLISH_PASSWORD: '{{.NEXUS_PASSWORD}}'
+      UV_PUBLISH_URL: '{{.nexus_url}}'
+    cmds:
+      - uv publish dist/*.whl
+  publish:all:
+    desc: Publish existing package to both PyPI and Nexus
+    cmds:
+      - task: publish:pypi
+      - task: publish:nexus
+  # 组合任务 - 构建并发布
+
+  deploy:pypi:
+    desc: Build and deploy to PyPI
+    cmds:
+      - task: build
+      - task: publish:pypi
+  deploy:nexus:
+    desc: Build and deploy to Nexus
+    cmds:
+      - task: build
+      - task: publish:nexus
+  deploy:all:
+    desc: Build and deploy to all repositories
+    cmds:
+      - task: build
+      - task: publish:all
+  export:deps:
+    desc: Export dependencies to requirements.txt
+    cmds:
+      - uv pip compile pyproject.toml --no-deps --output-file requirements.txt
   docker-compose:up:
     desc: pre view docker Service
     cmds:
