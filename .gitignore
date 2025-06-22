@@ -7,6 +7,7 @@
 /.zip/
 /venv/
 /dist/
+.env
 **/__pycache__/
 *.pyc
 # MkDocs build output

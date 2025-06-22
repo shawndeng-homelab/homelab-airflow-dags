@@ -22,10 +22,18 @@ jobs:
           task init # 初始化项目环境
           task lint # 运行代码检查
           task test:all # 运行所有测试
+      - name: Build package
+        run: uv build
       - name: Publish to PyPI
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: task deploy:pypi
+        run: uv publish
+      - name: Publish to Nexus
+        if: success()
+        env:
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: task deploy:nexus
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
