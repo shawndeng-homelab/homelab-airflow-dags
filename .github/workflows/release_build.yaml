@@ -18,22 +18,18 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       - name: init environment and test
+        env:
+          UV_INDEX_HOMELAB_USERNAME: ${{ secrets.PYPI_SERVER_USERNAME }}
+          UV_INDEX_HOMELAB_PASSWORD: ${{ secrets.PYPI_SERVER_PASSWORD }}
         run: |
           task init # 初始化项目环境
           task lint # 运行代码检查
           task test:all # 运行所有测试
-      - name: Build package
-        run: uv build
-      - name: Publish to PyPI
+      - name: Publish to PyPI Server
         env:
-          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: uv publish
-      - name: Publish to Nexus
-        if: success()
-        env:
-          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-        run: task deploy:nexus
+          PYPI_SERVER_USERNAME: ${{ secrets.PYPI_SERVER_USERNAME }}
+          PYPI_SERVER_PASSWORD: ${{ secrets.PYPI_SERVER_PASSWORD }}
+        run: task deploy:pypi-server
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
