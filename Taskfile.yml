@@ -2,10 +2,10 @@
 version: '3'
 vars:
   package_name: homelab_airflow_dags
-  python_min_version: '3.10'
-  python_max_version: &dev_version '3.12'
+  python_min_version: &dev_version '3.12'
+  python_max_version: '3.12'
   python_dev_version: *dev_version
-  nexus_url: https://nexus.shawndeng.cc/repository/pypi-hosted/
+  pypi_server_url: '{{.PYPI_SERVER_URL | default "https://pypiserver.shawndeng.cc"}}'
 dotenv: ['.env']
 tasks:
   init:
@@ -88,19 +88,19 @@ tasks:
     desc: Publish existing package to PyPI
     cmds:
       - uv publish
-  publish:nexus:
-    desc: Publish existing package to Nexus
+  publish:pypi-server:
+    desc: Publish existing package to PyPI Server
     env:
-      UV_PUBLISH_USERNAME: '{{.NEXUS_USERNAME}}'
-      UV_PUBLISH_PASSWORD: '{{.NEXUS_PASSWORD}}'
-      UV_PUBLISH_URL: '{{.nexus_url}}'
+      UV_PUBLISH_USERNAME: '{{.PYPI_SERVER_USERNAME}}'
+      UV_PUBLISH_PASSWORD: '{{.PYPI_SERVER_PASSWORD}}'
+      UV_PUBLISH_URL: '{{.pypi_server_url}}'
     cmds:
       - uv publish dist/*.whl
   publish:all:
-    desc: Publish existing package to both PyPI and Nexus
+    desc: Publish existing package to both PyPI and PyPI Server
     cmds:
       - task: publish:pypi
-      - task: publish:nexus
+      - task: publish:pypi-server
   # 组合任务 - 构建并发布
 
   deploy:pypi:
@@ -108,11 +108,11 @@ tasks:
     cmds:
       - task: build
       - task: publish:pypi
-  deploy:nexus:
-    desc: Build and deploy to Nexus
+  deploy:pypi-server:
+    desc: Build and deploy to PyPI Server
     cmds:
       - task: build
-      - task: publish:nexus
+      - task: publish:pypi-server
   deploy:all:
     desc: Build and deploy to all repositories
     cmds:

@@ -17,6 +17,8 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       - name: Build and deploy documentation
-        run: task deploy:gh-pages
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          UV_INDEX_HOMELAB_USERNAME: ${{ secrets.PYPI_SERVER_USERNAME }}
+          UV_INDEX_HOMELAB_PASSWORD: ${{ secrets.PYPI_SERVER_PASSWORD }}
+        run: task deploy:gh-pages
