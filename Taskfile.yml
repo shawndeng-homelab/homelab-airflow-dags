@@ -59,23 +59,23 @@ tasks:
     desc: Run tests with specific Python version
     cmds:
       - echo "Testing with Python {{.version}}..."
-      - uvx --python {{.version}} --with ".[dev]" pytest --cov={{.package_name}} --cov-report=xml --cov-report=term-missing -v tests/
+      - uv run --extra dev --python {{.version}} pytest --cov={{.package_name}} --cov-report=xml --cov-report=term-missing -v tests/
   test:watch:
     desc: Watch files and run tests
     cmds:
-      - uvx --with ".[dev]" ptw --runner "pytest -vx"
+      - uv run --extra dev ptw --runner "pytest -vx"
   docs:
     desc: Build and view documentation
     cmds:
-      - uvx --with ".[docs]" mkdocs serve
+      - uv run --extra docs mkdocs serve
   docs:build:
     desc: Build documentation
     cmds:
-      - uvx --with ".[docs]" mkdocs build
+      - uv run --extra docs mkdocs build
   deploy:gh-pages:
     desc: Deploy documentation to GitHub Pages
     cmds:
-      - uvx --with ".[docs]" mkdocs gh-deploy --force
+      - uv run --extra docs mkdocs gh-deploy --force
   # 构建相关任务
 
   build:

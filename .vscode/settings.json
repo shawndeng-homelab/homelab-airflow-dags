@@ -16,5 +16,6 @@
     "AIRFLOW_VERSION": "2.11.0",
     "PYTHON_VERSION": "3.12",
     "CONSTRAINT_URL": "https://raw.githubusercontent.com/apache/airflow/constraints-2.11.0/constraints-3.12.txt"
-  }
+  },
+  "python.envFile": "${workspaceFolder}/.env",
 }
