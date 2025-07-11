@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://ShawnDen-coder.github.io/homelab_airflow_dags/</loc>
+         <lastmod>2025-07-11</lastmod>
+    </url>
+    <url>
+         <loc>https://ShawnDen-coder.github.io/homelab_airflow_dags/reference/SUMMARY/</loc>
+         <lastmod>2025-07-11</lastmod>
+    </url>
+    <url>
+         <loc>https://ShawnDen-coder.github.io/homelab_airflow_dags/reference/homelab_airflow_dags/</loc>
+         <lastmod>2025-07-11</lastmod>
+    </url>
+    <url>
+         <loc>https://ShawnDen-coder.github.io/homelab_airflow_dags/reference/homelab_airflow_dags/dags/</loc>
+         <lastmod>2025-07-11</lastmod>
+    </url>
+    <url>
+         <loc>https://ShawnDen-coder.github.io/homelab_airflow_dags/reference/homelab_airflow_dags/dags/load_dag/</loc>
+         <lastmod>2025-07-11</lastmod>
+    </url>
+    <url>
+         <loc>https://ShawnDen-coder.github.io/homelab_airflow_dags/reference/homelab_airflow_dags/dags/my_dags/</loc>
+         <lastmod>2025-07-11</lastmod>
+    </url>
+</urlset>
