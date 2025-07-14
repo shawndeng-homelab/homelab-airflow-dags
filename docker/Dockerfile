@@ -1,10 +1,20 @@
 FROM apache/airflow:2.11.0-python3.12
 
-ENV AIRFLOW_VERSION=2.11.0 \
-    PYTHON_VERSION=3.12 \
-    CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-2.11.0/constraints-3.12.txt
+# Build arguments for PyPI server authentication
+ARG PYPI_SERVER_USERNAME
+ARG PYPI_SERVER_PASSWORD
+ARG PYPI_SERVER_URL
+ARG AIRFLOW_VERSION=2.11.0
+ARG PYTHON_VERSION=3.12
 
+ENV AIRFLOW_VERSION=${AIRFLOW_VERSION} \
+    PYTHON_VERSION=${PYTHON_VERSION} \
+    CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt
+
+# Install uv
 USER root
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
          vim \
@@ -14,11 +24,37 @@ RUN apt-get update \
 
 USER airflow
 
-WORKDIR /tmp/homelab-airflow-dags
-COPY --chown=airflow:root . /tmp/homelab-airflow-dags
-RUN uv pip install -e /tmp/homelab-airflow-dags
+# Set uv environment variables for authentication and constraints
+ENV UV_INDEX_HOMELAB_USERNAME=${PYPI_SERVER_USERNAME} \
+    UV_INDEX_HOMELAB_PASSWORD=${PYPI_SERVER_PASSWORD} \
+    UV_CONSTRAINT=https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt \
+    UV_SYSTEM_PYTHON=1 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PROJECT_ENVIRONMENT=/app/.venv
+
+WORKDIR /app
+
+# Copy dependency files first for better caching
+COPY --chown=airflow:root pyproject.toml uv.lock ./
+
+# Install dependencies only (without the project itself)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project
+
+# Copy the project source code
+COPY --chown=airflow:root . .
+
+# Install the project itself (non-editable to avoid build issues)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-editable
+
+# Set up Airflow directories
 WORKDIR /opt/airflow
 RUN rm -rf /opt/airflow/dags \
-  && ln -s /tmp/homelab-airflow-dags/homelab_airflow_dags/dags /opt/airflow/dags \
-  && ln -s /tmp/homelab-airflow-dags/homelab_airflow_dags/config /opt/airflow/config \
-  && ln -s /tmp/homelab-airflow-dags/homelab_airflow_dags/plugins /opt/airflow/plugins \
+  && ln -s /app/homelab_airflow_dags/dags /opt/airflow/dags \
+  && ln -s /app/homelab_airflow_dags/config /opt/airflow/config \
+  && ln -s /app/homelab_airflow_dags/plugins /opt/airflow/plugins
+
+# Activate the virtual environment
+ENV PATH="/app/.venv/bin:$PATH"
