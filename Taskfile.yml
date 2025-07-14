@@ -125,8 +125,8 @@ tasks:
   podman-compose:up:
     desc: preview docker Service using podman
     cmds:
-      - podman compose -f docker/docker-compose.yaml up
+      - podman compose --env-file .env -f docker/docker-compose.yaml up
   podman-compose:down:
     desc: stop docker Service using podman
     cmds:
-      - podman compose -f docker/docker-compose.yaml down
+      - podman compose --env-file .env -f docker/docker-compose.yaml down
