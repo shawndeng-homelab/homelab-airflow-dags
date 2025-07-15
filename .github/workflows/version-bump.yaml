@@ -1,4 +1,4 @@
-name: Bump version
+name: 🔄 Auto Version Bump
 on:
   push:
     branches:
