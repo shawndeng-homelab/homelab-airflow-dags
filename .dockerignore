@@ -31,7 +31,7 @@ mkdocs.yml
 # *.md
 
 # Tests
-tests/
+# tests/
 .pytest_cache/
 .coverage
 htmlcov/

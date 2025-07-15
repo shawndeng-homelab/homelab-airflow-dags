@@ -1,4 +1,4 @@
-name: container release
+name: 🐳 Docker Release
 on:
   release:
     types: [published]
@@ -10,13 +10,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - name: Extract repository name
-        id: repo-name
-        run: |
-          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2 | tr '-' '_')
-          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
-          OWNER_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f1 | tr '-' '_')
-          echo "OWNER_NAME=$OWNER_NAME" >> $GITHUB_ENV
       - name: Login to GitHub Container Registry
         uses: redhat-actions/podman-login@v1
         with:
@@ -31,6 +24,9 @@ jobs:
           tags: latest ${{ github.sha }} ${{ github.ref_name }}
           containerfiles: ./docker/Dockerfile
           platforms: linux/amd64,linux/arm64
+          build-args: |
+            PYPI_SERVER_USERNAME=${{ secrets.PYPI_SERVER_USERNAME }}
+            PYPI_SERVER_PASSWORD=${{ secrets.PYPI_SERVER_PASSWORD }}
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
