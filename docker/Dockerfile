@@ -8,29 +8,23 @@ ARG PYTHON_VERSION=3.12
 
 USER airflow
 
-# Set up working directory
-WORKDIR /app
-
-# Copy project files
-COPY --chown=airflow:root . .
+# Set up working directory in Airflow's expected location
+WORKDIR /opt/airflow
 
 # Set uv environment variables for authentication
 ENV UV_INDEX_HOMELAB_USERNAME=${PYPI_SERVER_USERNAME} \
-    UV_INDEX_HOMELAB_PASSWORD=${PYPI_SERVER_PASSWORD} \
-    UV_SYSTEM_PYTHON=1 \
-    UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy
+    UV_INDEX_HOMELAB_PASSWORD=${PYPI_SERVER_PASSWORD}
 
-# Copy dependency files first for better caching
-COPY --chown=airflow:root pyproject.toml uv.lock ./
+# Copy all project files
+COPY --chown=airflow:root . .
 
-# Install dependencies using uv with system Python (no virtual environment)
+# Install dependencies from pyproject.toml without disrupting the base environment
 RUN --mount=type=cache,target=/home/airflow/.cache/uv \
-    uv sync --locked
+    uv pip install --no-cache-dir \
+    "apache-airflow==${AIRFLOW_VERSION}" \
+    -e .
 
-# Set up Airflow directories
-WORKDIR /opt/airflow
-RUN rm -rf /opt/airflow/dags \
-  && ln -s /app/homelab_airflow_dags/dags /opt/airflow/dags \
-  && ln -s /app/homelab_airflow_dags/config /opt/airflow/config \
-  && ln -s /app/homelab_airflow_dags/plugins /opt/airflow/plugins
+# Set up Airflow directories with symbolic links
+RUN ln -sf /opt/airflow/homelab_airflow_dags/dags /opt/airflow/dags && \
+    ln -sf /opt/airflow/homelab_airflow_dags/config /opt/airflow/config && \
+    ln -sf /opt/airflow/homelab_airflow_dags/plugins /opt/airflow/plugins
