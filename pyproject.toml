@@ -13,6 +13,8 @@ dependencies = [
     "dag-factory==0.23.0a4",
     "fake-useragent>=2.2.0",
     "ibkr-quant>=0.5.1",
+    "py-consul>=1.6.0",
+    "pyyaml>=6.0.2",
 ]
 
 [project.optional-dependencies]
