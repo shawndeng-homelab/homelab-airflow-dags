@@ -6,15 +6,30 @@ ARG PYPI_SERVER_PASSWORD
 ARG AIRFLOW_VERSION=2.11.0
 ARG PYTHON_VERSION=3.12
 
+# Build arguments for Consul configuration
+ARG CONSUL_HOST
+ARG CONSUL_PORT=443
+ARG CONSUL_TOKEN
+
 # 使用 root 用户进行构建和文件操作
 USER root
+
+# Install build dependencies for compiling Python packages with C extensions
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set up working directory in /app first
 WORKDIR /app
 
 # Set uv environment variables for authentication
 ENV UV_INDEX_HOMELAB_USERNAME=${PYPI_SERVER_USERNAME} \
-    UV_INDEX_HOMELAB_PASSWORD=${PYPI_SERVER_PASSWORD}
+    UV_INDEX_HOMELAB_PASSWORD=${PYPI_SERVER_PASSWORD} \
+    CONSUL_HOST=${CONSUL_HOST} \
+    CONSUL_PORT=${CONSUL_PORT} \
+    CONSUL_TOKEN=${CONSUL_TOKEN}
 
 # Copy all project files to /app
 COPY . .
