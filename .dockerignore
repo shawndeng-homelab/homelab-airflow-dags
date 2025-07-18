@@ -27,8 +27,6 @@ Thumbs.db
 # Documentation
 docs/
 mkdocs.yml
-# Keep README.md for package metadata
-# *.md
 
 # Tests
 # tests/
