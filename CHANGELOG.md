@@ -1,3 +1,10 @@
+## 0.5.1 (2025-07-18)
+
+### Fix
+
+- update test code
+- rebuild pod
+
 ## 0.5.0 (2025-07-18)
 
 ### Feat
