@@ -10,9 +10,11 @@ readme = "README.md"
 requires-python = ">=3.12, <3.13"
 dependencies = [
     "apache-airflow==2.11.0",
+    "apache-airflow-providers-amazon>=9.10.0",
     "dag-factory==0.23.0",
     "fake-useragent>=2.2.0",
     "ibkr-quant>=0.5.1",
+    "loguru>=0.7.3",
     "py-consul>=1.6.0",
     "pyyaml>=6.0.2",
 ]
