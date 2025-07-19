@@ -1,3 +1,9 @@
+## 0.6.0 (2025-07-19)
+
+### Feat
+
+- add risk dag and common tasks
+
 ## 0.5.4 (2025-07-18)
 
 ### Fix
