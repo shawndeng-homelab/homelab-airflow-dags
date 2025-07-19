@@ -32,56 +32,57 @@ from airflow.decorators import dag
 from homelab_airflow_dags.common_tasks.risk_management_task import risk_management_task
 
 
-# Chinese documentation for the DAG
-DOC_MD = """
-# 投资组合风险管理 DAG
+# DAG documentation in English for better compatibility
+_DAG_DOC_MD = """
+# Portfolio Risk Management DAG
 
-## 概述
-这个 DAG 每天自动执行投资组合风险管理分析，为投资决策提供数据支持。
+## Overview
+This DAG performs daily portfolio risk management analysis and optimization
+to support investment decision-making processes.
 
-## 主要功能
-- **风险指标计算**: 计算投资组合的各项风险指标，包括波动率、VaR、最大回撤等
-- **投资组合优化**: 基于现代投资组合理论进行资产配置优化
-- **风险报告生成**: 生成格式化的风险分析报告，便于查看和分析
-- **配置管理**: 通过 Consul 动态管理风险管理参数
+## Key Features
+- **Risk Metrics Calculation**: Computes portfolio risk indicators including volatility, VaR, maximum drawdown
+- **Portfolio Optimization**: Asset allocation optimization based on modern portfolio theory
+- **Risk Report Generation**: Generates formatted risk analysis reports for review
+- **Configuration Management**: Dynamic risk management parameter management via Consul
 
-## 执行流程
-1. 从 Consul 加载风险投资组合配置参数
-2. 创建策略配置对象并验证参数
-3. 构建投资组合优化器
-4. 执行优化算法计算最优资产配置
-5. 生成并输出格式化的投资组合分析报告
+## Execution Flow
+1. Load risk portfolio configuration parameters from Consul
+2. Create and validate strategy configuration objects
+3. Build portfolio optimizer
+4. Execute optimization algorithms to calculate optimal asset allocation
+5. Generate and output formatted portfolio analysis reports
 
-## 技术依赖
-- **ibkr_quant**: 提供风险管理和投资组合优化功能
-- **Consul**: 配置管理服务，存储风险管理参数
-- **Airflow**: 工作流调度和管理平台
+## Technical Dependencies
+- **ibkr_quant**: Provides risk management and portfolio optimization functionality
+- **Consul**: Configuration management service for storing risk parameters
+- **Airflow**: Workflow scheduling and management platform
 
-## 配置要求
-需要在 Consul 中配置 `risk_portfolio_config` 键，包含以下参数：
-- 风险容忍度设置
-- 预期收益率参数
-- 资产配置约束条件
-- 优化算法参数
+## Configuration Requirements
+Requires `risk_portfolio_config` key in Consul with parameters:
+- Risk tolerance settings
+- Expected return parameters
+- Asset allocation constraints
+- Optimization algorithm parameters
 
-## 执行时间
-- **调度频率**: 每天执行一次 (@daily)
-- **开始时间**: 2025年1月1日
-- **并发限制**: 同时只允许一个实例运行
-- **历史回填**: 禁用 (catchup=False)
+## Schedule
+- **Frequency**: Daily execution (@daily)
+- **Start Date**: January 1, 2025
+- **Concurrency**: Single instance only
+- **Catchup**: Disabled
 
-## 输出结果
-DAG 执行完成后会在日志中输出格式化的投资组合分析表格，包含：
-- 资产配置权重
-- 风险指标数值
-- 优化建议信息
+## Output
+Upon completion, outputs formatted portfolio analysis tables in logs including:
+- Asset allocation weights
+- Risk metric values
+- Optimization recommendations
 """
 
 
 @dag(
     "risk_management",
     description="Daily portfolio risk management analysis and optimization",
-    doc_md=DOC_MD,
+    doc_md=_DAG_DOC_MD,
     tags=["risk", "ibkr", "portfolio", "optimization"],
     start_date=datetime(2025, 1, 1),
     schedule="@daily",

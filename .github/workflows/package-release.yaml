@@ -2,15 +2,15 @@ name: 🚀 Release Build & Publish
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+' # 匹配类似 1.0.0, 2.1.3 等格式的标签
+      - '[0-9]+.[0-9]+.[0-9]+'  # 匹配类似 1.0.0, 2.1.3 等格式的标签
 permissions:
-  contents: write # 用于创建 release
-  id-token: write # 用于发布到 PyPI
+  contents: write  # 用于创建 release
+  id-token: write  # 用于发布到 PyPI
 jobs:
   release-build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 用于创建 GitHub Release
+      contents: write  # 用于创建 GitHub Release
     env:
       UV_INDEX_HOMELAB_USERNAME: ${{ secrets.PYPI_SERVER_USERNAME }}
       UV_INDEX_HOMELAB_PASSWORD: ${{ secrets.PYPI_SERVER_PASSWORD }}
@@ -27,7 +27,7 @@ jobs:
           task init # 初始化项目环境
           task lint # 运行代码检查
       - name: Run tests
-        run: task test:all # 运行所有测试
+        run: task test:all  # 运行所有测试
       - name: Publish to PyPI Server
         run: task deploy:pypi-server
       - name: Release

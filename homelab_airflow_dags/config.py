@@ -94,8 +94,10 @@ def _build_config_key(config_name: str) -> str:
         str: The full configuration key path.
 
     Example:
-        >>> _build_config_key("database_settings")
-        'cfg/homelab-airflow-dags/database_settings'
+        ```python
+        key = _build_config_key("database_settings")
+        print(key)  # Output: 'cfg/homelab-airflow-dags/database_settings'
+        ```
     """
     return f"cfg/{PROJECT_NAME}/{config_name}"
 
@@ -119,9 +121,10 @@ def get_config(config_name: str, default: Any = None) -> Any:
         the default value.
 
     Example:
-        >>> config = get_config("api_settings", {"timeout": 30})
-        >>> print(config.get("timeout"))
-        30
+        ```python
+        config = get_config("api_settings", {"timeout": 30})
+        print(config.get("timeout"))  # Output: 30
+        ```
     """
     try:
         client = get_consul_client()
