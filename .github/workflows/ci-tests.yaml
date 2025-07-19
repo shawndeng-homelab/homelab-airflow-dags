@@ -46,6 +46,6 @@ jobs:
           tags: test-${{ github.sha }}
           containerfiles: ./docker/Dockerfile
           platforms: linux/amd64,linux/arm64
-          build-args: |
+          build-args: |-
             PYPI_SERVER_USERNAME=${{ env.PYPI_SERVER_USERNAME }}
             PYPI_SERVER_PASSWORD=${{ env.PYPI_SERVER_PASSWORD }}

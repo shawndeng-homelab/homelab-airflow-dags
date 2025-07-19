@@ -1167,7 +1167,7 @@ wheels = [
 
 [[package]]
 name = "homelab-airflow-dags"
-version = "0.5.4"
+version = "0.6.0"
 source = { editable = "." }
 dependencies = [
     { name = "apache-airflow" },

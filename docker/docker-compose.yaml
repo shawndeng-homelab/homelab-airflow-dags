@@ -49,7 +49,7 @@ x-airflow-common: &airflow-common
     args:
       PYPI_SERVER_USERNAME: ${PYPI_SERVER_USERNAME}
       PYPI_SERVER_PASSWORD: ${PYPI_SERVER_PASSWORD}
-  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
+      # In order to add custom dependencies or upgrade provider packages you can use your extended image.
 
   env_file:
     - ../.env
