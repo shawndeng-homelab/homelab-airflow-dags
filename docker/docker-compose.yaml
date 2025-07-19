@@ -51,6 +51,8 @@ x-airflow-common: &airflow-common
       PYPI_SERVER_PASSWORD: ${PYPI_SERVER_PASSWORD}
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
 
+  env_file:
+    - ../.env
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow

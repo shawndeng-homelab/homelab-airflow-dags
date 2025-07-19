@@ -1,5 +1,8 @@
 FROM apache/airflow:2.11.0-python3.12
 
+# Build arguments for platform detection
+ARG TARGETPLATFORM
+
 # Build arguments for PyPI server authentication
 ARG PYPI_SERVER_USERNAME
 ARG PYPI_SERVER_PASSWORD
@@ -15,12 +18,12 @@ ARG CONSUL_TOKEN
 USER root
 
 # Install build dependencies for compiling Python packages with C extensions
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Only install build tools on ARM64 architecture where they are needed
+RUN apt-get update && \
+    if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+        apt-get install -y build-essential gcc g++ git; \
+    fi && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set up working directory in /app first
 WORKDIR /app
@@ -39,7 +42,7 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --no-cache-dir \
     "apache-airflow==${AIRFLOW_VERSION}" \
-    -e . 
+    -e .
 
 # Switch to Airflow's expected location and set up symbolic links
 WORKDIR /opt/airflow
