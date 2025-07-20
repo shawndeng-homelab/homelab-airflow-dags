@@ -138,10 +138,3 @@ def get_config(config_name: str, default: Any = None) -> Any:
         return default
     except Exception:
         return default
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-
-    result = get_config("risk_portfolio_config")
-    pprint(result)

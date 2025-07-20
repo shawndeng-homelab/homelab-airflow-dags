@@ -4,11 +4,10 @@ Simple MinIO upload functionality using Consul configuration.
 Supports both file-based and memory-based uploads.
 """
 
-import io
-import json
+import mimetypes
 import os
-import pickle
-from typing import Any
+from pathlib import Path
+from urllib.parse import quote_plus
 
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from loguru import logger
@@ -49,11 +48,6 @@ def get_minio_s3_hook(config_name: str = "minio_auth_config") -> S3Hook:
     # Set up environment variable for the connection
     conn_id = "minio_default"
     region = config.get("region", "us-east-1")
-
-    # Create connection URI for environment variable
-    # Format: aws://access_key:secret_key@?endpoint_url=...&region_name=...
-    from urllib.parse import quote_plus
-
     access_key = quote_plus(config["access_key"])
     secret_key = quote_plus(config["secret_key"])
     endpoint_url = quote_plus(config["minio_endpoint"])
@@ -68,41 +62,68 @@ def get_minio_s3_hook(config_name: str = "minio_auth_config") -> S3Hook:
     return S3Hook(aws_conn_id=conn_id)
 
 
-def upload_python_object(
-    obj: Any, bucket_name: str, object_key: str, format_type: str = "pickle", config_name: str = "minio_auth_config"
-) -> bool:
-    """Upload a Python object to MinIO.
+def get_content_type(file_path: str) -> str:
+    """Get the MIME type for a file based on its extension.
 
     Args:
-        obj: Python object to upload
+        file_path: Path to the file
+
+    Returns:
+        str: MIME type string
+    """
+    # Initialize mimetypes if not already done
+    mimetypes.init()
+
+    # Get MIME type based on file extension
+    content_type, _ = mimetypes.guess_type(file_path)
+
+    # Default to binary if type cannot be determined
+    if content_type is None:
+        content_type = "application/octet-stream"
+
+    return content_type
+
+
+def upload_file(file_path: str, object_key: str, bucket_name="airflow", config_name: str = "minio_auth_config") -> bool:
+    """Upload a file to MinIO/OSS.
+
+    Args:
+        file_path: Local file path to upload
         bucket_name: Target bucket name
-        object_key: Target object key/path
-        format_type: Serialization format ("pickle", "json")
-        config_name: Consul configuration name
+        object_key: Target object key/path in the bucket
+        config_name: Consul configuration name for MinIO
 
     Returns:
         bool: True if upload successful, False otherwise
+
+    Example:
+        success = upload_file("/tmp/data.pkl", "my-bucket", "data/result.pkl")
     """
     try:
+        # Check if file exists
+        if not Path(file_path).exists():
+            logger.error(f"File does not exist: {file_path}")
+            return False
+
+        # Get content type for the file
+        content_type = get_content_type(file_path)
+        logger.info(f"Detected content type for {file_path}: {content_type}")
+
+        # Get S3Hook and upload with proper content type
         s3_hook = get_minio_s3_hook(config_name)
 
-        # Serialize object based on format
-        if format_type == "pickle":
-            buffer = io.BytesIO()
-            pickle.dump(obj, buffer)
-            buffer.seek(0)
-        elif format_type == "json":
-            json_str = json.dumps(obj, ensure_ascii=False, indent=2)
-            buffer = io.BytesIO(json_str.encode("utf-8"))
-        else:
-            raise ValueError(f"Unsupported format_type: {format_type}")
+        # Set extra args with content type for proper preview in MinIO
+        extra_args = {
+            "ContentType": content_type,
+            "CacheControl": "max-age=3600",  # Optional: set cache control
+        }
+        s3_hook._extra_args = extra_args
 
-        # Upload to MinIO
-        s3_hook.load_file_obj(file_obj=buffer, key=object_key, bucket_name=bucket_name, replace=True)
+        s3_hook.load_file(filename=file_path, key=object_key, bucket_name=bucket_name, replace=True)
 
-        logger.info(f"Successfully uploaded Python object to {bucket_name}/{object_key}")
+        logger.info(f"Successfully uploaded {file_path} to {bucket_name}/{object_key} with content type {content_type}")
         return True
 
     except Exception as e:
-        logger.error(f"Failed to upload Python object: {e}")
+        logger.error(f"Failed to upload file {file_path}: {e}")
         return False
