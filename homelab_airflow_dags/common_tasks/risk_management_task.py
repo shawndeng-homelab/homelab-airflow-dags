@@ -28,86 +28,102 @@ Note:
 """
 
 from airflow.decorators import task
-from ibkr_quant.risk_management.display import PortfolioDisplay
 from ibkr_quant.risk_management.pypfopt_risk import StrategyBuilder
 from ibkr_quant.risk_management.settings import StrategyConfig
 
 from homelab_airflow_dags.config import get_config
 
 
-@task()
-def risk_management_task():
+@task
+def risk_management_task() -> dict:
     """Execute comprehensive portfolio risk management analysis and optimization.
 
-    This Airflow task performs a complete portfolio risk management workflow
-    that includes configuration loading, strategy building, optimization
-    execution, and report generation. The task integrates with Consul for
-    dynamic configuration management and uses the ibkr_quant library for
-    sophisticated portfolio optimization algorithms.
+    This Airflow task performs end-to-end portfolio risk management analysis using
+    modern portfolio theory and optimization algorithms. It loads configuration from
+    Consul, builds a portfolio optimization strategy, executes the optimization
+    algorithms, and returns detailed portfolio analysis results.
 
-    The task follows a structured workflow:
-    1. Retrieves portfolio configuration from Consul
-    2. Creates and validates strategy configuration
-    3. Builds portfolio optimizer with specified parameters
-    4. Executes optimization algorithms
-    5. Generates and displays formatted portfolio analysis
+    The task integrates with the ibkr_quant library's StrategyBuilder to perform:
+    - Portfolio composition analysis and optimization
+    - Risk metrics calculation (VaR, CVaR, Sharpe ratio, etc.)
+    - Expected returns and volatility analysis
+    - Efficient frontier computation
+    - Portfolio performance attribution
 
-    The function uses modern portfolio theory principles to optimize asset
-    allocation based on risk tolerance, expected returns, and constraints
-    defined in the configuration. Results are displayed as a formatted
-    table for easy analysis and decision-making.
+    The function is designed to be configuration-driven, allowing portfolio
+    parameters to be dynamically updated through Consul without code changes.
+    This enables flexible portfolio management workflows and easy parameter
+    tuning for different market conditions.
 
     Returns:
-        None: This function outputs results to stdout via print statements
-              and does not return any value. The portfolio analysis is
-              displayed as a formatted table in the task logs.
+        dict: A comprehensive dictionary containing portfolio optimization results
+            and risk analysis metrics. The dictionary includes:
+            - portfolio_weights: Optimized asset allocation weights
+            - expected_returns: Expected return for each asset
+            - risk_metrics: Calculated risk measures (VaR, CVaR, volatility)
+            - performance_metrics: Portfolio performance indicators
+            - optimization_details: Technical optimization results
+            - market_data: Underlying market data used in analysis
 
     Raises:
-        KeyError: If the "risk_portfolio_config" key is not found in Consul
-                  or if required configuration parameters are missing.
-        ValidationError: If the strategy configuration validation fails due
-                        to invalid parameter values or constraints.
-        OptimizationError: If the portfolio optimization algorithm fails to
-                          converge or encounters numerical issues.
-        ConnectionError: If unable to connect to Consul configuration service
-                        or external data sources required for optimization.
+        ValueError: If the Consul configuration "risk_portfolio_config" is not found
+            or contains invalid parameters that cannot be validated by StrategyConfig.
+        ConfigurationError: If the strategy configuration fails validation due to
+            missing required fields or invalid parameter combinations.
+        OptimizationError: If the portfolio optimization algorithms fail to converge
+            or encounter numerical issues during execution.
+        DataError: If required market data is unavailable or contains insufficient
+            historical data for reliable optimization.
+        ConnectionError: If unable to connect to external data sources or services
+            required for portfolio analysis.
 
     Note:
-        This task is designed for use in Airflow DAGs and requires:
-        - Active Consul service with proper configuration
-        - Valid "risk_portfolio_config" in Consul containing:
-          * Risk tolerance parameters
-          * Expected return assumptions
-          * Asset allocation constraints
-          * Optimization algorithm settings
-        - Network access to data sources for portfolio analysis
+        This task requires the following external dependencies and configurations:
+        - Active Consul service with "risk_portfolio_config" key containing:
+          * asset_symbols: List of ticker symbols for portfolio assets
+          * optimization_method: Portfolio optimization algorithm to use
+          * risk_parameters: Risk management configuration parameters
+          * data_source_config: Market data source configuration
+        - Network connectivity to market data providers
+        - Sufficient computational resources for optimization algorithms
+        - Valid API credentials for data sources (if required)
 
     Example:
-        Configuration structure in Consul for "risk_portfolio_config":
+        Basic usage in an Airflow DAG:
+
+        ```python
+        from homelab_airflow_dags.common_tasks.risk_management_task import risk_management_task
+
+        @dag(schedule="@daily")
+        def portfolio_optimization_dag():
+            # Execute daily portfolio optimization
+            results = risk_management_task()
+
+            # Use results in downstream tasks
+            generate_report(results)
+        ```
+
+        Consul configuration example for "risk_portfolio_config":
 
         ```json
         {
-            "risk_tolerance": 0.15,
-            "expected_returns": {...},
-            "constraints": {...},
-            "optimization_method": "efficient_frontier"
+            "asset_symbols": ["AAPL", "GOOGL", "MSFT", "TSLA"],
+            "optimization_method": "max_sharpe",
+            "risk_free_rate": 0.02,
+            "lookback_period": 252,
+            "data_source": "yahoo_finance",
+            "risk_parameters": {
+                "max_volatility": 0.20,
+                "min_weight": 0.05,
+                "max_weight": 0.40
+            }
         }
         ```
 
-        Task execution in Airflow DAG:
-
-        ```python
-        @dag(schedule="@daily")
-        def portfolio_dag():
-            # Execute daily risk analysis
-            risk_analysis = risk_management_task()
-        ```
-
     See Also:
-        StrategyConfig: Configuration class for portfolio optimization parameters.
-        StrategyBuilder: Factory class for creating portfolio optimizers.
-        PortfolioDisplay: Utility class for formatting portfolio analysis results.
-        get_config: Function for retrieving configuration from Consul.
+        StrategyBuilder: The core portfolio optimization engine from ibkr_quant.
+        StrategyConfig: Configuration validation and management class.
+        get_config: Consul configuration retrieval function.
     """
     # Load portfolio configuration from Consul
     config = get_config("risk_portfolio_config")
@@ -122,7 +138,4 @@ def risk_management_task():
     optimizer.execute()
 
     # Retrieve optimization results and portfolio information
-    portfolio_info = optimizer.get_info()
-
-    # Display formatted portfolio analysis table
-    print(PortfolioDisplay.to_pretty_table(portfolio_info))
+    return optimizer.get_info().model_dump()
