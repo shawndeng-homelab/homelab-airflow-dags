@@ -1,3 +1,11 @@
+## 0.7.0 (2025-07-20)
+
+### Feat
+
+- update risk_management_task and update oss upload tools
+- add new func
+- add oss upload tools
+
 ## 0.6.0 (2025-07-19)
 
 ### Feat
