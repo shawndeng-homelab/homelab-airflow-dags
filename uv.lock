@@ -1231,7 +1231,7 @@ wheels = [
 
 [[package]]
 name = "homelab-airflow-dags"
-version = "0.6.0"
+version = "0.7.0"
 source = { editable = "." }
 dependencies = [
     { name = "apache-airflow" },
@@ -1269,7 +1269,7 @@ requires-dist = [
     { name = "commitizen", marker = "extra == 'dev'", specifier = ">=3.12.0" },
     { name = "dag-factory", specifier = ">=0.23.0a0" },
     { name = "fake-useragent", specifier = ">=2.2.0" },
-    { name = "ibkr-quant", specifier = ">=0.5.1", index = "https://pypiserver.shawndeng.cc/simple/" },
+    { name = "ibkr-quant", specifier = ">=0.6.0", index = "https://pypiserver.shawndeng.cc/simple/" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.3" },
     { name = "mkdocs-gen-files", marker = "extra == 'docs'", specifier = ">=0.5.0" },
@@ -1330,7 +1330,7 @@ wheels = [
 
 [[package]]
 name = "ibkr-quant"
-version = "0.5.1"
+version = "0.6.0"
 source = { registry = "https://pypiserver.shawndeng.cc/simple/" }
 dependencies = [
     { name = "ib-async" },
@@ -1346,7 +1346,7 @@ dependencies = [
     { name = "yfinance" },
 ]
 wheels = [
-    { url = "https://pypiserver.shawndeng.cc/packages/ibkr_quant-0.5.1-py3-none-any.whl", hash = "sha256:43435fd038742c7e41324fc294095e3693bc08ef7430fc651f86044a1cec10ac" },
+    { url = "https://pypiserver.shawndeng.cc/packages/ibkr_quant-0.6.0-py3-none-any.whl", hash = "sha256:be1fca16172a7f985d08dc8ea0b7f44b4054e6f1558bde6b4565e45088f1ef8b" },
 ]
 
 [[package]]
