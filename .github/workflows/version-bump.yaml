@@ -9,10 +9,9 @@ on:
       increment:
         description: 'Version increment type'
         required: false
-        default: ''
+        default: 'MAJOR'
         type: choice
         options:
-          - ''
           - 'MAJOR'
           - 'MINOR'
           - 'PATCH'
