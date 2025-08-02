@@ -1,3 +1,22 @@
 {
   "python.envFile": "${workspaceFolder}/.env",
+  "code-runner.executorMap": {
+    "python": "uv run --env-file .env python",
+  },
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "args": [
+        "-NoExit",
+        "-Command",
+        "if (Test-Path ${workspaceFolder}\\.env) { Get-Content ${workspaceFolder}\\.env | ForEach-Object { if ($_ -match '^([^=]+)=(.*)$') { [Environment]::SetEnvironmentVariable($matches[1], $matches[2]) } } }"
+      ]
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell"
 }
