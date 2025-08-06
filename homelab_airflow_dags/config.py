@@ -67,3 +67,8 @@ def get_config(key: str) -> dict | str | None:
     _key = f"cfg/{tool_name}/{key}"
     client = create_client()
     return client(_key)
+
+def get_secrets(key: str) -> dict | str | None:
+    _key = f"cfg/secrets/{key}"
+    client = create_client()
+    return client(_key)

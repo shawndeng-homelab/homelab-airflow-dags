@@ -16,7 +16,8 @@ dependencies = [
     "loguru>=0.7.3",
     "py-consul>=1.6.0",
     "pyyaml>=6.0.2",
-    "homelab-config>=0.3.0"
+    "homelab-config>=0.3.0",
+    "polygon-api-client>=1.15.3",
 ]
 
 [project.optional-dependencies]
