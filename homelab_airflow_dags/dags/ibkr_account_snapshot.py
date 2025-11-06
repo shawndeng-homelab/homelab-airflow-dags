@@ -8,7 +8,7 @@ from airflow.decorators import task
 default_args = {
     "owner": "shawndeng",
     "depends_on_past": False,
-    "start_date": datetime(2025, 1, 1),
+    "start_date": datetime(2025, 11, 6),
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -20,39 +20,47 @@ default_args = {
     dag_id="ibkr_account_snapshot",
     default_args=default_args,
     description="IBKR Account Snapshot Data Collection",
-    schedule="0 21-23,0-7 * * *",  # 每天晚上9点到次日早上8点,每小时执行
+    schedule="0 21-23,0-7 * * 1-5",  # 周一到周五晚上9点到次日早上8点,每小时执行
     catchup=False,
     tags=["ibkr", "snapshot", "data-collection"],
 )
 def ibkr_account_snapshot_dag():
     """IBKR账户快照数据采集DAG."""
+    from urllib.parse import urlparse
+
+    from homelab_airflow_dags.config import get_config
+
+    config = get_config("ibkr_account_snapshot")
+    pypi_info = config.get("pypi", {})
+    host = pypi_info.get("host", "")
+    parsed = urlparse(host)
+    netloc_and_path = parsed.netloc + parsed.path
+    pypi_user = pypi_info.get("user")
+    pypi_password = pypi_info.get("password")
+
+    if netloc_and_path and pypi_user and pypi_password:
+        index_url = f"https://{pypi_user}:{pypi_password}@{netloc_and_path}"
+        index_urls = [index_url]
+    else:
+        index_urls = None
+
+    # 提前获取配置参数
+    database_url = config.get("database")
+    ibkr_args = config.get("ibkr", {})
 
     @task.virtualenv(
         task_id="account_snapshot_task",
-        requirements=[
-            "homelab-database",
-            "ibkr-quant>=0.7.0",
-        ],
+        requirements=["homelab-database>=0.3.0", "ibkr-quant>=0.7.1"],
         system_site_packages=False,
-        index_urls_from_connection_ids=["homelab-pypiserver"],
+        index_urls=index_urls,
     )
-    def account_snapshot_task():
-        """在虚拟环境中运行账户快照数据采集."""
-        from airflow.models import Variable
-        from scripts import account_snapshot
+    def account_snapshot_task(database_url, ibkr_args):
+        from scripts.ibkr_account_snapshot import account_snapshot  # type: ignore
 
-        # 配置参数 - 从Airflow变量获取
-        database_url = Variable.get("DATABASE_URL", default_var="postgresql://user:password@localhost:5432/database")
-        ibkr_host = Variable.get("IBKR_HOST", default_var="192.168.31.53")
-        port = int(Variable.get("IBKR_PORT", default_var="4002"))
-        client_id = int(Variable.get("IBKR_CLIENT_ID", default_var="1"))
-
-        result = account_snapshot(database_url=database_url, ibkr_host=ibkr_host, port=port, client_id=client_id)
-
+        result = account_snapshot(database_url=database_url, **ibkr_args)
         return result
 
-    # 执行任务
-    account_snapshot_task()
+    account_snapshot_task(database_url, ibkr_args)
 
 
 # 实例化DAG
