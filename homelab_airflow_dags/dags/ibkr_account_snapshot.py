@@ -6,7 +6,7 @@ from airflow.decorators import task
 
 
 default_args = {
-    "owner": "homelab",
+    "owner": "shawndeng",
     "depends_on_past": False,
     "start_date": datetime(2025, 1, 1),
     "email_on_failure": False,
@@ -27,21 +27,6 @@ default_args = {
 def ibkr_account_snapshot_dag():
     """IBKR账户快照数据采集DAG."""
 
-    def get_index_urls():
-        """获取包含认证信息的 index URLs."""
-        try:
-            from airflow.models import Variable
-
-            pypi_username = Variable.get("PYPI_SERVER_USERNAME", default_var=None)
-            pypi_password = Variable.get("PYPI_SERVER_PASSWORD", default_var=None)
-
-            if pypi_username and pypi_password:
-                return [f"https://{pypi_username}:{pypi_password}@pypiserver.shawndeng.cc/simple/"]
-            else:
-                return ["https://pypiserver.shawndeng.cc/simple/"]
-        except Exception:
-            return ["https://pypiserver.shawndeng.cc/simple/"]
-
     @task.virtualenv(
         task_id="account_snapshot_task",
         requirements=[
@@ -49,7 +34,7 @@ def ibkr_account_snapshot_dag():
             "ibkr-quant>=0.7.0",
         ],
         system_site_packages=False,
-        index_urls=get_index_urls(),
+        index_urls_from_connection_ids=["homelab-pypiserver"],
     )
     def account_snapshot_task():
         """在虚拟环境中运行账户快照数据采集."""
