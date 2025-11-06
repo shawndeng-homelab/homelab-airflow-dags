@@ -1,3 +1,11 @@
+## 0.10.0 (2025-11-06)
+
+### Feat
+
+- add ibkr account values snapshot
+- add account snapshot dag
+- add account snapshot dag
+
 ## 0.9.0 (2025-08-02)
 
 ### Feat
