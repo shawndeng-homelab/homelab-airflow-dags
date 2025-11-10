@@ -18,10 +18,11 @@ ARG CONSUL_TOKEN
 USER root
 
 # Install build dependencies for compiling Python packages with C extensions
-# Only install build tools on ARM64 architecture where they are needed
+# Always install git to support pip/virtualenv requirements
 RUN apt-get update && \
+    apt-get install -y git && \
     if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-        apt-get install -y build-essential gcc g++ git; \
+        apt-get install -y build-essential gcc g++; \
     fi && \
     rm -rf /var/lib/apt/lists/*
 

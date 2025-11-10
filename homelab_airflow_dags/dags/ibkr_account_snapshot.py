@@ -46,7 +46,7 @@ def ibkr_account_snapshot_dag():
 
     # 提前获取配置参数
     database_url = config.get("database")
-    ibkr_args = config.get("ibkr", {})
+    ibkr_args = config.get("ibkr", [])
 
     @task.virtualenv(
         task_id="account_snapshot_task",
@@ -56,9 +56,10 @@ def ibkr_account_snapshot_dag():
     )
     def account_snapshot_task(database_url, ibkr_args):
         from scripts.ibkr_account_snapshot import account_snapshot  # type: ignore
-
-        result = account_snapshot(database_url=database_url, **ibkr_args)
-        return result
+        results = []
+        for account in ibkr_args:
+            results.append(account_snapshot(database_url=database_url, **account))
+        return results
 
     account_snapshot_task(database_url, ibkr_args)
 
