@@ -1,3 +1,11 @@
+## 0.10.1 (2025-11-10)
+
+### Fix
+
+- fix docker miss git and account list
+- fix docker miss git and account list
+- fix docker miss git and account list
+
 ## 0.10.0 (2025-11-06)
 
 ### Feat
