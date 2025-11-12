@@ -1,3 +1,9 @@
+## 0.10.2 (2025-11-12)
+
+### Fix
+
+- fix dag timezone and rm depends
+
 ## 0.10.1 (2025-11-10)
 
 ### Fix
