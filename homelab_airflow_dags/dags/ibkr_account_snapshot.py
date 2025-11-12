@@ -1,6 +1,6 @@
-from datetime import datetime
 from datetime import timedelta
 
+import pendulum
 from airflow.decorators import dag
 from airflow.decorators import task
 
@@ -8,7 +8,7 @@ from airflow.decorators import task
 default_args = {
     "owner": "shawndeng",
     "depends_on_past": False,
-    "start_date": datetime(2025, 11, 6),
+    "start_date": pendulum.datetime(2025, 11, 6, tz="Asia/Shanghai"),
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -50,7 +50,7 @@ def ibkr_account_snapshot_dag():
 
     @task.virtualenv(
         task_id="account_snapshot_task",
-        requirements=["homelab-database>=0.3.0", "ibkr-quant>=0.7.1"],
+        requirements=["ibkr-quant>=0.7.1"],
         system_site_packages=False,
         index_urls=index_urls,
     )
