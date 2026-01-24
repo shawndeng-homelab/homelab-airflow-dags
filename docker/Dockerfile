@@ -49,7 +49,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 WORKDIR /opt/airflow
 RUN ln -sf /app/homelab_airflow_dags/dags /opt/airflow/dags && \
     ln -sf /app/homelab_airflow_dags/config /opt/airflow/config && \
-    ln -sf /app/homelab_airflow_dags/plugins /opt/airflow/plugins
+    ln -sf /app/homelab_airflow_dags/plugins /opt/airflow/plugins && \
+    ln -sf /app/homelab_airflow_dags /opt/airflow/homelab_airflow_dags
 
 # 确保 airflow 用户拥有必要的权限
 RUN chown -R airflow:root /app /opt/airflow
