@@ -4,11 +4,13 @@ import pendulum
 from airflow.decorators import dag
 from airflow.decorators import task
 
+from homelab_airflow_dags.common_tasks.exchange_calendars import wait_for_market_open
+
 
 default_args = {
     "owner": "shawndeng",
     "depends_on_past": False,
-    "start_date": pendulum.datetime(2025, 11, 6, tz="Asia/Shanghai"),
+    "start_date": pendulum.datetime(2025, 11, 6, tz="UTC"),
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -19,13 +21,20 @@ default_args = {
 @dag(
     dag_id="ibkr_account_snapshot",
     default_args=default_args,
-    description="IBKR Account Snapshot Data Collection",
-    schedule="0 21-23,0-7 * * 1-5",  # 周一到周五晚上9点到次日早上8点,每小时执行
+    description="IBKR Account Snapshot - Trading hours only (auto handles holidays & DST)",
+    schedule="30 14-20 * * 1-5",  # Every hour during US market hours (UTC 14:30-20:30)
     catchup=False,
-    tags=["ibkr", "snapshot", "data-collection"],
+    tags=["ibkr", "snapshot", "data-collection", "trading-hours"],
 )
 def ibkr_account_snapshot_dag():
-    """IBKR账户快照数据采集DAG."""
+    """IBKR account snapshot data collection during market hours.
+
+    Features:
+    - Auto skips holidays (exchange_calendars handles US market calendar)
+    - Auto handles DST changes (exchange_calendars uses market timezone)
+    - Only executes when market is open
+    - Collects hourly snapshots during trading hours
+    """
     from urllib.parse import urlparse
 
     from homelab_airflow_dags.config import get_config
@@ -44,9 +53,14 @@ def ibkr_account_snapshot_dag():
     else:
         index_urls = None
 
-    # 提前获取配置参数
     database_url = config.get("database")
     ibkr_args = config.get("ibkr", [])
+
+    # Sensor: ensures market is open before executing
+    # - Auto skips non-trading days (weekends, holidays)
+    # - Auto handles DST transitions
+    # - Waits if triggered slightly before market open
+    market_check = wait_for_market_open(check_current_time=True, check_trading_day=True)
 
     @task.virtualenv(
         task_id="account_snapshot_task",
@@ -62,8 +76,10 @@ def ibkr_account_snapshot_dag():
             results.append(account_snapshot(database_url=database_url, **account))
         return results
 
-    account_snapshot_task(database_url, ibkr_args)
+    # Workflow: wait for market open -> collect snapshot
+    snapshot = account_snapshot_task(database_url, ibkr_args)
+    market_check >> snapshot
 
 
-# 实例化DAG
+# Instantiate DAG
 ibkr_account_snapshot_dag()
