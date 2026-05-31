@@ -166,7 +166,7 @@ def wait_for_trading_day() -> bool:
 
     next_or_current = (
         session_label.date() if is_trading else calendar.sessions[calendar.sessions > session_label][0].date()
-    )  # noqa: E501
+    )
     status = "is" if is_trading else "not"
     logger.info(f"Today {status} a trading day. Next/current session: {next_or_current}")
 
@@ -220,6 +220,9 @@ def check_market_status() -> dict:
         is_open=calendar.is_open_on_minute(now) if is_trading_day else False,
         is_trading_day=is_trading_day,
         current_time=now.isoformat(),
+        open_time=None,
+        close_time=None,
+        next_trading_day=None,
     )
 
     match (is_trading_day, status.is_open):

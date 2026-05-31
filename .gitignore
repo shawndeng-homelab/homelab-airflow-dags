@@ -14,3 +14,6 @@
 /site/
 .venv/
 homelab_airflow_dags/logs/
+context/
+CLAUDE.md
+.claude/
