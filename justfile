@@ -117,10 +117,10 @@ export-deps:
 add-package name:
     repo-scaffold add-package {{name}}
 
-# Bring up the local CeleryExecutor Airflow stack (postgres + redis) via podman-compose
+# Bring up the local CeleryExecutor Airflow stack (postgres + redis) via podman compose
 podman-compose-up:
-    podman-compose -f docker/docker-compose.yaml up -d
+    podman compose -f docker/docker-compose.yaml up -d
 
 # Tear down the local Airflow stack
 podman-compose-down:
-    podman-compose -f docker/docker-compose.yaml down
+    podman compose -f docker/docker-compose.yaml down
