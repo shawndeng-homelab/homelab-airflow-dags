@@ -9,11 +9,6 @@ ARG PYPI_SERVER_PASSWORD
 ARG AIRFLOW_VERSION=3.2.0
 ARG PYTHON_VERSION=3.12
 
-# Build arguments for Consul configuration
-ARG CONSUL_HOST
-ARG CONSUL_PORT=443
-ARG CONSUL_TOKEN
-
 # 使用 root 用户进行构建和文件操作
 USER root
 
@@ -32,10 +27,7 @@ WORKDIR /app
 # Set uv environment variables for authentication against the private homelab index.
 # UV_INDEX_HOMELAB_* authenticate the index named "homelab" passed via --index below.
 ENV UV_INDEX_HOMELAB_USERNAME=${PYPI_SERVER_USERNAME} \
-    UV_INDEX_HOMELAB_PASSWORD=${PYPI_SERVER_PASSWORD} \
-    CONSUL_HOST=${CONSUL_HOST} \
-    CONSUL_PORT=${CONSUL_PORT} \
-    CONSUL_TOKEN=${CONSUL_TOKEN}
+    UV_INDEX_HOMELAB_PASSWORD=${PYPI_SERVER_PASSWORD}
 
 # Copy all project files to /app
 COPY . .
