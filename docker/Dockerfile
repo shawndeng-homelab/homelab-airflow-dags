@@ -56,7 +56,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # (/opt/airflow/homelab_airflow_dags/dags) resolves to the baked-in dags when
 # the image runs without the dev bind-mount.
 WORKDIR /opt/airflow
-RUN ln -sf /app/packages/homelab-airflow-dags/src/homelab_airflow_dags /opt/airflow/homelab_airflow_dags
+RUN ln -sfnT /app/packages/homelab-airflow-dags/src/homelab_airflow_dags /opt/airflow/homelab_airflow_dags
 
 # 确保 airflow 用户拥有必要的权限
 RUN chown -R airflow:root /app /opt/airflow
