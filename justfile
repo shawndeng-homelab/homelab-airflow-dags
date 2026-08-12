@@ -121,6 +121,6 @@ add-package name:
 podman-compose-up:
     podman compose -f docker/docker-compose.yaml up -d
 
-# Tear down the local Airflow stack
+# Tear down the local Airflow stack (also removes orphaned containers from renamed services)
 podman-compose-down:
-    podman compose -f docker/docker-compose.yaml down
+    podman compose -f docker/docker-compose.yaml down --remove-orphans
