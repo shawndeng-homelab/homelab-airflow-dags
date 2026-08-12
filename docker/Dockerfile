@@ -52,11 +52,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     "apache-airflow==${AIRFLOW_VERSION}" \
     -e packages/homelab-airflow-dags
 
-# Switch to Airflow's expected location and set up symbolic links.
-# Only dags exists in the package; config/plugins dirs are not shipped.
+# Symlink the package into /opt/airflow so it is importable and DAGS_FOLDER
+# (/opt/airflow/homelab_airflow_dags/dags) resolves to the baked-in dags when
+# the image runs without the dev bind-mount.
 WORKDIR /opt/airflow
-RUN ln -sf /app/packages/homelab-airflow-dags/src/homelab_airflow_dags/dags /opt/airflow/dags && \
-    ln -sf /app/packages/homelab-airflow-dags/src/homelab_airflow_dags /opt/airflow/homelab_airflow_dags
+RUN ln -sf /app/packages/homelab-airflow-dags/src/homelab_airflow_dags /opt/airflow/homelab_airflow_dags
 
 # 确保 airflow 用户拥有必要的权限
 RUN chown -R airflow:root /app /opt/airflow
