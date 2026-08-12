@@ -1,8 +1,8 @@
 from datetime import timedelta
 
 import pendulum
-from airflow.decorators import dag
-from airflow.decorators import task
+from airflow.providers.standard.decorators.python_virtualenv import virtualenv_task
+from airflow.sdk import dag
 
 from homelab_airflow_dags.common_tasks.exchange_calendars import wait_for_market_open
 
@@ -62,7 +62,7 @@ def ibkr_account_snapshot_dag():
     # - Waits if triggered slightly before market open
     market_check = wait_for_market_open(check_current_time=True, check_trading_day=True)
 
-    @task.virtualenv(
+    @virtualenv_task(
         task_id="account_snapshot_task",
         requirements=["ibkr-quant>=0.7.1"],
         system_site_packages=False,

@@ -7,10 +7,13 @@
 /.zip/
 /venv/
 /dist/
-.env
 **/__pycache__/
 *.pyc
 # MkDocs build output
 /site/
+.env
 .venv/
-homelab_airflow_dags/logs/
+
+# Airflow runtime (AIRFLOW_HOME=./airflow, logs)
+/airflow/
+/logs/

@@ -1,4 +1,4 @@
-include = ["pyproject.toml", "homelab_airflow_dags/**/*.py", "airflow/**/*.py"]
+include = ["pyproject.toml", "packages/**/*.py", "scripts/**/*.py"]
 line-length = 120
 target-version = "py312"
 
@@ -6,21 +6,15 @@ target-version = "py312"
 extend-ignore = [
   "D100",  # Missing docstring in public module
   "D104",  # Missing docstring in public package
-  # airflow dags are not required to have docstrings
-  "D203",  # 1 blank line required before class docstring
-  "D213",  # Multi-line docstring summary should start at the second line
-  "AIR311",
-  "AIR312",
-  "AIR302",
-  "AIR301"
 ]
 ignore = [
   "W191",  # indentation contains tabs
-  "D401", # imperative mood
-  "RUF001"
+  "D401",  # imperative mood
+  "RUF001",  # ambiguous unicode char in string (中文全角标点属正常)
+  "RUF002",  # ambiguous unicode char in docstring (中文全角标点属正常)
+  "RUF003"  # ambiguous unicode char in comment (中文全角标点属正常)
 ]
 select = [
-  "AIR", # airflow lint
   "E",  # pycodestyle errors
   "W",  # pycodestyle warnings
   "F",  # pyflakes
@@ -30,7 +24,8 @@ select = [
   "D",  # pydocstyle
   "UP",  # pyupgrade
   "RUF",  # Ruff-specific rules
-  "SIM"  # flake8-simplify
+  "SIM",  # flake8-simplify
+  "PLC0415"  # import should be at top-level of file
 ]
 
 [lint.isort]
@@ -39,3 +34,13 @@ lines-after-imports = 2
 
 [lint.pydocstyle]
 convention = "google"
+
+[lint.per-file-ignores]
+"packages/**/dags/**/*.py" = [
+  "PLC0415",  # in-function imports are intentional: lazy runtime config resolution via get_config,
+              # and the scripts.* import must live inside the @virtualenv_task body (ships in ibkr-quant wheel)
+]
+"scripts/**/*.py" = [
+  "PLC0415",  # in-function imports are normal in scripts (conditional deps, delayed heavy imports)
+  "D103",     # scripts don't need docstrings on every function
+]

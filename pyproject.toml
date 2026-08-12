@@ -1,32 +1,38 @@
 [project]
-name = "homelab_airflow_dags"
+name = "homelab-airflow-dags-workspace"
 version = "0.11.0"
 description = "homelab cluster airflow dags"
-authors = [
-    {name = "Shawn Deng", email = "shawndeng1109@qq.com"}
-]
+authors = [{name = "Shawn Deng", email = "shawndeng1109@qq.com"}]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.12, <3.13"
-dependencies = [
-    "apache-airflow==2.11.0",
-    "apache-airflow-providers-amazon>=9.10.0",
-    "fake-useragent>=2.2.0",
-    "loguru>=0.7.3",
-    "py-consul>=1.6.0",
-    "pyyaml>=6.0.2",
-    "homelab-config>=0.3.3",
-    "exchange-calendars>=4.12",
-]
+requires-python = ">=3.12,<3.12.99"
+dependencies = []
 
-[project.optional-dependencies]
+[project.urls]
+Homepage = "https://github.com/shawndeng-homelab/homelab-airflow-dags"
+Repository = "https://github.com/shawndeng-homelab/homelab-airflow-dags"
+Documentation = "https://shawndeng-homelab.github.io/homelab-airflow-dags"
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[[tool.uv.index]]
+name = "homelab"
+url = "https://pypiserver.shawndeng.cc/simple/"
+
+[tool.uv.sources]
+homelab-config = { index = "homelab" }
+ibkr-quant = { index = "homelab" }
+
+[dependency-groups]
 dev = [
-    "ruff>=0.9.7",
     "pytest>=8.3.4",
     "pytest-mock>=3.14.0",
     "pytest-cov>=6.0.0",
-    "commitizen>=3.12.0",
-    "virtualenv>=20.35.4"
+    "virtualenv>=20.26.0",
 ]
 
 docs = [
@@ -38,15 +44,3 @@ docs = [
     "pymdown-extensions>=10.7",
     "mkdocs-literate-nav>=0.6.1",
 ]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[[tool.uv.index]]
-name = "homelab"
-url = "https://pypiserver.shawndeng.cc/simple/"
-
-[tool.uv.sources]
-ibkr-quant = { index = "homelab" }
-homelab_config = {index = "homelab"}

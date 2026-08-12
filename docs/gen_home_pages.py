@@ -1,16 +1,12 @@
 """Generate the home pages."""
-import os
+
+from pathlib import Path
 
 import mkdocs_gen_files
 
 
-# Read README.md from project root
-readme_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "README.md")
+readme_path = Path(__file__).resolve().parents[1] / "README.md"
+content = readme_path.read_text(encoding="utf-8")
 
-# Read the content of README.md
-with open(readme_path, encoding='utf-8') as f:
-    content = f.read()
-
-# Write the content to index.md in the docs directory
 with mkdocs_gen_files.open("index.md", "w") as f:
     f.write(content)

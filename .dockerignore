@@ -23,13 +23,14 @@ Thumbs.db
 # Git
 .git/
 .gitignore
+.github/
 
 # Documentation
 docs/
 mkdocs.yml
 
 # Tests
-# tests/
+packages/*/tests/
 .pytest_cache/
 .coverage
 htmlcov/

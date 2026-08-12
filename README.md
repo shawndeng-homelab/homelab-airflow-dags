@@ -1,29 +1,29 @@
-# Homelab Airflow DAGs
+# homelab-airflow-dags
 
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
-[![Apache Airflow](https://img.shields.io/badge/apache--airflow-2.0%2B-red.svg)](https://airflow.apache.org/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+### Overview
 
-## 🚀 Overview
+Apache Airflow DAGs for the homelab cluster (`homelab_airflow_dags`). DAGs use
+the TaskFlow API, are scheduled in UTC, and resolve runtime config/secrets from
+Consul via `homelab-config`.
 
-**Homelab Airflow DAGs** is a dynamic DAG management system for Apache Airflow that enables you to define and manage your data pipelines using simple YAML configuration files. Perfect for homelab environments where you need flexible, maintainable, and version-controlled workflow automation.
+### Workspace layout
 
-## 📦 Installation
+This repository is a uv workspace. Packages live under `packages/`.
 
-### Using pip
+| Package | Description |
+|---------|-------------|
+| `homelab-airflow-dags` | Airflow DAGs package (TaskFlow API, Consul-backed config). |
+
+### Development
 
 ```bash
-pip install homelab_airflow_dags
+uvx --from rust-just just init
+uvx --from rust-just just lint
+uvx --from rust-just just test-all
 ```
 
-### Using Poetry
+Local CeleryExecutor Airflow stack (postgres + redis) via podman-compose:
 
 ```bash
-poetry add homelab_airflow_dags
-```
-
-### Using uv
-
-```bash
-uv add homelab_airflow_dags
+just podman-compose-up
 ```
