@@ -16,4 +16,5 @@
 
 # Airflow runtime (AIRFLOW_HOME=./airflow, logs)
 /airflow/
-/logs/
+/logs/*
+!/logs/.gitkeep

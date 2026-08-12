@@ -119,10 +119,6 @@ add-package name:
 
 # Bring up the local CeleryExecutor Airflow stack (postgres + redis) via podman compose
 podman-compose-up:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    # podman (unlike docker) does not auto-create bind-mount host dirs; create logs/ first.
-    mkdir -p logs
     podman compose -f docker/docker-compose.yaml up -d
 
 # Tear down the local Airflow stack
