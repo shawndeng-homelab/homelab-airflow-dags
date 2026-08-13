@@ -13,6 +13,12 @@ post_bump_hooks = [
     "git push --tags",
 ]
 
+# `dockerfile:` commit type for Dockerfile-only changes (kept out of changelog).
+# Needed so `cog check` / `cog bump --auto` accept the existing `dockerfile:`
+# commit on master (the standard type would be `build:`).
+[commit_types]
+dockerfile = { omit_from_changelog = true }
+
 [changelog]
 path = "CHANGELOG.md"
 template = "remote"
