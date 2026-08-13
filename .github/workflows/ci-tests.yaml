@@ -58,7 +58,7 @@ jobs:
         env:
           PYPI_SERVER_USERNAME: ${{ secrets.PYPI_SERVER_USERNAME }}
           PYPI_SERVER_PASSWORD: ${{ secrets.PYPI_SERVER_PASSWORD }}
-        run: |
+        run: |-
           docker build \
             -f docker/Dockerfile \
             --build-arg PYPI_SERVER_USERNAME="$PYPI_SERVER_USERNAME" \
