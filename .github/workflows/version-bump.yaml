@@ -37,5 +37,8 @@ jobs:
         uses: cocogitto/cocogitto-action@v3
         with:
           release: true
+          # Only check commits since the latest tag - the repo predates
+          # conventional commits and has legacy non-conventional history.
+          check-latest-tag-only: true
           git-user: 'cog-bot'
           git-user-email: 'cog-bot@users.noreply.github.com'
