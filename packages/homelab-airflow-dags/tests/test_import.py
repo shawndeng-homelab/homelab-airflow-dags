@@ -18,3 +18,9 @@ def test_imports(mocker):
     for _, name, _ in iter_packages:
         module_name = name if name.startswith(prefix) else prefix + name
         importlib.import_module(module_name)
+
+
+def test_package_version():
+    """Test package metadata exports."""
+    assert isinstance(homelab_airflow_dags.__version__, str)
+    assert homelab_airflow_dags.__version__
