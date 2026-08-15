@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.13.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/0918a7fce941f81b93d6f86f6b8f8350c7ef7fe8..0.13.0) - 2026-08-15
+### Package updates
+- [homelab-airflow-dags-0.2.0](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.2.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.1.0..homelab-airflow-dags-0.2.0)
+### Global changes
+#### Bug Fixes
+- add release build pypi auth - ([0918a7f](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/0918a7fce941f81b93d6f86f6b8f8350c7ef7fe8)) - ShawnDeng-code
+
+- - -
+
 ## [0.12.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/ed53cb903bdaaaeb53d7a57f159112d4125e7c93..0.12.0) - 2026-08-13
 ### Package updates
 - [homelab-airflow-dags](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-airflow-dags-0.1.0)

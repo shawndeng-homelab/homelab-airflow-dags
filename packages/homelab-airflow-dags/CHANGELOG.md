@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-dags-0.2.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/8fb0a135033d60864c12b571c81476800261fadc..homelab-airflow-dags-0.2.0) - 2026-08-15
+#### Features
+- export package version - ([8fb0a13](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/8fb0a135033d60864c12b571c81476800261fadc)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-dags-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/de0d91e86cf134ea2870cd7ee06be97381b3f708..homelab-airflow-dags-0.1.0) - 2026-08-13
 #### Bug Fixes
 - make import test pass under Airflow 3; refresh uv.lock - ([05c5d87](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/05c5d87a52caf480308099a4f2ab2161455b69c9)) - colyerdeng
