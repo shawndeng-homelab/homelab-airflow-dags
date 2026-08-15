@@ -1,4 +1,6 @@
-from importlib.metadata import PackageNotFoundError, version
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version
+
 
 __author__ = "Shawn Deng"
 __email__ = "shawndeng1109@qq.com"
