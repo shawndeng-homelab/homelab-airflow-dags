@@ -1,0 +1,20 @@
+[project]
+name = "homelab-airflow-bark"
+version = "0.1.0"
+description = "Shared Bark notification operator for homelab Airflow DAGs"
+authors = [{name = "Shawn Deng", email = "shawndeng1109@qq.com"}]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12,<3.12.99"
+dependencies = [
+    "apache-airflow==3.2.0",
+    "pydantic>=2.11.7",
+    "requests>=2.32.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/homelab_airflow_bark"]
