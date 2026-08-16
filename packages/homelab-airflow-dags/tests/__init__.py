@@ -1,1 +1,1 @@
-"""Test package for homelab_airflow_dags."""
+"""Tests for homelab-airflow-dags."""
