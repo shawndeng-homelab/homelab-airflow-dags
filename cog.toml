@@ -42,3 +42,11 @@ changelog_path = "packages/homelab-airflow-bark/CHANGELOG.md"
 pre_bump_hooks = [
     "uv version --package homelab-airflow-bark {{version}}",
 ]
+
+[packages.homelab-airflow-providers-youtube]
+path = "packages/homelab-airflow-providers-youtube"
+public_api = true
+changelog_path = "packages/homelab-airflow-providers-youtube/CHANGELOG.md"
+pre_bump_hooks = [
+    "uv version --package homelab-airflow-providers-youtube {{version}}",
+]

@@ -11,6 +11,7 @@ members = [
     "homelab-airflow-bark",
     "homelab-airflow-dags",
     "homelab-airflow-dags-workspace",
+    "homelab-airflow-providers-youtube",
 ]
 
 [[package]]
@@ -1129,6 +1130,11 @@ docs = [
     { name = "mkdocstrings-python", specifier = ">=1.7.5" },
     { name = "pymdown-extensions", specifier = ">=10.7" },
 ]
+
+[[package]]
+name = "homelab-airflow-providers-youtube"
+version = "0.1.0"
+source = { editable = "packages/homelab-airflow-providers-youtube" }
 
 [[package]]
 name = "homelab-config"

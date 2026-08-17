@@ -115,7 +115,7 @@ export-deps:
 
 # Add a new package to the workspace (creates package dir + updates cog.toml + syncs)
 add-package name:
-    repo-scaffold add-package {{name}}
+    uvx repo-scaffold@latest add-package {{name}}
 
 # Bring up the local CeleryExecutor Airflow stack (postgres + redis) via podman compose
 podman-compose-up:
