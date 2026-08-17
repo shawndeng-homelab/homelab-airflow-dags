@@ -13,6 +13,35 @@
 
 本迁移不应简单地把整个仓库恢复为 `0.11.0`。`0.11.0` 仅作为 Airflow 2.11.0 依赖、Docker 镜像、Compose 服务拓扑和兼容 API 的参照；工程结构和新增包以迁移开始时的 `origin/add-youtube-provider` 为准。
 
+特别注意：最新 DevOps 设施属于必须保留的成果，不属于回退范围。`just`、Cocogitto、GitHub Actions、uv workspace、Ruff、pytest、pre-commit、文档构建和发布流程一律以 `origin/add-youtube-provider` 为唯一事实来源。即使 `0.11.0` 中存在同名旧文件，也不得用旧版本覆盖。
+
+### 1.1 回退允许清单
+
+本次只允许修改与 Airflow 运行时兼容直接相关的内容：
+
+- 各 package 中的 Airflow 版本和必要 provider 依赖；
+- Python 源码中的 Airflow 3 专属 import、装饰器和运行时 API；
+- `docker/Dockerfile` 中的 Airflow 基础镜像、版本参数及相关说明；
+- `docker/docker-compose.yaml` 中的 Airflow 服务、命令、健康检查、环境变量和依赖关系；
+- 与上述变化直接相关的测试、锁文件和说明文档。
+
+任何不在该清单中的回退都必须先说明其与 Airflow 2.11 兼容性的直接关系，不能仅因为 `0.11.0` 中写法不同就恢复旧版本。
+
+### 1.2 明确保留清单
+
+以下文件和能力必须采用最新开发分支版本，原则上不得从 `0.11.0` 恢复：
+
+- `justfile` 及全部 `just` recipe；
+- `cog.toml`、版本管理和 changelog 自动化；
+- `.github/workflows/` 下的 CI、测试、文档、版本和发布工作流；
+- 根 `pyproject.toml` 的 uv workspace 结构与 `packages/*` members；
+- `.pre-commit-config.yaml`、`.ruff.toml`、`.yamlfmt.yaml`；
+- MkDocs 配置、文档生成脚本和当前 README；
+- Renovate、编辑器配置和当前仓库维护配置；
+- 当前多包目录、包元数据、测试布局和发布注册信息。
+
+如果这些设施因 Airflow 版本变化确实需要调整，只允许进行最小兼容修改。例如 CI 中显式写死 `3.2.0` 时可改为 `2.11.0`，但不得恢复旧 workflow、旧 Taskfile 或旧发布流程。
+
 ## 2. Git 基线与实施策略
 
 当前迁移分支：`rollback/airflow-2.11.0`
@@ -62,9 +91,11 @@ git rev-parse origin/add-youtube-provider
 
 迁移 worktree 必须干净。不要直接 merge `origin/add-youtube-provider`，因为这会把 Airflow 3 升级提交原样带回。建议采用“当前树迁入后定向回退”的方式：
 
-1. 在本分支上把 `origin/add-youtube-provider` 相对 `0.11.0` 的工程结构和包文件迁入。
+1. 在本分支上把 `origin/add-youtube-provider` 相对 `0.11.0` 的工程结构、DevOps 设施和包文件完整迁入，以最新开发分支的工作树作为初始内容。
 2. 随即按本文后续清单定向改写 Airflow 依赖、Python API、Dockerfile 和 Compose。
 3. 将迁入和兼容性修改作为一个可审阅的迁移提交，或拆成下述建议提交序列。
+
+禁止按目录或全仓执行 `git checkout 0.11.0 -- .`。读取旧标签时优先使用 `git show 0.11.0:<path>` 做只读对照；即使处理 Docker Compose，也应把 Airflow 2 语义移植到最新文件，而不是盲目覆盖整个文件。
 
 执行前额外创建一个临时保护引用，例如：
 
@@ -97,6 +128,14 @@ git worktree prune
 - Docker 构建中适配 workspace 安装和包目录挂载的逻辑。
 
 不要恢复 `0.11.0` 的单包根目录布局，也不要把源码重新移动回根目录的 `homelab_airflow_dags/`。
+
+迁入当前树后，应先建立一份 DevOps 基线差异，迁移结束时复核这些差异仅包含必要的 Airflow 版本替换：
+
+```shell
+git diff --stat origin/add-youtube-provider -- justfile cog.toml .github pyproject.toml .pre-commit-config.yaml .ruff.toml .yamlfmt.yaml mkdocs.yml docs README.md
+```
+
+其中 `justfile`、`cog.toml` 和 workflow 的结构性差异应为零。若存在差异，实施 Agent 必须逐项解释并缩小修改范围。
 
 ## 4. 依赖回退
 
