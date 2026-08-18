@@ -1,4 +1,0 @@
-# Placeholder so the logs/ directory exists in fresh checkouts.
-# podman (unlike docker) does not auto-create bind-mount host directories,
-# and docker-compose mounts ../logs:/opt/airflow/logs. Keep this file; the
-# actual log files under logs/ are gitignored.
