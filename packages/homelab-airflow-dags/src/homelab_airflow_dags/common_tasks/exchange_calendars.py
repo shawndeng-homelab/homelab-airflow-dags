@@ -2,8 +2,7 @@ from zoneinfo import ZoneInfo
 
 import exchange_calendars as xcals
 import pandas as pd
-from airflow.providers.standard.decorators.sensor import sensor_task
-from airflow.sdk import task
+from airflow.decorators import task
 from loguru import logger
 from pydantic import BaseModel
 from pydantic import ConfigDict
@@ -74,7 +73,7 @@ def get_xnys_calendar():
     return xcals.get_calendar("XNYS")
 
 
-@sensor_task(poke_interval=60, timeout=3600, mode="poke")
+@task.sensor(poke_interval=60, timeout=3600, mode="poke")
 def wait_for_market_open(check_current_time: bool = True, check_trading_day: bool = True) -> bool:
     """Sensor that blocks until XNYS market is open.
 
@@ -133,7 +132,7 @@ def wait_for_market_open(check_current_time: bool = True, check_trading_day: boo
             return is_open
 
 
-@sensor_task(poke_interval=300, timeout=7200, mode="poke")
+@task.sensor(poke_interval=300, timeout=7200, mode="poke")
 def wait_for_trading_day() -> bool:
     """Sensor that blocks until today is a trading day.
 
@@ -243,7 +242,7 @@ def check_market_status() -> dict:
     return status.model_dump()  # Pydantic v2: auto serialize to dict
 
 
-@sensor_task(poke_interval=60, timeout=1800, mode="poke")
+@task.sensor(poke_interval=60, timeout=1800, mode="poke")
 def wait_for_market_close() -> bool:
     """Sensor that blocks until XNYS market is closed.
 
