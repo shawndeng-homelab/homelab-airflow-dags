@@ -21,7 +21,7 @@ This package keeps Bark integration out of DAG code. DAGs only pass a validated 
 
 - `BarkNotifyOperator`: Airflow operator for notifications
 - Accepts a single `message` argument as either a plain `dict` or a `BarkPushMessage`
-- Uses Airflow 3’s public SDK import path: `airflow.sdk.BaseOperator`
+- Supports Apache Airflow 2.11.0 and imports BaseOperator from airflow.models.
 
 ## Message Fields
 
@@ -93,3 +93,4 @@ response = client.send(message)
 - Bark server expects `POST /push` with JSON payload.
 - `device_key` is an application-level token in the payload, not HTTP auth.
 - The package targets Python 3.12 and Airflow 3.2+.
+
