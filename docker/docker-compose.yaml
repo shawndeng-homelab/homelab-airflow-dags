@@ -55,6 +55,9 @@ x-airflow-common: &airflow-common
     - ../.env
   environment: &airflow-common-env
     AIRFLOW_HOME: /opt/airflow
+    # homelab-config settings
+    HOMELAB_CONSUL_URLS: ${HOMELAB_CONSUL_URLS:-https://${CONSUL_HOST}:${CONSUL_PORT:-443}}
+    HOMELAB_CONSUL_TOKEN: ${HOMELAB_CONSUL_TOKEN:-${CONSUL_TOKEN}}
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
