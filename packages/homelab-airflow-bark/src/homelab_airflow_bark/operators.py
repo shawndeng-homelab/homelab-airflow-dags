@@ -3,8 +3,8 @@
 from typing import Any
 from typing import ClassVar
 
-from airflow.sdk import BaseOperator
-from airflow.sdk import Context
+from airflow.models import BaseOperator
+from airflow.utils.context import Context
 
 from homelab_airflow_bark.bark_client import BarkClient
 from homelab_airflow_bark.schemas import BarkPushMessage

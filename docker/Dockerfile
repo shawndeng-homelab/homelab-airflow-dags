@@ -1,4 +1,4 @@
-FROM apache/airflow:3.2.0-python3.12
+FROM apache/airflow:2.11.0-python3.12
 
 # Build arguments for platform detection
 ARG TARGETPLATFORM
@@ -6,7 +6,7 @@ ARG TARGETPLATFORM
 # Build arguments for PyPI server authentication
 ARG PYPI_SERVER_USERNAME
 ARG PYPI_SERVER_PASSWORD
-ARG AIRFLOW_VERSION=3.2.0
+ARG AIRFLOW_VERSION=2.11.0
 ARG PYTHON_VERSION=3.12
 
 # 使用 root 用户进行构建和文件操作
@@ -33,7 +33,7 @@ ENV UV_INDEX_HOMELAB_USERNAME=${PYPI_SERVER_USERNAME} \
 COPY . .
 
 # Install the workspace member (editable) into the Airflow environment.
-# The base image already ships apache-airflow==3.2.0; the pin is defensive.
+# The base image already ships apache-airflow==2.11.0; the pin is defensive.
 # The homelab index is declared explicitly so private deps (homelab-config,
 # and the runtime ibkr-quant) resolve from it. unsafe-best-match searches
 # all indexes so PyPI-only and homelab-only packages both resolve.
@@ -42,7 +42,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --no-cache-dir \
     --index "homelab=https://pypiserver.shawndeng.cc/simple" \
     "apache-airflow==${AIRFLOW_VERSION}" \
-    -e packages/homelab-airflow-dags
+    -e packages/homelab-airflow-dags \
+    -e packages/homelab-airflow-bark
 
 # Symlink the package into /opt/airflow so it is importable and DAGS_FOLDER
 # (/opt/airflow/homelab_airflow_dags/dags) resolves to the baked-in dags when

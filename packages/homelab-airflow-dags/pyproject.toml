@@ -7,13 +7,7 @@ license = "MIT"
 readme = "README.md"
 requires-python = ">=3.12,<3.12.99"
 dependencies = [
-    "apache-airflow==3.2.0",
-    # Airflow 3 extracted many core operators/sensors/decorators (including
-    # @task.sensor and @task.virtualenv) into the standard provider.
-    "apache-airflow-providers-standard>=1.0.0",
-    # CeleryExecutor moved out of core in Airflow 3; needed by the local
-    # docker-compose dev stack (and by the cluster image if it runs Celery).
-    "apache-airflow-providers-celery>=1.0.0",
+    "apache-airflow==2.11.0",
     "apache-airflow-providers-amazon>=9.10.0",
     "fake-useragent>=2.2.0",
     "loguru>=0.7.3",
@@ -29,3 +23,4 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/homelab_airflow_dags"]
+
