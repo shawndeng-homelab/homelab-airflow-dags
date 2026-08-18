@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-dags-0.3.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/bdc48a9fd3a09e8b022f193a7d988c3513d4049b..homelab-airflow-dags-0.3.0) - 2026-08-18
+#### Bug Fixes
+- keep airflow 2 task decorators - ([38c990f](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/38c990f65315017795a06ab968f2724839751df9)) - ShawnDen-coder
+#### Features
+- update - ([99d32df](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/99d32df380ddcbc26f8583b85675c55dafe5ab18)) - ShawnDen-coder
+#### Miscellaneous Chores
+- tighten airflow package metadata - ([bdc48a9](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/bdc48a9fd3a09e8b022f193a7d988c3513d4049b)) - ShawnDeng-code
+#### Refactoring
+- preserve workspace packages on airflow 2 baseline - ([9774f63](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/9774f63679506d037aae24b7c1cf2a6de0735cc1)) - ShawnDen-coder
+#### Tests
+- update test - ([0e4c38f](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/0e4c38fa4dc9c6e970743f88e56fb114e00e9061)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-dags-0.2.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/8fb0a135033d60864c12b571c81476800261fadc..homelab-airflow-dags-0.2.0) - 2026-08-15
 #### Features
 - export package version - ([8fb0a13](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/8fb0a135033d60864c12b571c81476800261fadc)) - ShawnDeng-code
