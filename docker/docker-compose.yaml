@@ -54,7 +54,7 @@ x-airflow-common: &airflow-common
   env_file:
     - ../.env
   environment: &airflow-common-env
-    AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/homelab_airflow_dags/dags
+    AIRFLOW_HOME: /opt/airflow
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
@@ -77,8 +77,9 @@ x-airflow-common: &airflow-common
   # If you want to use it, outcomment it and replace airflow.cfg with the name of your config file
   # AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
-    - ../packages/homelab-airflow-dags/src/homelab_airflow_dags:/opt/airflow/homelab_airflow_dags
-    - ../logs:/opt/airflow/logs
+    - ../packages:/app/packages
+    - ../packages/homelab-airflow-dags/src/homelab_airflow_dags/dags:/opt/airflow/dags
+    - ../packages/homelab-airflow-dags/src/homelab_airflow_dags/logs:/opt/airflow/logs
   user: ${AIRFLOW_UID:-50000}:0
   depends_on: &airflow-common-depends-on
     redis:
@@ -243,7 +244,7 @@ services:
       _PIP_ADDITIONAL_REQUIREMENTS: ''
     user: 0:0
     volumes:
-      - ${AIRFLOW_PROJ_DIR:-.}:/sources
+      - ../packages/homelab-airflow-dags/src/homelab_airflow_dags/logs:/sources/logs
   airflow-cli:
     !!merge <<: *airflow-common
     profiles:
