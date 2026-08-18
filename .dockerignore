@@ -42,7 +42,7 @@ dist/
 
 # Logs
 *.log
-logs/
+**/logs/
 
 # Temporary files
 .tmp/

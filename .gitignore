@@ -14,7 +14,6 @@
 .env
 .venv/
 
-# Airflow runtime (AIRFLOW_HOME=./airflow, logs)
+# Airflow runtime (AIRFLOW_HOME=/opt/airflow)
 /airflow/
-/logs/*
-!/logs/.gitkeep
+/packages/homelab-airflow-dags/src/homelab_airflow_dags/logs/

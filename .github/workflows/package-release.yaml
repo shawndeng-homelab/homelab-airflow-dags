@@ -65,7 +65,13 @@ jobs:
 
   release:
     needs: [publish-pypi, publish-private-pypi]
-    if: ${{ !failure() && !cancelled() }}
+    # A disabled public PyPI publish is an intentional skip, not a release failure.
+    if: >-
+      ${{
+        always() &&
+        needs.publish-private-pypi.result == 'success' &&
+        (needs.publish-pypi.result == 'success' || needs.publish-pypi.result == 'skipped')
+      }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
