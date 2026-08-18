@@ -3,7 +3,6 @@ FROM apache/airflow:2.11.0-python3.12
 ARG TARGETPLATFORM
 ARG PYPI_SERVER_USERNAME
 ARG PYPI_SERVER_PASSWORD
-
 USER root
 
 RUN apt-get update && \
@@ -15,33 +14,27 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-ENV VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH" \
-    AIRFLOW_HOME=/opt/airflow \
-    UV_COMPILE_BYTECODE=1
-
-# Copy only workspace metadata first so dependency installation remains cached
-# when application source files change.
-COPY pyproject.toml uv.lock ./
-
-RUN --mount=type=cache,target=/root/.cache/uv \
-    UV_INDEX_HOMELAB_USERNAME="${PYPI_SERVER_USERNAME}" \
-    UV_INDEX_HOMELAB_PASSWORD="${PYPI_SERVER_PASSWORD}" \
-    UV_INDEX_STRATEGY=unsafe-best-match \
-    uv sync --all-packages --frozen --no-default-groups --no-install-workspace
-
 COPY . .
 
-# Install every workspace member in editable mode. The package dependencies,
-# including Airflow 2.11.0, are resolved from the shared uv.lock file.
+# Install all workspace members discovered from packages/*/pyproject.toml.
+# The official base image provides Airflow's runtime environment; workspace metadata supplies project dependencies.
 RUN --mount=type=cache,target=/root/.cache/uv \
+    set -- && \
+    for package in packages/*; do \
+        if [ -f "$package/pyproject.toml" ]; then \
+            set -- "$@" -e "$package"; \
+        fi; \
+    done && \
     UV_INDEX_HOMELAB_USERNAME="${PYPI_SERVER_USERNAME}" \
     UV_INDEX_HOMELAB_PASSWORD="${PYPI_SERVER_PASSWORD}" \
     UV_INDEX_STRATEGY=unsafe-best-match \
-    uv sync --all-packages --frozen --no-default-groups
+    uv pip install \
+    --index "homelab=https://pypiserver.shawndeng.cc/simple" \
+    "$@"
 
-# Keep Airflow's standard DAG location in the baked image. Compose can mount
+# Keep Airflow's conventional DAG location in the baked image. Compose mounts
 # the live workspace DAG directory over this path during development.
+WORKDIR /opt/airflow
 RUN mkdir -p /opt/airflow/dags && \
     cp -a /app/packages/homelab-airflow-dags/src/homelab_airflow_dags/dags/. /opt/airflow/dags/ && \
     chown -R airflow:root /app /opt/airflow
