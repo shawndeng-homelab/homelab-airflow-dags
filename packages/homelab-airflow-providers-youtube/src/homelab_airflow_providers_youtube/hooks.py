@@ -266,14 +266,21 @@ class YouTubeHook(BaseHook):
             candidate_ids = [video_id for video_id in candidate_ids if video_id and video_id not in seen_video_ids]
             seen_video_ids.update(candidate_ids)
 
+            reached_before_window = False
             for video in self.get_videos(candidate_ids):
                 if after and video.published_at < after:
+                    reached_before_window = True
                     continue
                 if before and video.published_at >= before:
                     continue
                 matches.append(video)
                 if len(matches) >= max_results:
                     break
+
+            # A channel's uploads playlist is ordered newest first. Once a page
+            # reaches videos older than the lower bound, later pages cannot match.
+            if reached_before_window:
+                break
 
             next_page_token = payload.get("nextPageToken")
             if not next_page_token or next_page_token in seen_page_tokens:

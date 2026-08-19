@@ -62,6 +62,40 @@ def test_playlist_rejects_naive_window() -> None:
         raise AssertionError("Expected a timezone validation error")
 
 
+def test_playlist_stops_after_reaching_videos_before_window(mocker) -> None:
+    """Do not scan older playlist pages after crossing the lower bound."""
+    hook = YouTubeHook()
+    request = mocker.patch.object(
+        hook,
+        "_request",
+        return_value={
+            "items": [
+                {"contentDetails": {"videoId": "inside"}},
+                {"contentDetails": {"videoId": "too-old"}},
+            ],
+            "nextPageToken": "must-not-be-requested",
+        },
+    )
+    timestamps = {
+        "inside": "2026-08-18T12:00:00+00:00",
+        "too-old": "2026-08-17T23:59:59+00:00",
+    }
+    mocker.patch.object(
+        hook,
+        "get_videos",
+        side_effect=lambda ids: [_video(video_id, timestamps[video_id]) for video_id in ids],
+    )
+
+    videos = hook.list_playlist_videos(
+        "UUabc",
+        published_after="2026-08-18T00:00:00Z",
+        published_before="2026-08-19T00:00:00Z",
+    )
+
+    assert [video.video_id for video in videos] == ["inside"]
+    request.assert_called_once()
+
+
 def _video(video_id: str, published_at: str) -> YouTubeVideo:
     return YouTubeVideo(
         video_id=video_id,
