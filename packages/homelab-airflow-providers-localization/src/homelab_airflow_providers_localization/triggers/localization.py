@@ -13,7 +13,7 @@ from airflow.triggers.base import BaseTrigger
 from airflow.triggers.base import TriggerEvent
 
 from homelab_airflow_providers_localization.hooks.localization import LocalizationHook
-from homelab_airflow_providers_localization.models import LocalizationJob
+from homelab_airflow_providers_localization.models import parse_localization_job
 
 
 class LocalizationJobTrigger(BaseTrigger):
@@ -67,7 +67,7 @@ class LocalizationJobTrigger(BaseTrigger):
                         if response.status >= 500:
                             self.log.warning("Localization polling returned HTTP %s; retrying", response.status)
                         else:
-                            job = LocalizationJob.from_payload(await response.json(content_type=None))
+                            job = parse_localization_job(await response.json(content_type=None))
                             if job.is_terminal:
                                 yield TriggerEvent({"status": "success", "job": job.as_dict()})
                                 return

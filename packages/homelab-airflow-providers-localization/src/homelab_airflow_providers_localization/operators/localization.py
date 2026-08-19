@@ -11,7 +11,9 @@ from airflow.models import BaseOperator
 from airflow.utils.context import Context
 
 from homelab_airflow_providers_localization.hooks.localization import LocalizationHook
+from homelab_airflow_providers_localization.models import JobStatus
 from homelab_airflow_providers_localization.models import LocalizationJob
+from homelab_airflow_providers_localization.models import parse_localization_job
 from homelab_airflow_providers_localization.triggers.localization import LocalizationJobTrigger
 
 
@@ -84,7 +86,7 @@ class LocalizationJobOperator(BaseOperator):
         if not event or event.get("status") != "success":
             message = event.get("message", "Missing trigger event") if event else "Missing trigger event"
             raise AirflowException(f"Localization job polling failed: {message}")
-        return self._require_success(LocalizationJob.from_payload(event.get("job")))
+        return self._require_success(parse_localization_job(event.get("job")))
 
     def _default_idempotency_key(self, context: Context) -> str:
         task_instance = context["ti"]
@@ -92,7 +94,7 @@ class LocalizationJobOperator(BaseOperator):
 
     @staticmethod
     def _require_success(job: LocalizationJob) -> dict[str, Any]:
-        if job.status != "succeeded":
+        if job.status is not JobStatus.SUCCEEDED:
             raise AirflowException(f"Localization job {job.job_id!r} ended with status {job.status!r}")
         return job.as_dict()
 
@@ -113,7 +115,7 @@ class VideoDownloadOperator(_FixedJobTypeOperator):
 
 
 class AudioTranscriptionOperator(_FixedJobTypeOperator):
-    """Transcribe audio through the service's external ASR integration."""
+    """Transcribe audio through the service external ASR integration."""
 
     job_type_name = "transcribe"
 

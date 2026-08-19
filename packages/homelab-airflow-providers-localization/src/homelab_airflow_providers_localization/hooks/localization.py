@@ -10,8 +10,11 @@ from urllib.parse import quote
 import requests
 from airflow.exceptions import AirflowException
 from airflow.hooks.base import BaseHook
+from homelab_video_contracts.jobs import LocalizationJobRequest
+from pydantic import ValidationError
 
 from homelab_airflow_providers_localization.models import LocalizationJob
+from homelab_airflow_providers_localization.models import parse_localization_job
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,7 +49,7 @@ class LocalizationHook(BaseHook):
             "placeholders": {
                 "host": "https://localization.example.internal",
                 "password": "Bearer token (optional)",
-                "extra": '{"timeout": 30, "verify_tls": true}',
+                "extra": "JSON object with timeout and verify_tls",
             },
         }
 
@@ -90,24 +93,36 @@ class LocalizationHook(BaseHook):
         parameters: dict[str, Any] | None = None,
         idempotency_key: str | None = None,
     ) -> LocalizationJob:
-        """Submit a job, optionally deduplicated by an idempotency key."""
-        if not job_type or not input_uri or not output_prefix:
-            raise AirflowException("job_type, input_uri, and output_prefix are required")
+        """Validate and submit a job, optionally with an idempotency key."""
         headers = {"Idempotency-Key": idempotency_key} if idempotency_key else None
-        payload = {
-            "job_type": job_type,
-            "input_uri": input_uri,
-            "output_prefix": output_prefix,
-            "parameters": parameters or {},
-        }
-        return LocalizationJob.from_payload(self._request("POST", "/v1/jobs", json=payload, headers=headers))
+        try:
+            request = LocalizationJobRequest(
+                job_type=job_type,
+                input_uri=input_uri,
+                output_prefix=output_prefix,
+                parameters=parameters or {},
+            )
+        except ValidationError as error:
+            raise AirflowException("Invalid localization job request") from error
+
+        payload = request.model_dump(mode="json")
+        response = self._request("POST", "/v1/jobs", json=payload, headers=headers)
+        return parse_localization_job(response)
 
     def get_job(self, job_id: str) -> LocalizationJob:
         """Fetch a job by ID."""
         if not job_id:
             raise AirflowException("job_id is required")
         safe_job_id = quote(job_id, safe="")
-        return LocalizationJob.from_payload(self._request("GET", f"/v1/jobs/{safe_job_id}"))
+        return parse_localization_job(self._request("GET", f"/v1/jobs/{safe_job_id}"))
+
+    def cancel_job(self, job_id: str) -> LocalizationJob:
+        """Request cancellation and return the normalized job state."""
+        if not job_id:
+            raise AirflowException("job_id is required")
+        safe_job_id = quote(job_id, safe="")
+        response = self._request("POST", f"/v1/jobs/{safe_job_id}/cancel")
+        return parse_localization_job(response)
 
     def wait_for_job(self, job_id: str, *, poll_interval: float) -> LocalizationJob:
         """Poll synchronously until a job reaches a terminal state."""
