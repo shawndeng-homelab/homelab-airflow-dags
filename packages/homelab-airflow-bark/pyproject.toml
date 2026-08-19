@@ -12,6 +12,9 @@ dependencies = [
     "requests>=2.32.0",
 ]
 
+[project.entry-points.'apache_airflow_provider']
+provider_info = 'homelab_airflow_bark.get_provider_info:get_provider_info'
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
