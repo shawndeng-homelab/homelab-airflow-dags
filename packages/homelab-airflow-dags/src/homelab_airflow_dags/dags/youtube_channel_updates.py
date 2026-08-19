@@ -17,6 +17,16 @@ CHANNELS_VARIABLE = "youtube_watched_channels"
 DEFAULT_CHANNELS = ["@EarnMoar"]
 
 
+def normalize_channel_references(channels: object) -> list[str]:
+    """Validate, trim, and deduplicate configured channel IDs or handles."""
+    if not isinstance(channels, list) or not channels:
+        raise ValueError(f"Airflow Variable {CHANNELS_VARIABLE!r} must be a non-empty JSON list")
+    if any(not isinstance(channel, str) or not channel.strip() for channel in channels):
+        raise ValueError(f"Airflow Variable {CHANNELS_VARIABLE!r} must contain non-empty strings")
+
+    return list(dict.fromkeys(channel.strip() for channel in channels))
+
+
 @task
 def resolve_watched_channel_ids() -> list[str]:
     """Load channel IDs or handles and resolve handles to permanent IDs."""
@@ -25,15 +35,12 @@ def resolve_watched_channel_ids() -> list[str]:
         default_var=DEFAULT_CHANNELS,
         deserialize_json=True,
     )
-    if not isinstance(channels, list) or not channels:
-        raise ValueError(f"Airflow Variable {CHANNELS_VARIABLE!r} must be a non-empty JSON list")
-    if any(not isinstance(channel, str) or not channel.strip() for channel in channels):
-        raise ValueError(f"Airflow Variable {CHANNELS_VARIABLE!r} must contain non-empty strings")
+    channel_references = normalize_channel_references(channels)
 
     hook = YouTubeHook(youtube_conn_id="youtube_default")
     channel_ids = [
         hook.get_channel_by_handle(channel).channel_id if channel.startswith("@") else channel
-        for channel in (value.strip() for value in channels)
+        for channel in channel_references
     ]
     return list(dict.fromkeys(channel_ids))
 
