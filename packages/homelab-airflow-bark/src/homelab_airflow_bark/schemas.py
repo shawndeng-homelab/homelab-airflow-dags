@@ -9,31 +9,10 @@ from pydantic import Field
 
 
 class BarkPushMessage(BaseModel):
-    """Validated Bark push payload.
-
-    Attributes:
-        base_url: Bark server base URL.
-        device_key: Device key used to identify the target device.
-        title: Notification title.
-        body: Notification body.
-        subtitle: Optional notification subtitle.
-        markdown: Optional markdown body.
-        level: Interruption level accepted by Bark.
-        url: Optional click-through URL.
-        group: Optional notification grouping key.
-        icon: Optional icon URL.
-        sound: Optional notification sound.
-        badge: Optional badge count.
-        call: Whether Bark should ring for a call-style alert.
-        copy_text: Optional clipboard value.
-        auto_copy: Whether Bark should auto-copy the payload to clipboard.
-        is_archive: Whether the notification should be archived.
-    """
+    """A Bark notification payload without connection credentials."""
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, populate_by_name=True)
 
-    base_url: AnyHttpUrl
-    device_key: str = Field(min_length=1)
     title: str = Field(min_length=1)
     body: str = Field(min_length=1)
     subtitle: str | None = None
@@ -50,15 +29,11 @@ class BarkPushMessage(BaseModel):
     is_archive: bool = Field(default=False, alias="isArchive")
 
     def to_payload(self) -> dict[str, object]:
-        """Convert the model into the Bark API payload.
-
-        Returns:
-            A Bark-compatible JSON payload using Bark field names.
-        """
+        """Convert the model into a Bark-compatible JSON payload."""
         payload = self.model_dump(
             mode="json",
             by_alias=True,
-            exclude={"base_url", "call", "auto_copy", "is_archive"},
+            exclude={"call", "auto_copy", "is_archive"},
             exclude_none=True,
         )
         payload["call"] = 1 if self.call else None

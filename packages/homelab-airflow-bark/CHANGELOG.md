@@ -1,4 +1,11 @@
 # Changelog
+
+## Unreleased
+
+- Add the standard Airflow BarkNotifier, Provider metadata, BarkHook, and bark_default Connection.
+- Move the Bark server URL and device key from notification payloads into the Airflow Connection.
+- Retain BarkNotifyOperator for explicit retryable notification tasks.
+
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
