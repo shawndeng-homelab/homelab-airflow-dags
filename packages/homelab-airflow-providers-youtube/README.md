@@ -188,6 +188,119 @@ VideoDownloadOperator.partial(
 
 下载服务必须将视频、元数据、缩略图和原字幕写入 RustFS，并在 Job 输出中只返回 Artifact URI 和校验信息。
 
+## 示例：监听多个频道
+
+对于一组固定频道，推荐让一个定时 DAG 为每个频道创建独立的发现任务。每个任务使用 Airflow 的数据区间作为
+半开查询窗口，因此相邻两次运行不会在时间边界上重复发现视频。
+
+```python
+from datetime import datetime
+
+from airflow import DAG
+from airflow.decorators import task
+from homelab_airflow_providers_localization.operators.localization import VideoDownloadOperator
+from homelab_airflow_providers_youtube.operators import YouTubeChannelVideosOperator
+
+
+# 配置中使用永久 UC... channel ID，不要使用可能改名的 @handle。
+CHANNELS = {
+    "creator_a": "UC_CHANNEL_ID_A",
+    "creator_b": "UC_CHANNEL_ID_B",
+    "creator_c": "UC_CHANNEL_ID_C",
+}
+
+
+@task
+def build_download_jobs(videos: list[dict]) -> list[dict]:
+    """把小型 YouTube 元数据转换为 Localization Service 下载请求。"""
+    return [
+        {
+            "input_uri": video["source_url"],
+            "output_prefix": f"s3://video-localization/youtube/{video['video_id']}/source",
+            "idempotency_key": f"youtube:{video['video_id']}:download:v1",
+        }
+        for video in videos
+    ]
+
+
+with DAG(
+    dag_id="watch_youtube_creators",
+    schedule="*/15 * * * *",
+    start_date=datetime(2026, 1, 1),
+    catchup=False,
+    max_active_runs=1,
+    tags=["youtube"],
+) as dag:
+    for name, channel_id in CHANNELS.items():
+        discover = YouTubeChannelVideosOperator(
+            task_id=f"discover_{name}",
+            channel_id=channel_id,
+            published_after="{{ data_interval_start }}",
+            published_before="{{ data_interval_end }}",
+            max_results=50,
+            youtube_conn_id="youtube_default",
+        )
+
+        jobs = build_download_jobs.override(task_id=f"build_download_jobs_{name}")(discover.output)
+
+        VideoDownloadOperator.partial(
+            task_id=f"download_{name}",
+            localization_conn_id="localization_default",
+        ).expand_kwargs(jobs)
+```
+
+每个 `discover_*` 任务只在发现至少一个视频时更新自己的
+`youtube://channel/{channel_id}/uploads` Dataset。没有新视频时，下载任务的映射输入为空，不会创建下载实例。
+稳定的 `idempotency_key` 还能防止补跑或手动重跑造成重复下载。
+
+### 只监听，不立即下载
+
+如果后续处理位于另一个 DAG，可以只保留发现任务，并让消费者监听频道 Dataset。多个 Dataset 用 `|` 表示
+“任意一个频道更新即触发”；直接传入 Dataset 列表表达的是“所有频道都更新后才触发”。
+
+```python
+from datetime import datetime
+
+from airflow import DAG
+from airflow.datasets import Dataset
+from airflow.operators.empty import EmptyOperator
+
+
+creator_a = Dataset("youtube://channel/UC_CHANNEL_ID_A/uploads")
+creator_b = Dataset("youtube://channel/UC_CHANNEL_ID_B/uploads")
+any_creator_updated = creator_a | creator_b
+
+with DAG(
+    dag_id="process_any_updated_creator",
+    schedule=any_creator_updated,
+    start_date=datetime(2026, 1, 1),
+    catchup=False,
+) as dag:
+    EmptyOperator(task_id="read_pending_videos_from_database")
+```
+
+Dataset Event 是触发信号，不是可靠的视频任务队列。跨 DAG 使用时，应把发现结果持久化到数据库或 Manifest，
+消费者再按 `video_id` 唯一约束读取未处理记录；不要依赖 Dataset `extra` 保存完整视频列表。
+
+### 等待任一频道更新
+
+Sensor 更适合一次性的等待流程，例如手动触发一个 DAG 后，在一小时内等待关注频道出现新视频。多个 Sensor
+可以并行等待，并保持默认的 `reschedule` 模式：
+
+```python
+for name, channel_id in CHANNELS.items():
+    YouTubeChannelVideoSensor(
+        task_id=f"wait_{name}",
+        channel_id=channel_id,
+        published_after="{{ data_interval_start }}",
+        poke_interval=300,
+        timeout=3600,
+    )
+```
+
+这种写法默认要求所有 Sensor 都成功后，下游任务才运行。如果业务语义是“任意频道有更新”，优先使用上面的
+定时发现加 Dataset OR 表达式，避免额外的 Sensor 编排和重复 API 请求。
+
 ## Dataset URI
 
 ```python

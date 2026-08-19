@@ -14,8 +14,14 @@ dependencies = [
     "py-consul>=1.6.0",
     "pyyaml>=6.0.2",
     "homelab-config>=0.3.3",
+    "homelab-airflow-bark>=0.2.0,<0.3.0",
+    "homelab-airflow-providers-youtube>=0.1.0,<0.2.0",
     "exchange-calendars>=4.12",
 ]
+
+[tool.uv.sources]
+homelab-airflow-bark = { workspace = true }
+homelab-airflow-providers-youtube = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
