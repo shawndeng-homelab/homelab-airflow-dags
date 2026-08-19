@@ -1,8 +1,30 @@
 name: 🐳 Docker Release
 on:
-  release:
-    types: [published]
+  workflow_call:
+    inputs:
+      tag:
+        description: Existing global release tag to build
+        required: true
+        type: string
+      push_latest:
+        description: Also update the latest image tag
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing global release tag to build
+        required: true
+        type: string
+      push_latest:
+        description: Also update the latest image tag
+        required: false
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  packages: write
 jobs:
   push_to_registry:
     name: Push Container image
@@ -10,6 +32,25 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Resolve image metadata
+        id: metadata
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          PUSH_LATEST: ${{ inputs.push_latest }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid release tag: $RELEASE_TAG" >&2
+            exit 1
+          fi
+          sha="$(git rev-parse HEAD)"
+          tags="$sha $RELEASE_TAG"
+          if [[ "$PUSH_LATEST" == "true" ]]; then
+            tags="latest $tags"
+          fi
+          echo "tags=$tags" >> "$GITHUB_OUTPUT"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Login to GitHub Container Registry
@@ -17,13 +58,13 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          password: ${{ github.token }}
       - name: Build Image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ github.repository }}
-          tags: latest ${{ github.sha }} ${{ github.ref_name }}
+          tags: ${{ steps.metadata.outputs.tags }}
           containerfiles: ./docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           build-args: |
