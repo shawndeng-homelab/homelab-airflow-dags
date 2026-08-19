@@ -45,7 +45,9 @@ def channel_event_extra(
     """Return bounded event metadata for one channel discovery batch."""
     return {
         "video_count": len(videos),
-        "video_ids": [video.video_id for video in videos[:50]],
+        # Airflow deduplicates Dataset events with ``frozenset(extra.items())``,
+        # so every top-level value must be hashable before JSON serialization.
+        "video_ids": tuple(video.video_id for video in videos[:50]),
         "published_after": published_after.isoformat() if published_after else None,
         "published_before": published_before.isoformat() if published_before else None,
     }
