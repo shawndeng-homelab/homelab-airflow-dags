@@ -535,8 +535,8 @@ Airflow 保存编排状态；Localization Service 保存 job 状态；RustFS 保
 
 ### Phase 1：YouTube 发现与下载
 
-- 完成 Provider discovery、Hook、Operator 和 Sensor。
-- 实现 Localization Service 下载契约和 `VideoDownloadOperator`。
+- [x] 完成 Provider discovery、Hook、Operator、Sensor 和 Dataset Event。
+- [x] 实现 Localization Service 下载契约和 `VideoDownloadOperator`。
 - 保存视频、元数据、缩略图和原字幕到 RustFS。
 
 验收：给定频道 ID 能发现新视频并幂等入库，不泄露凭证。
