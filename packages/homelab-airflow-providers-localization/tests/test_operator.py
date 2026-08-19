@@ -35,10 +35,11 @@ def test_execute_complete_returns_successful_job() -> None:
     )
 
     assert result["job_id"] == "job-1"
+    assert result["schema_version"] == "1.0"
 
 
 def test_execute_complete_rejects_failed_job() -> None:
-    """A failed remote job fails the Airflow task."""
+    """A valid structured remote failure fails the Airflow task."""
     operator = VideoDownloadOperator(
         task_id="download",
         input_uri="https://youtube.example/watch?v=abc",
@@ -50,6 +51,15 @@ def test_execute_complete_rejects_failed_job() -> None:
             {},
             {
                 "status": "success",
-                "job": {"job_id": "job-1", "job_type": "download", "status": "failed", "error": {}},
+                "job": {
+                    "job_id": "job-1",
+                    "job_type": "download",
+                    "status": "failed",
+                    "error": {
+                        "code": "download_failed",
+                        "message": "yt-dlp failed",
+                        "retryable": True,
+                    },
+                },
             },
         )

@@ -78,9 +78,9 @@ RustFS 提供 S3-compatible API，因此继续使用 `apache-airflow-providers-a
 - 禁止在领域模型中出现 `rustfs://` 或 `minio://` URI。
 - 第一阶段不依赖 RustFS 生命周期规则，由 cleanup DAG 显式清理临时产物。
 
-### 3.3 AI 和媒体处理运行在 Localization Service
+### 3.3 外部 AI 服务与 K8s 本地媒体处理
 
-Airflow Provider 不承载模型推理。独立 Localization Service/worker 负责 FFmpeg 预处理、Groq ASR、翻译、Demucs、VoxCPM2、混音、字幕和视频渲染。Provider 仅提交任务、查询状态、取消任务并返回标准结果。
+Airflow Provider 不承载模型推理。Localization Gateway 是轻量控制面，负责幂等、厂商 adapter、状态归一化和产物登记。ASR、翻译、TTS 和可选人声分离使用外部服务；音频预处理、混音、字幕生成和最终 FFmpeg 渲染运行在独立 K8s CPU Job 中，不占用 Airflow worker。Provider 仅提交任务、查询状态、取消任务并返回标准结果。
 
 ### 3.4 单一翻译时间轴
 
@@ -273,42 +273,33 @@ Password: Service API token
 Extra:
   timeout: 30
   poll_interval: 15
-  verify_ssl: true
+  verify_tls: true
 ```
 
 Groq、翻译模型和 VoxCPM2 密钥由 Localization Service 管理，不进入 Airflow Connection。
 
 ```python
 class LocalizationHook(BaseHook):
-    def download(self, request: DownloadRequest) -> LocalizationJob: ...
-    def transcribe(self, request: TranscriptionRequest) -> LocalizationJob: ...
-    def translate(self, request: TranslationRequest) -> LocalizationJob: ...
-    def synthesize(self, request: SynthesisRequest) -> LocalizationJob: ...
-    def render(self, request: RenderRequest) -> LocalizationJob: ...
-    def check_media(self, request: MediaCheckRequest) -> LocalizationJob: ...
+    def submit_job(self, request: LocalizationJobRequest) -> LocalizationJob: ...
     def get_job(self, job_id: str) -> LocalizationJob: ...
-    def cancel_job(self, job_id: str) -> None: ...
+    def wait_for_job(self, job_id: str, ...) -> LocalizationJob: ...
+    def cancel_job(self, job_id: str) -> LocalizationJob: ...
 ```
 
 ```text
 VideoDownloadOperator
 AudioTranscriptionOperator
 SubtitleTranslationOperator
-VoiceSynthesisOperator
+SourceSeparationOperator
+SpeechSynthesisOperator
 VideoRenderOperator
-MediaQualityCheckOperator
-LocalizationJobSensor
+LocalizationJobTrigger
 ```
 
 MVP 实现 deferrable Operator/Trigger，并保留 `deferrable=False` 的同步轮询路径。
 
 ```text
-POST /v1/downloads
-POST /v1/transcriptions
-POST /v1/translations
-POST /v1/syntheses
-POST /v1/renders
-POST /v1/media-checks
+POST /v1/jobs
 GET  /v1/jobs/{job_id}
 POST /v1/jobs/{job_id}/cancel
 ```
@@ -535,9 +526,9 @@ Airflow 保存编排状态；Localization Service 保存 job 状态；RustFS 保
 
 ### Phase 0：Contracts 与基础设施
 
-- 创建 `homelab-video-contracts`。
+- [x] 创建 homelab-video-contracts。
 - 配置 `rustfs_default` 和测试 bucket。
-- 定义 manifest、Artifact 和阶段结果模型。
+- [x] 定义版本化 Manifest、Artifact、Job、时间轴、TTS、渲染和发布结果模型。
 - 完成 RustFS S3 兼容性冒烟测试。
 
 验收：contracts 测试通过；`S3Hook` 可完成基础和 multipart 操作。
@@ -552,7 +543,7 @@ Airflow 保存编排状态；Localization Service 保存 job 状态；RustFS 保
 
 ### Phase 2：外部 ASR 与翻译
 
-- 创建 Localization Provider。
+- [x] 创建 Localization Provider，并接入共享 Job contract。
 - 实现 Groq ASR、长音频切片和时间轴合并。
 - 实现 Transcript、上下文翻译和 TranslatedTimeline。
 - 生成 SRT/ASS 预览。
@@ -561,8 +552,8 @@ Airflow 保存编排状态；Localization Service 保存 job 状态；RustFS 保
 
 ### Phase 3：配音与渲染
 
-- 接入 Demucs 和 VoxCPM2。
-- 实现分句 TTS、时长对齐、混音和字幕烧录。
+- 接入外部 TTS 和可选的外部人声分离服务。
+- 实现分句 TTS、时长对齐，并通过 K8s CPU Job 完成本地 FFmpeg 混音和字幕烧录。
 - 实现媒体质量检查。
 
 验收：产出可播放的中文配音和烧录字幕版本；修改单句只重跑受影响阶段。

@@ -11,8 +11,12 @@ requires-python = '>=3.12, <3.12.99'
 dependencies = [
     'aiohttp>=3.10.0',
     'apache-airflow==2.11.0',
+    'homelab-video-contracts>=0.1.0,<0.2.0',
     'requests>=2.32.0',
 ]
+
+[tool.uv.sources]
+homelab-video-contracts = { workspace = true }
 
 [project.entry-points.'apache_airflow_provider']
 provider_info = 'homelab_airflow_providers_localization.get_provider_info:get_provider_info'

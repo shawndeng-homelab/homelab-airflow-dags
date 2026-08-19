@@ -28,6 +28,7 @@
 | `homelab-airflow-providers-youtube` | YouTube 视频发现与元数据集成。 |
 | `homelab-airflow-providers-localization` | 外部视频本地化服务的异步任务提交与等待。 |
 | `homelab-airflow-providers-bilibili` | 哔哩哔哩上传集成。 |
+| `homelab-video-contracts` | 视频本地化流程共享的版本化数据契约。 |
 
 ## 开发命令
 
