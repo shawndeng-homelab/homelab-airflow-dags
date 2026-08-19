@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-providers-youtube-0.1.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/73d73a8eb0f26f07a0e7d76391882735493c84fc..homelab-airflow-providers-youtube-0.1.1) - 2026-08-19
+#### Bug Fixes
+- make youtube dataset event metadata hashable - ([73d73a8](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/73d73a8eb0f26f07a0e7d76391882735493c84fc)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-providers-youtube-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9774f63679506d037aae24b7c1cf2a6de0735cc1..homelab-airflow-providers-youtube-0.1.0) - 2026-08-19
 #### Features
 - add youtube watch - ([34266c2](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/34266c28282e603e2f8c72a79ac7ca4b957e56a7)) - ShawnDeng-code

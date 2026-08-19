@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.15.2](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/7be6b898afb35ea89faebbbe1c614a0c55693ecf..0.15.2) - 2026-08-19
+### Package updates
+- [homelab-airflow-providers-youtube-0.1.1](packages/homelab-airflow-providers-youtube) bumped to [homelab-airflow-providers-youtube-0.1.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-providers-youtube-0.1.0..homelab-airflow-providers-youtube-0.1.1)
+### Global changes
+#### Bug Fixes
+- run release deploy jobs after optional publish - ([7be6b89](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/7be6b898afb35ea89faebbbe1c614a0c55693ecf)) - ShawnDeng-code
+
+- - -
+
 ## [0.15.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/a09f618054a87bee7dbd3ec6eff955f9101858a2..0.15.1) - 2026-08-19
 ### Package updates
 - [homelab-airflow-dags-0.4.1](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.0..homelab-airflow-dags-0.4.1)
