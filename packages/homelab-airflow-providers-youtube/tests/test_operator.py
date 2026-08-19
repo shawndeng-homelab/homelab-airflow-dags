@@ -27,7 +27,8 @@ def test_operator_returns_json_and_emits_bounded_dataset_event(mocker) -> None:
     assert result[0]["video_id"] == "video-1"
     assert result[0]["published_at"] == "2026-08-18T01:00:00Z"
     assert operator.outlets[0].uri == "youtube://channel/UCabc/uploads"
-    assert events[operator.outlet].extra["video_ids"] == ["video-1"]
+    assert events[operator.outlet].extra["video_ids"] == ("video-1",)
+    assert frozenset(events[operator.outlet].extra.items())
 
 
 def test_operator_supports_dataset_alias_for_templated_channel() -> None:
