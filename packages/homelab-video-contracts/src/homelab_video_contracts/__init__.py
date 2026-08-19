@@ -24,6 +24,7 @@ from homelab_video_contracts.transcript import TranscriptSegment
 from homelab_video_contracts.transcript import TranscriptWord
 from homelab_video_contracts.translation import TranslatedSegment
 from homelab_video_contracts.translation import TranslatedTimeline
+from homelab_video_contracts.youtube import YouTubeChannel
 from homelab_video_contracts.youtube import YouTubeVideo
 
 
@@ -54,6 +55,7 @@ __all__ = [
     "TranslatedSegment",
     "TranslatedTimeline",
     "VideoManifest",
+    "YouTubeChannel",
     "YouTubeVideo",
     "__version__",
 ]

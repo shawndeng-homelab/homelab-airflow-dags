@@ -17,3 +17,5 @@
 # Airflow runtime (AIRFLOW_HOME=/opt/airflow)
 /airflow/
 /packages/homelab-airflow-dags/src/homelab_airflow_dags/logs/
+scripts/
+homelab_airflow_dags/

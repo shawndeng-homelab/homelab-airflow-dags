@@ -12,6 +12,16 @@ from homelab_video_contracts.base import NonNegativeInt
 from homelab_video_contracts.base import VersionedContract
 
 
+class YouTubeChannel(VersionedContract):
+    """Stable channel metadata needed to discover uploaded videos."""
+
+    channel_id: Annotated[str, Field(min_length=1)]
+    title: Annotated[str, Field(min_length=1)]
+    description: str | None = None
+    published_at: AwareDatetime | None = None
+    uploads_playlist_id: Annotated[str, Field(min_length=1)]
+
+
 class YouTubeVideo(VersionedContract):
     """Stable YouTube metadata used to seed a localization manifest."""
 
