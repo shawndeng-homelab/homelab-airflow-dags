@@ -144,6 +144,10 @@ jobs:
 
   docker:
     needs: release
+    # `release` uses always() so a deliberately skipped public PyPI job does
+    # not block it. Repeat the explicit success check for downstream jobs to
+    # avoid inheriting that skipped ancestor through the default success().
+    if: ${{ always() && needs.release.result == 'success' }}
     uses: ./.github/workflows/docker-release.yaml
     with:
       tag: ${{ inputs.tag }}
@@ -152,7 +156,7 @@ jobs:
 
   docs:
     needs: release
-    if: inputs.deploy_docs
+    if: ${{ always() && needs.release.result == 'success' && inputs.deploy_docs }}
     uses: ./.github/workflows/docs-deploy.yaml
     with:
       tag: ${{ inputs.tag }}
