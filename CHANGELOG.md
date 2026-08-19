@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.15.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/a09f618054a87bee7dbd3ec6eff955f9101858a2..0.15.1) - 2026-08-19
+### Package updates
+- [homelab-airflow-dags-0.4.1](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.0..homelab-airflow-dags-0.4.1)
+### Global changes
+#### Bug Fixes
+- make release workflows reliable - ([8cf0caa](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/8cf0caac38c1c37110a9e04ba312050387ba2854)) - ShawnDeng-code
+- normalize youtube channel configuration - ([a09f618](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/a09f618054a87bee7dbd3ec6eff955f9101858a2)) - ShawnDeng-code
+
+- - -
+
 ## [0.15.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/34266c28282e603e2f8c72a79ac7ca4b957e56a7..0.15.0) - 2026-08-19
 ### Package updates
 - [homelab-airflow-providers-youtube](packages/homelab-airflow-providers-youtube) bumped to [homelab-airflow-providers-youtube-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-airflow-providers-youtube-0.1.0)

@@ -1114,7 +1114,7 @@ requires-dist = [
 
 [[package]]
 name = "homelab-airflow-dags"
-version = "0.4.0"
+version = "0.4.1"
 source = { editable = "packages/homelab-airflow-dags" }
 dependencies = [
     { name = "apache-airflow" },
