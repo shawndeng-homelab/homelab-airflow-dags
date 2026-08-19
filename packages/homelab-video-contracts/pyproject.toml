@@ -1,6 +1,6 @@
 [project]
 name = 'homelab-video-contracts'
-version = '0.1.0'
+version = "0.1.0"
 description = 'Versioned data contracts for the homelab video localization pipeline'
 readme = 'README.md'
 authors = [

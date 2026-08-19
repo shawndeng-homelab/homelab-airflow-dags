@@ -1,6 +1,6 @@
 [project]
 name = 'homelab-airflow-providers-youtube'
-version = '0.1.0'
+version = "0.1.0"
 description = 'Apache Airflow provider for discovering public YouTube videos'
 readme = 'README.md'
 authors = [

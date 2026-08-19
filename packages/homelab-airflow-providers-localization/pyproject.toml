@@ -1,6 +1,6 @@
 [project]
 name = 'homelab-airflow-providers-localization'
-version = '0.1.0'
+version = "0.1.0"
 description = 'Apache Airflow provider for the homelab video localization service'
 readme = 'README.md'
 authors = [

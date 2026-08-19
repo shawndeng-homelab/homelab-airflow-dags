@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-dags-0.4.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/34266c28282e603e2f8c72a79ac7ca4b957e56a7..homelab-airflow-dags-0.4.0) - 2026-08-19
+#### Features
+- add youtube watch - ([34266c2](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/34266c28282e603e2f8c72a79ac7ca4b957e56a7)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-dags-0.3.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/bdc48a9fd3a09e8b022f193a7d988c3513d4049b..homelab-airflow-dags-0.3.0) - 2026-08-18
 #### Bug Fixes
 - keep airflow 2 task decorators - ([38c990f](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/38c990f65315017795a06ab968f2724839751df9)) - ShawnDen-coder

@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.15.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/34266c28282e603e2f8c72a79ac7ca4b957e56a7..0.15.0) - 2026-08-19
+### Package updates
+- [homelab-airflow-providers-youtube](packages/homelab-airflow-providers-youtube) bumped to [homelab-airflow-providers-youtube-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-airflow-providers-youtube-0.1.0)
+- [homelab-airflow-providers-bilibili](packages/homelab-airflow-providers-bilibili) bumped to [homelab-airflow-providers-bilibili-0.0.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-airflow-providers-bilibili-0.0.1)
+- [homelab-airflow-bark-0.2.0](packages/homelab-airflow-bark) bumped to [homelab-airflow-bark-0.2.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-bark-0.1.0..homelab-airflow-bark-0.2.0)
+- [homelab-airflow-dags-0.4.0](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.3.0..homelab-airflow-dags-0.4.0)
+- [homelab-airflow-providers-localization](packages/homelab-airflow-providers-localization) bumped to [homelab-airflow-providers-localization-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-airflow-providers-localization-0.1.0)
+- [homelab-video-contracts](packages/homelab-video-contracts) bumped to [homelab-video-contracts-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-video-contracts-0.1.0)
+### Global changes
+#### Features
+- add homelab-airflow-providers-localization - ([5156351](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/51563513a8647b21d06adfdf3002b0cf7d3a0a41)) - cog-bot
+- update bark - ([3930cf0](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/3930cf05a034b62349526ff1209704c53521bcb7)) - ShawnDen-coder
+- add video localization contracts - ([025797d](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/025797d291a05a9f7ac32c9732144531a97d3a8d)) - ShawnDen-coder
+- add YouTube discovery provider - ([dd90bb3](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/dd90bb3c6dee99814d4e6485024c03807723e9d4)) - ShawnDen-coder
+- add youtube watch - ([34266c2](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/34266c28282e603e2f8c72a79ac7ca4b957e56a7)) - ShawnDeng-code
+#### Miscellaneous Chores
+- rm floder - ([467e949](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/467e949f16d4666d90eda6621dd9de10b0bdebd6)) - ShawnDeng-code
+
+- - -
+
 ## [0.14.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/d545dacf99eee87d00fe123fbbb6cc0f755d4b26..0.14.0) - 2026-08-18
 ### Package updates
 - [homelab-airflow-bark](packages/homelab-airflow-bark) bumped to [homelab-airflow-bark-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-airflow-bark-0.1.0)
