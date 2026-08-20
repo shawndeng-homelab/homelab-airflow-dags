@@ -27,8 +27,8 @@ def test_execute_complete_returns_successful_job() -> None:
     )
 
     result = operator.execute_complete(
-        {},
-        {
+        context={},
+        event={
             "status": "success",
             "job": {"job_id": "job-1", "job_type": "download", "status": "succeeded", "output": {}},
         },
@@ -48,8 +48,8 @@ def test_execute_complete_rejects_failed_job() -> None:
 
     with pytest.raises(AirflowException, match="ended with status"):
         operator.execute_complete(
-            {},
-            {
+            context={},
+            event={
                 "status": "success",
                 "job": {
                     "job_id": "job-1",

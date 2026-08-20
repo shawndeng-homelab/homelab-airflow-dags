@@ -19,7 +19,7 @@ def test_notifier_sends_rendered_fields_through_hook(mocker) -> None:
     hook_class = mocker.patch("homelab_airflow_bark.notifications.BarkHook")
     notifier = BarkNotifier(title="Failed", body="Task failed", group="airflow")
 
-    notifier.notify({})
+    notifier.notify(context={})
 
     message = hook_class.return_value.send.call_args.args[0]
     assert message.title == "Failed"

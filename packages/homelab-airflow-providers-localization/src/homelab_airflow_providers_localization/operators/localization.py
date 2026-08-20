@@ -81,7 +81,7 @@ class LocalizationJobOperator(BaseOperator):
         )
         raise AssertionError("BaseOperator.defer() unexpectedly returned")
 
-    def execute_complete(self, _context: Context, event: dict[str, Any] | None = None) -> dict[str, Any]:
+    def execute_complete(self, context: Context, event: dict[str, Any] | None = None) -> dict[str, Any]:
         """Validate the trigger event and return the JSON-safe job result."""
         if not event or event.get("status") != "success":
             message = event.get("message", "Missing trigger event") if event else "Missing trigger event"

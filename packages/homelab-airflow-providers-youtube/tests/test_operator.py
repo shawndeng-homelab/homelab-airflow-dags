@@ -22,7 +22,7 @@ def test_operator_returns_json_and_emits_bounded_dataset_event(mocker) -> None:
     )
     events = OutletEventAccessors()
 
-    result = operator.execute({"outlet_events": events})
+    result = operator.execute(context={"outlet_events": events})
 
     assert result[0]["video_id"] == "video-1"
     assert result[0]["published_at"] == "2026-08-18T01:00:00Z"

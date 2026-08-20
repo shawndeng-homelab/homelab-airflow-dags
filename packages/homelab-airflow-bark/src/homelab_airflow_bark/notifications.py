@@ -65,7 +65,7 @@ class BarkNotifier(BaseNotifier):
         self.is_archive = is_archive
         super().__init__()
 
-    def notify(self, _context: Context) -> None:
+    def notify(self, context: Context) -> None:
         """Send the rendered callback message."""
         message = BarkPushMessage(
             title=self.title,
