@@ -32,6 +32,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --index "homelab=https://pypiserver.shawndeng.cc/simple" \
     "$@"
 
+# Replace Airflow's build Git revision in the footer with the version of the
+# homelab DAG package that is actually installed in this image.
+RUN python /app/docker/patch_airflow_ui.py
+
 # Keep Airflow's conventional DAG location in the baked image. Compose mounts
 # the live workspace DAG directory over this path during development.
 WORKDIR /opt/airflow
