@@ -15,7 +15,7 @@ def test_sensor_reschedules_when_no_video_exists(mocker) -> None:
     sensor = YouTubeChannelVideoSensor(task_id="wait", channel_id="UCabc")
     events = OutletEventAccessors()
 
-    result = sensor.poke({"outlet_events": events})
+    result = sensor.poke(context={"outlet_events": events})
 
     assert sensor.mode == "reschedule"
     assert result.is_done is False
@@ -35,7 +35,7 @@ def test_sensor_returns_video_metadata_on_match(mocker) -> None:
     sensor = YouTubeChannelVideoSensor(task_id="wait", channel_id="UCabc")
     events = OutletEventAccessors()
 
-    result = sensor.poke({"outlet_events": events})
+    result = sensor.poke(context={"outlet_events": events})
 
     assert result.is_done is True
     assert result.xcom_value[0]["video_id"] == "video-1"
