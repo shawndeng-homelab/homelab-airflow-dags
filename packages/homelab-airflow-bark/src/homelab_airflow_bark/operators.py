@@ -30,7 +30,7 @@ class BarkNotifyOperator(BaseOperator):
         self.bark_conn_id = bark_conn_id
         self.timeout = timeout
 
-    def execute(self, _context: Context) -> dict[str, object]:
+    def execute(self, context: Context) -> dict[str, object]:
         """Send the notification and return its normalized response."""
         message = BarkPushMessage.model_validate(self.message)
         self.log.info("Sending Bark notification: %s", message.title)
