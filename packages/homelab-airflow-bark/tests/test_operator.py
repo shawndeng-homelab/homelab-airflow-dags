@@ -18,7 +18,7 @@ def test_operator_delegates_to_connection_backed_hook(mocker) -> None:
         message={"title": "Done", "body": "Upload finished"},
     )
 
-    result = operator.execute({})
+    result = operator.execute(context={})
 
     assert result["ok"] is True
     hook_class.assert_called_once_with("bark_default", timeout=None)
