@@ -4,7 +4,6 @@ from datetime import timedelta
 from typing import Any
 
 import pendulum
-from airflow.datasets import DatasetAlias
 from airflow.decorators import dag
 from airflow.decorators import task
 from airflow.models import Variable
@@ -87,7 +86,6 @@ def youtube_channel_updates_dag():
         published_before="{{ data_interval_end }}",
         max_results=50,
         youtube_conn_id="youtube_default",
-        outlet=DatasetAlias("youtube-watched-channel-uploads"),
     ).expand(channel_id=channel_ids)
 
     notifications = build_bark_notifications(video_batches.output)
@@ -98,4 +96,4 @@ def youtube_channel_updates_dag():
     ).expand_kwargs(notifications)
 
 
-youtube_channel_updates_dag()
+youtube_channel_updates = youtube_channel_updates_dag()
