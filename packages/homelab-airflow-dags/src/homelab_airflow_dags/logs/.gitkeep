@@ -1,0 +1,1 @@
+# Keep the host log directory available for Compose bind mounts.
