@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.15.4](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/0.15.3..0.15.4) - 1970-01-01
+### Package updates
+- [homelab-airflow-bark-0.2.1](packages/homelab-airflow-bark) bumped to [homelab-airflow-bark-0.2.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-bark-0.2.0..homelab-airflow-bark-0.2.1)
+### Global changes
+
+- - -
+
 ## [0.15.3](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/0.15.2..0.15.3) - 1970-01-01
 ### Package updates
 - [homelab-airflow-dags-0.4.2](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.2](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.1..homelab-airflow-dags-0.4.2)
