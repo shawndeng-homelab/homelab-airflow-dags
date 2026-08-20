@@ -1,12 +1,6 @@
-from pathlib import Path
-from runpy import run_path
-
 import pytest
-
-
-PATCH_MODULE = run_path(Path(__file__).parents[1] / "docker" / "patch_airflow_ui.py", run_name="patch_airflow_ui")
-ORIGINAL_FOOTER = PATCH_MODULE["ORIGINAL_FOOTER"]
-patch_footer = PATCH_MODULE["patch_footer"]
+from homelab_airflow_dags.patch_airflow_ui import ORIGINAL_FOOTER
+from homelab_airflow_dags.patch_airflow_ui import patch_footer
 
 
 def test_patch_footer_replaces_git_revision_with_package_version():
