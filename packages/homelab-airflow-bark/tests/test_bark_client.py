@@ -9,8 +9,8 @@ from pydantic import ValidationError
 
 
 def test_build_push_url() -> None:
-    """Build the Bark push endpoint URL."""
-    assert BarkClient.build_push_url("http://bark.example.com/") == "http://bark.example.com/push"
+    """Build the keyed Bark push endpoint without the JSON /push route."""
+    assert BarkClient.build_push_url("https://api.day.app/", "device/key") == "https://api.day.app/device%2Fkey"
 
 
 def test_package_exports() -> None:
@@ -52,7 +52,7 @@ def test_send_posts_connection_device_key(mocker) -> None:
     post = mocker.patch(
         "homelab_airflow_bark.bark_client.requests.post",
         return_value=Mock(
-            url="http://bark.example.com/push",
+            url="https://api.day.app/device-key",
             status_code=200,
             ok=True,
             json=Mock(return_value={"code": 200}),
@@ -60,11 +60,12 @@ def test_send_posts_connection_device_key(mocker) -> None:
             raise_for_status=Mock(return_value=None),
         ),
     )
-    client = BarkClient(base_url="http://bark.example.com", device_key="device-key")
+    client = BarkClient(base_url="https://api.day.app", device_key="device-key")
     result = client.send(BarkPushMessage(title="Done", body="Upload finished", auto_copy=True))
 
+    post.assert_called_once()
+    assert post.call_args.args[0] == "https://api.day.app/device-key"
     assert post.call_args.kwargs["json"] == {
-        "device_key": "device-key",
         "title": "Done",
         "body": "Upload finished",
         "level": "active",
@@ -72,3 +73,4 @@ def test_send_posts_connection_device_key(mocker) -> None:
     }
     assert post.call_args.kwargs["verify"] is True
     assert result.ok is True
+    assert result.url == "https://api.day.app/***"

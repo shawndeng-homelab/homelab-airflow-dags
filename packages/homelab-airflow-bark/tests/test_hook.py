@@ -6,6 +6,13 @@ from airflow.models.connection import Connection
 from homelab_airflow_bark.hooks import BarkHook
 
 
+def test_hook_uses_official_bark_server_placeholder() -> None:
+    """Guide Airflow users to the Bark API root rather than a keyed URL."""
+    behaviour = BarkHook.get_ui_field_behaviour()
+
+    assert behaviour["placeholders"]["host"] == "https://api.day.app"
+
+
 def test_hook_maps_connection_fields(mocker) -> None:
     """Map Host, Password, and Extra to a Bark client."""
     hook = BarkHook()

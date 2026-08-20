@@ -34,7 +34,7 @@ class BarkHook(BaseHook):
             "hidden_fields": ["schema", "login", "port"],
             "relabeling": {"host": "Bark server URL", "password": "Device key"},
             "placeholders": {
-                "host": "https://bark.example.com",
+                "host": "https://api.day.app",
                 "password": "Bark device key",
                 "extra": "JSON object with timeout and verify_tls",
             },
