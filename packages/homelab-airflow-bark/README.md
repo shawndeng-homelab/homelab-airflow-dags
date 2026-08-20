@@ -28,7 +28,7 @@ Linux 或 Airflow 容器内可以检查：
 
     Connection ID: bark_default
     Connection type: bark
-    Host: https://bark.example.internal
+    Host: https://api.day.app
     Password: Bark device key
     Extra:
       timeout: 10
@@ -40,7 +40,7 @@ Linux 或 Airflow 容器内可以检查：
 | --- | --- | --- |
 | Connection ID | 是 | 默认使用 bark_default，也可以创建多个设备连接 |
 | Connection Type | 是 | 固定为 bark |
-| Host | 是 | Bark 服务根地址，必须包含 http 或 https |
+| Host | 是 | Bark 服务根地址，例如 https://api.day.app；不要包含 device key |
 | Password | 是 | Bark device key，Airflow 会按密码字段处理 |
 | Extra.timeout | 否 | HTTP 请求超时秒数，默认 10 |
 | Extra.verify_tls | 否 | 是否验证 TLS 证书，默认 true |
@@ -53,7 +53,7 @@ Device key 不应出现在 DAG、消息参数、XCom、Variable 或普通日志�
 
 1. Connection Id 填 bark_default。
 2. Connection Type 选择 Bark。
-3. Bark server URL 填 Bark 服务地址。
+3. Bark server URL 填 `https://api.day.app`；自建服务则填写其根地址，不要包含 device key。
 4. Device key 填设备密钥。
 5. Extra 填 timeout 和 verify_tls。
 
@@ -70,7 +70,7 @@ PowerShell 示例：
         '--conn-type',
         'bark',
         '--conn-host',
-        'https://bark.example.internal',
+        'https://api.day.app',
         '--conn-password',
         $env:BARK_DEVICE_KEY
     )
@@ -84,7 +84,7 @@ Extra 可以在 UI 中补充，也可以通过部署系统直接创建完整 Con
 
     $connection = @{
         conn_type = 'bark'
-        host = 'https://bark.example.internal'
+        host = 'https://api.day.app'
         password = $env:BARK_DEVICE_KEY
         extra = @{
             timeout = 10
@@ -269,7 +269,7 @@ BarkNotifier 会在发送前使用 Airflow context 渲染以下字段：
 Operator 返回的 XCom：
 
     {
-        'url': 'https://bark.example.internal/push',
+        'url': 'https://api.day.app/***',
         'status_code': 200,
         'ok': True,
         'payload': {
@@ -309,7 +309,7 @@ Hook 会读取 Connection、验证消息并返回 BarkResponse。
     from homelab_airflow_bark.schemas import BarkPushMessage
 
     client = BarkClient(
-        base_url='https://bark.example.internal',
+        base_url='https://api.day.app',
         device_key='device-key',
         timeout=10,
         verify_tls=True,
@@ -332,7 +332,7 @@ Airflow 之外没有 Connection Secret 管理能力，调用方需要自行保�
 旧格式把服务和凭据放在消息中：
 
     message={
-        'base_url': 'https://bark.example.internal',
+        'base_url': 'https://api.day.app',
         'device_key': 'device-key',
         'title': 'Done',
         'body': 'Upload finished',
