@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-dags-0.4.2](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/5972a20745110ab51610d52bbc503e65ecb1659d..homelab-airflow-dags-0.4.2) - 2026-08-20
+#### Bug Fixes
+- fix DatasetAlias - ([5972a20](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/5972a20745110ab51610d52bbc503e65ecb1659d)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-dags-0.4.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/a09f618054a87bee7dbd3ec6eff955f9101858a2..homelab-airflow-dags-0.4.1) - 2026-08-19
 #### Bug Fixes
 - normalize youtube channel configuration - ([a09f618](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/a09f618054a87bee7dbd3ec6eff955f9101858a2)) - ShawnDeng-code
