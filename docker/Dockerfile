@@ -34,7 +34,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Replace Airflow's build Git revision in the footer with the version of the
 # homelab DAG package that is actually installed in this image.
-RUN python /app/docker/patch_airflow_ui.py
+RUN python -m homelab_airflow_dags.patch_airflow_ui
 
 # Keep Airflow's conventional DAG location in the baked image. Compose mounts
 # the live workspace DAG directory over this path during development.
