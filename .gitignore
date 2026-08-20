@@ -16,5 +16,6 @@
 
 # Airflow runtime (AIRFLOW_HOME=/opt/airflow)
 /airflow/
-/packages/homelab-airflow-dags/src/homelab_airflow_dags/logs/
+/packages/homelab-airflow-dags/src/homelab_airflow_dags/logs/*
+!/packages/homelab-airflow-dags/src/homelab_airflow_dags/logs/.gitkeep
 scripts/
