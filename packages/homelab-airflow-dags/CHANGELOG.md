@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-dags-0.4.3](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/465052b0d267645475afed3baa5dc4b53ad342b6..homelab-airflow-dags-0.4.3) - 2026-08-20
+#### Bug Fixes
+- keep Airflow log mount directory - ([b4467ea](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/b4467ea9385a772a9bb83409a6f8e0024ea31d8d)) - ShawnDeng-code
+- include Airflow UI patch in image build - ([465052b](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/465052b0d267645475afed3baa5dc4b53ad342b6)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-dags-0.4.2](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/5972a20745110ab51610d52bbc503e65ecb1659d..homelab-airflow-dags-0.4.2) - 2026-08-20
 #### Bug Fixes
 - fix DatasetAlias - ([5972a20](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/5972a20745110ab51610d52bbc503e65ecb1659d)) - ShawnDeng-code

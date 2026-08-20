@@ -9,6 +9,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-bark-0.2.2](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/6b19cc4be1c841479888db3d3d34ab5a03573a34..homelab-airflow-bark-0.2.2) - 2026-08-20
+#### Bug Fixes
+- use keyed Bark push endpoint - ([6b19cc4](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/6b19cc4be1c841479888db3d3d34ab5a03573a34)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-bark-0.2.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/bcaf6cc6068ffe45340c2575f3352790d3943364..homelab-airflow-bark-0.2.1) - 2026-08-20
 #### Bug Fixes
 - accept Airflow operator context keyword - ([bcaf6cc](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/bcaf6cc6068ffe45340c2575f3352790d3943364)) - ShawnDeng-code

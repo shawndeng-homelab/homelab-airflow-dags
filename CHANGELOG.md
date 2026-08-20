@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.15.5](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/b4467ea9385a772a9bb83409a6f8e0024ea31d8d..0.15.5) - 2026-08-20
+### Package updates
+- [homelab-airflow-bark-0.2.2](packages/homelab-airflow-bark) bumped to [homelab-airflow-bark-0.2.2](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-bark-0.2.1..homelab-airflow-bark-0.2.2)
+- [homelab-airflow-dags-0.4.3](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.3](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.2..homelab-airflow-dags-0.4.3)
+### Global changes
+#### Bug Fixes
+- show DAG package version in Airflow footer - ([eb36510](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/eb365108074f56870217fa7ca909a79937987178)) - ShawnDeng-code
+- include Airflow UI patch in image build - ([465052b](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/465052b0d267645475afed3baa5dc4b53ad342b6)) - ShawnDeng-code
+- keep Airflow log mount directory - ([b4467ea](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/b4467ea9385a772a9bb83409a6f8e0024ea31d8d)) - ShawnDeng-code
+
+- - -
+
 ## [0.15.4](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/0.15.3..0.15.4) - 1970-01-01
 ### Package updates
 - [homelab-airflow-bark-0.2.1](packages/homelab-airflow-bark) bumped to [homelab-airflow-bark-0.2.1](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-bark-0.2.0..homelab-airflow-bark-0.2.1)
