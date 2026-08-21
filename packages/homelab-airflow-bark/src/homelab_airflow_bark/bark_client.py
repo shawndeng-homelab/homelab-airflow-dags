@@ -1,7 +1,6 @@
 """Bark HTTP client."""
 
 from typing import Any
-from urllib.parse import quote
 
 import requests
 from pydantic import BaseModel
@@ -39,16 +38,16 @@ class BarkClient:
         self.verify_tls = verify_tls
 
     @staticmethod
-    def build_push_url(base_url: str, device_key: str) -> str:
-        """Build the Bark POST endpoint URL with an encoded device key."""
-        return f"{base_url.rstrip('/')}/{quote(device_key, safe='')}"
+    def build_push_url(base_url: str) -> str:
+        """Build the Bark JSON push endpoint URL."""
+        return base_url.rstrip("/") + "/push"
 
     def send(self, message: BarkPushMessage) -> BarkResponse:
         """Send a validated Bark push notification."""
-        push_url = self.build_push_url(self.base_url, self.device_key)
+        payload = {"device_key": self.device_key, **message.to_payload()}
         response = requests.post(
-            push_url,
-            json=message.to_payload(),
+            self.build_push_url(self.base_url),
+            json=payload,
             timeout=self.timeout,
             verify=self.verify_tls,
         )
@@ -60,7 +59,7 @@ class BarkClient:
             response_payload = {"raw": response.text}
 
         return BarkResponse(
-            url=f"{self.base_url.rstrip('/')}/***",
+            url=response.url,
             status_code=response.status_code,
             ok=response.ok,
             payload=response_payload,
