@@ -13,7 +13,8 @@
     {
       matchManagers: ["github-actions"],
       matchUpdateTypes: ["minor", "patch"],
-      automerge: true,
+      // Workflow updates change shared CI behavior and require review.
+      automerge: false,
     },
   ],
 }
