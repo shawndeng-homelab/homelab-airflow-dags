@@ -48,7 +48,7 @@ permissions:
 
 jobs:
   release:
-    uses: ShawnDen-coder/repo-scaffold/.github/workflows/reusable-python-release.yaml@0.29.5
+    uses: ShawnDen-coder/repo-scaffold/.github/workflows/reusable-python-release.yaml@0.30.0
     with:
       tag: ${{ inputs.tag }}
       workspace: true
