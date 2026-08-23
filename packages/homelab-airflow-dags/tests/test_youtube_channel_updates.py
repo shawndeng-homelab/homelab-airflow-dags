@@ -7,7 +7,7 @@ from homelab_airflow_dags.dags.youtube_channel_updates import youtube_channel_up
 
 def test_normalize_channel_references_trims_and_deduplicates() -> None:
     """Normalize repeated channel handles and IDs without changing their order."""
-    assert normalize_channel_references([" @EarnMoar ", "UC123", "@EarnMoar", "UC123 "]) == [
+    assert normalize_channel_references([" @EarnMoar ", "UC123", "@earnmoar", "UC123 "]) == [
         "@EarnMoar",
         "UC123",
     ]
