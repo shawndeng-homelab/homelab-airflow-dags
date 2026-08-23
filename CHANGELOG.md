@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.15.8](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/8d2d9bd735c2583cbd6a7122fdbaa41859473503..0.15.8) - 2026-08-23
+### Package updates
+- [homelab-airflow-dags-0.4.5](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.5](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.4..homelab-airflow-dags-0.4.5)
+### Global changes
+#### Continuous Integration
+- use central container build test - ([471f677](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/471f677cb5c6c4db6379cca3d153333f7301fd9a)) - ShawnDeng-code
+#### Miscellaneous Chores
+- **(actions)** upgrade central workflows to 0.30.0 - ([8d2d9bd](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/8d2d9bd735c2583cbd6a7122fdbaa41859473503)) - ShawnDeng-code
+
+- - -
+
 ## [0.15.7](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/4c6d5ae4cae19569e7f71e365de7bdc01abe0c6d..0.15.7) - 2026-08-23
 ### Package updates
 - [homelab-airflow-dags-0.4.4](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.4](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.3..homelab-airflow-dags-0.4.4)

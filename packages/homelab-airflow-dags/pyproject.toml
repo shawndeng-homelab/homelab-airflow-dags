@@ -1,6 +1,6 @@
 [project]
 name = "homelab-airflow-dags"
-version = "0.4.4"
+version = "0.4.5"
 description = "homelab cluster airflow dags"
 authors = [{name = "Shawn Deng", email = "shawndeng1109@qq.com"}]
 license = "MIT"
