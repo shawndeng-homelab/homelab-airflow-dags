@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-dags-0.4.4](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/8502a33520a76d19c998f6ebdcbacfc488b9270d..homelab-airflow-dags-0.4.4) - 2026-08-23
+#### Bug Fixes
+- **(dags)** remove unused OSS operator - ([8502a33](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/8502a33520a76d19c998f6ebdcbacfc488b9270d)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-dags-0.4.3](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/465052b0d267645475afed3baa5dc4b53ad342b6..homelab-airflow-dags-0.4.3) - 2026-08-20
 #### Bug Fixes
 - keep Airflow log mount directory - ([b4467ea](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/b4467ea9385a772a9bb83409a6f8e0024ea31d8d)) - ShawnDeng-code

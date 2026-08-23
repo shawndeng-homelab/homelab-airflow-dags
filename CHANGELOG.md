@@ -2,6 +2,31 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.15.7](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/4c6d5ae4cae19569e7f71e365de7bdc01abe0c6d..0.15.7) - 2026-08-23
+### Package updates
+- [homelab-airflow-dags-0.4.4](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.4](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.3..homelab-airflow-dags-0.4.4)
+### Global changes
+#### Bug Fixes
+- **(ci)** use released docs workflow - ([969482e](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/969482e4e14803909b0d6e7e091cfba94c49d0e1)) - ShawnDeng-code
+- **(ci)** declare release workflow secrets - ([144ec2b](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/144ec2b8445c0b527b87b0ac746545a2078faf8e)) - ShawnDeng-code
+- **(ci)** use corrected central workflows - ([ce39857](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/ce39857d7242c8ca3d6f9da5d2c5cef0676f36c0)) - ShawnDeng-code
+- **(renovate)** keep GitHub Action version tags - ([08e88ab](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/08e88abb02c62aa500def0ef8cf24d1f60f9fc61)) - ShawnDeng-code
+#### Continuous Integration
+- adopt central Python workflow - ([9565845](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/9565845fe1ba8dc8b3565661c97e276f32deae0b)) - ShawnDeng-code
+- adopt central docs workflow - ([73f952a](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/73f952acdf6ecd5e2986d116b05005a429722968)) - ShawnDeng-code
+- adopt central release workflow - ([14ed5e7](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/14ed5e7e96b3059854a200d45d9f00d01295f069)) - ShawnDeng-code
+- adopt central container release workflow - ([4c6d5ae](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/4c6d5ae4cae19569e7f71e365de7bdc01abe0c6d)) - ShawnDeng-code
+#### Miscellaneous Chores
+- **(deps)** update astral-sh/setup-uv action to v10 - ([6eaefc7](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/6eaefc74869321353113fc722eeb8f3a84c7bc8e)) - renovate[bot]
+- **(deps)** update actions/checkout action to v7 - ([1248692](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/12486929c8ec0a49486da5a925a563e2db5f8048)) - renovate[bot]
+- **(deps)** update shawnden-coder/repo-scaffold action to v0.29.4 - ([e844704](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/e84470416a89be508f6aa649751bbb10a2fef588)) - renovate[bot]
+- **(deps)** update docker/setup-qemu-action action to v4 - ([fb5c1d9](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/fb5c1d93fd851616f1a453a723ff7fb8def16fd8)) - renovate[bot]
+- **(deps)** update redhat-actions/buildah-build action to v3 - ([b11a573](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/b11a573216e19f83d1776715c461eb9525d8aff0)) - renovate[bot]
+- **(deps)** update redhat-actions/podman-login action to v2 - ([faf2c64](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/faf2c64b9e23891849ea22bd6ffa1a2cb52ddd07)) - renovate[bot]
+- **(deps)** update redhat-actions/push-to-registry action to v3 - ([578f3ce](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/578f3cee0cd289da67dff7adad141ea177cb550a)) - renovate[bot]
+
+- - -
+
 ## [0.15.6](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/0.15.5..0.15.6) - 1970-01-01
 ### Package updates
 - [homelab-airflow-bark-0.2.3](packages/homelab-airflow-bark) bumped to [homelab-airflow-bark-0.2.3](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-bark-0.2.2..homelab-airflow-bark-0.2.3)
