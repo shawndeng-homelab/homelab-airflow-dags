@@ -6,6 +6,13 @@
   enabledManagers: ["pep621", "github-actions"],
   packageRules: [
     {
+      matchManagers: ["github-actions"],
+      matchDepNames: ["ShawnDen-coder/repo-scaffold"],
+      groupName: "repo-scaffold workflows",
+      pinDigests: false,
+      automerge: false,
+    },
+    {
       matchManagers: ["pep621"],
       matchDepTypes: ["dev", "optional-dependencies", "dependency-groups"],
       automerge: true,
