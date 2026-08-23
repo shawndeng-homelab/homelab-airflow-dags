@@ -17,6 +17,13 @@ on:
         required: false
         type: boolean
         default: true
+    secrets:
+      PYPI_TOKEN:
+        required: false
+      PYPI_SERVER_USERNAME:
+        required: false
+      PYPI_SERVER_PASSWORD:
+        required: false
   workflow_dispatch:
     inputs:
       tag:
