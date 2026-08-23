@@ -7,6 +7,10 @@
   packageRules: [
     {
       matchManagers: ["github-actions"],
+      pinDigests: false,
+    },
+    {
+      matchManagers: ["github-actions"],
       matchDepNames: ["ShawnDen-coder/repo-scaffold"],
       groupName: "repo-scaffold workflows",
       pinDigests: false,
@@ -20,6 +24,7 @@
     {
       matchManagers: ["github-actions"],
       matchUpdateTypes: ["minor", "patch"],
+      pinDigests: false,
       // Workflow updates change shared CI behavior and require review.
       automerge: false,
     },
