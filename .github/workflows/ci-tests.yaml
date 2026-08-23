@@ -18,7 +18,7 @@ env:
   PYPI_SERVER_PASSWORD: ${{ secrets.PYPI_SERVER_PASSWORD }}
 jobs:
   ci:
-    uses: ShawnDen-coder/repo-scaffold/.github/workflows/reusable-python-ci.yaml@0.27.0
+    uses: ShawnDen-coder/repo-scaffold/.github/workflows/reusable-python-ci.yaml@0.29.1
     with:
       python-versions: '["3.12"]'
       workspace: true

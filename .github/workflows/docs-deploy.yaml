@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   deploy:
-    uses: ShawnDen-coder/repo-scaffold/.github/workflows/reusable-docs-deploy.yaml@0.28.0
+    uses: ShawnDen-coder/repo-scaffold/.github/workflows/reusable-docs-deploy.yaml@0.29.1
     with:
       tag: ${{ inputs.tag }}
       create-release: true
