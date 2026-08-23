@@ -23,7 +23,16 @@ def normalize_channel_references(channels: object) -> list[str]:
     if any(not isinstance(channel, str) or not channel.strip() for channel in channels):
         raise ValueError(f"Airflow Variable {CHANNELS_VARIABLE!r} must contain non-empty strings")
 
-    return list(dict.fromkeys(channel.strip() for channel in channels))
+    normalized_channels: list[str] = []
+    seen_references: set[str] = set()
+    for channel in channels:
+        normalized = channel.strip()
+        deduplication_key = normalized.casefold() if normalized.startswith("@") else normalized
+        if deduplication_key not in seen_references:
+            seen_references.add(deduplication_key)
+            normalized_channels.append(normalized)
+
+    return normalized_channels
 
 
 @task
