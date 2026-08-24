@@ -22,6 +22,8 @@ class BilibiliPublicationRegistry(Protocol):
 
     def upsert(self, record: BilibiliPublicationRecord) -> BilibiliPublicationRecord: ...
 
+    def claim(self, record: BilibiliPublicationRecord) -> bool: ...
+
 
 def publication_key(record: BilibiliPublicationRecord) -> tuple[str, str, str]:
     """Return the unique idempotency key for a publication record."""
@@ -96,3 +98,15 @@ class AirflowVariablePublicationRegistry:
             record.model_dump_json(exclude_none=True),
         )
         return record
+
+    def claim(self, record: BilibiliPublicationRecord) -> bool:
+        """Claim a key for low-concurrency workflows."""
+        existing = self.get(
+            source_video_id=record.source_video_id,
+            account_id=record.account_id,
+            request_sha256=record.request_sha256,
+        )
+        if existing is not None:
+            return False
+        self.upsert(record)
+        return True

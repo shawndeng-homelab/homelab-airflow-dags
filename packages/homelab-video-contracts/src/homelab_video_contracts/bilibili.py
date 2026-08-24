@@ -18,6 +18,9 @@ from homelab_video_contracts.base import S3Uri
 from homelab_video_contracts.base import VersionedContract
 
 
+Bvid = Annotated[str, Field(pattern=r"^BV[0-9A-Za-z]+$")]
+
+
 class BilibiliPublicationStatus(StrEnum):
     """Normalized lifecycle states for a Bilibili archive."""
 
@@ -70,7 +73,7 @@ class BilibiliAppendRequest(VersionedContract):
     """Input for appending parts to an existing稿件."""
 
     aid: PositiveInt | None = None
-    bvid: Annotated[str, Field(min_length=1)] | None = None
+    bvid: Bvid | None = None
     parts: tuple[BilibiliPartInput, ...] = Field(min_length=1)
     expected_part_count: int | None = Field(default=None, ge=0)
 
@@ -97,6 +100,7 @@ class BilibiliArchivePart(ContractModel):
 
     index: int = Field(ge=1)
     title: Annotated[str, Field(min_length=1)]
+    description: str = ""
     remote_filename: Annotated[str, Field(min_length=1)]
     cid: PositiveInt | None = None
 
@@ -105,7 +109,7 @@ class BilibiliPublishResult(VersionedContract):
     """Stable identifiers returned after a successful Bilibili submission."""
 
     aid: PositiveInt
-    bvid: Annotated[str, Field(min_length=1)]
+    bvid: Bvid
     url: AnyHttpUrl
     published_at: AwareDatetime
     title: Annotated[str, Field(min_length=1)]
@@ -124,7 +128,7 @@ class BilibiliPublicationRecord(VersionedContract):
     request_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
     status: BilibiliPublicationStatus = BilibiliPublicationStatus.UNKNOWN
     aid: PositiveInt | None = None
-    bvid: Annotated[str, Field(min_length=1)] | None = None
+    bvid: Bvid | None = None
     first_submitted_at: AwareDatetime | None = None
     last_checked_at: AwareDatetime | None = None
     parts: tuple[BilibiliPartResult, ...] = ()
@@ -135,7 +139,7 @@ class BilibiliArchiveSnapshot(ContractModel):
     """Remote metadata required to safely perform a full archive edit."""
 
     aid: PositiveInt
-    bvid: Annotated[str, Field(min_length=1)]
+    bvid: Bvid
     title: Annotated[str, Field(min_length=1)]
     description: str = ""
     tid: PositiveInt | None = None
@@ -147,3 +151,5 @@ class BilibiliArchiveSnapshot(ContractModel):
     settings: BilibiliPublishSettings = Field(default_factory=BilibiliPublishSettings)
     status: BilibiliPublicationStatus = BilibiliPublicationStatus.UNKNOWN
     parts: tuple[BilibiliArchivePart, ...] = ()
+    archive: dict[str, object] = Field(default_factory=dict)
+    videos: tuple[dict[str, object], ...] = ()

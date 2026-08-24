@@ -1,4 +1,5 @@
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from homelab_airflow_providers_bilibili.client import BilibiliLoginStatus
@@ -40,7 +41,7 @@ class FakeClient:
 
     def append(self, archive, request, local_parts):
         return BilibiliSubmissionReceipt(
-            archive.aid, archive.bvid, request.title, "submitted", archive.parts, {"code": 0}
+            archive.aid, archive.bvid, archive.title, "submitted", archive.parts, {"code": 0}
         )
 
 
@@ -70,6 +71,27 @@ def test_hook_maps_client_error_to_airflow_exception() -> None:
         BilibiliHook(client=BrokenClient()).publish(_request(), [Path("render.mp4")])
 
 
+def test_hook_rejects_unknown_or_invalid_connection_settings(monkeypatch) -> None:
+    hook = BilibiliHook()
+    monkeypatch.setattr(
+        hook,
+        "get_connection",
+        lambda conn_id: SimpleNamespace(extra_dejson={"credential_path": "/cookies.json", "ignored": True}),
+    )
+    with pytest.raises(Exception, match="Unsupported Bilibili connection settings"):
+        hook.get_connection_config()
+
+    monkeypatch.setattr(
+        hook,
+        "get_connection",
+        lambda conn_id: SimpleNamespace(
+            extra_dejson={"credential_path": "/cookies.json", "proxy": "socks5://proxy.example"}
+        ),
+    )
+    with pytest.raises(Exception, match=r"http\(s\) URL"):
+        hook.get_connection_config()
+
+
 def test_archive_snapshot_keeps_remote_part_identity() -> None:
     part = BilibiliArchivePart(index=1, title="P1", remote_filename="remote-1")
     archive = BilibiliArchiveSnapshot(aid=1, bvid="BV1", title="old", parts=(part,))
@@ -79,36 +101,37 @@ def test_archive_snapshot_keeps_remote_part_identity() -> None:
 def test_sdk_adapter_normalizes_remote_archive(monkeypatch) -> None:
     from homelab_airflow_providers_bilibili.client import BiliupSdkAdapter
 
-    class FakeBili:
-        def __init__(self, data):
-            self.data = data
+    class FakeModule:
+        Data = dict
 
-        def get_video_info(self, aid):
-            assert aid == 9
-            return {
+    adapter = BiliupSdkAdapter(Path("unused"))
+    monkeypatch.setattr(adapter, "_modules", lambda: (object(), FakeModule))
+    monkeypatch.setattr(adapter, "_new_uploader", lambda module, data: object())
+    monkeypatch.setattr(
+        adapter,
+        "_creative_archive_data",
+        lambda bili, aid: {
+            "archive": {
                 "aid": 9,
                 "bvid": "BV9",
                 "title": "remote",
                 "desc": "description",
                 "tid": 171,
                 "tag": "one,two",
-                "pic": "https://img.example/cover.jpg",
+                "cover": "https://img.example/cover.jpg",
                 "copyright": 1,
                 "state": 0,
-                "pages": [{"part": "P1", "cid": 99, "filename": "remote.mp4"}],
-            }
-
-    class FakeModule:
-        Data = dict
-        BiliBili = FakeBili
-
-    adapter = BiliupSdkAdapter(Path("unused"))
-    monkeypatch.setattr(adapter, "_modules", lambda: (FakeModule, object()))
-    monkeypatch.setattr(adapter, "_login", lambda bili: None)
+            },
+            "videos": [{"title": "P1", "desc": "old description", "cid": 99, "filename": "remote.mp4"}],
+        },
+    )
     snapshot = adapter.get_archive(9)
     assert snapshot.status.value == "published"
     assert snapshot.parts[0].cid == 99
+    assert snapshot.parts[0].description == "old description"
     assert snapshot.parts[0].remote_filename == "remote.mp4"
+    assert snapshot.archive["tag"] == "one,two"
+    assert snapshot.videos[0]["desc"] == "old description"
 
 
 def test_publication_record_has_stable_registry_key() -> None:

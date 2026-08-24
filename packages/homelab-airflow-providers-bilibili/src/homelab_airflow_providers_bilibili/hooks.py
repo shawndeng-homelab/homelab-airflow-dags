@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from airflow.exceptions import AirflowException
 from airflow.hooks.base import BaseHook
@@ -38,10 +39,17 @@ class BilibiliHook(BaseHook):
     conn_type = "bilibili"
     hook_name = "Bilibili"
 
-    def __init__(self, bilibili_conn_id: str = default_conn_name, *, client: BilibiliClient | None = None) -> None:
+    def __init__(
+        self,
+        bilibili_conn_id: str = default_conn_name,
+        *,
+        client: BilibiliClient | None = None,
+        account_id: str | None = None,
+    ) -> None:
         super().__init__()
         self.bilibili_conn_id = bilibili_conn_id
         self._client = client
+        self._account_id = account_id
 
     @classmethod
     def get_ui_field_behaviour(cls) -> dict[str, Any]:
@@ -56,6 +64,12 @@ class BilibiliHook(BaseHook):
         """Resolve and validate the mounted credential path."""
         connection = self.get_connection(self.bilibili_conn_id)
         extra = connection.extra_dejson
+        supported_keys = {"credential_path", "credential_secret_path", "account_id", "proxy", "submit_api"}
+        unsupported_keys = set(extra).difference(supported_keys)
+        if unsupported_keys:
+            raise AirflowException(f"Unsupported Bilibili connection settings: {sorted(unsupported_keys)}")
+        if extra.get("credential_path") and extra.get("credential_secret_path"):
+            raise AirflowException("Bilibili connection must not define both credential path settings")
         credential_path = extra.get("credential_path") or extra.get("credential_secret_path")
         if not isinstance(credential_path, str) or not credential_path.strip():
             raise AirflowException("Bilibili connection must define extra.credential_path")
@@ -65,6 +79,10 @@ class BilibiliHook(BaseHook):
         proxy = extra.get("proxy")
         if proxy is not None and (not isinstance(proxy, str) or not proxy.strip()):
             raise AirflowException("Bilibili connection proxy must be a non-empty URL string")
+        if proxy is not None:
+            parsed_proxy = urlsplit(proxy)
+            if parsed_proxy.scheme not in {"http", "https"} or not parsed_proxy.hostname:
+                raise AirflowException("Bilibili connection proxy must be an http(s) URL")
         submit_api = extra.get("submit_api", "web")
         if submit_api not in {"web", "client"}:
             raise AirflowException("Bilibili connection submit_api must be web or client")
@@ -76,6 +94,12 @@ class BilibiliHook(BaseHook):
             config = self.get_connection_config()
             self._client = BiliupSdkAdapter(config.credential_path, proxy=config.proxy, submit_api=config.submit_api)
         return self._client
+
+    def get_account_id(self) -> str:
+        """Return the configured non-secret publication account identity."""
+        if self._account_id is not None:
+            return self._account_id
+        return self.get_connection_config().account_id
 
     def get_archive(self, aid: int) -> BilibiliArchiveSnapshot:
         """Fetch and normalize a remote archive snapshot."""

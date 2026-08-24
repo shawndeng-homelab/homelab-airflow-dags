@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import shutil
 import tempfile
 from pathlib import Path
 from typing import Protocol
@@ -43,7 +45,7 @@ class S3ArtifactStager:
             from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
             hook = S3Hook(aws_conn_id=self.aws_conn_id)
-            hook.download_file(
+            downloaded_path = hook.download_file(
                 key=parsed.path.lstrip("/"),
                 bucket_name=parsed.netloc,
                 local_path=str(destination.parent),
@@ -52,11 +54,7 @@ class S3ArtifactStager:
             )
         except Exception as error:
             raise ArtifactMaterializationError(f"failed to download artifact {artifact.uri}") from error
-        downloaded = destination
-        if not downloaded.is_file():
-            candidates = list(destination.parent.glob("*"))
-            if len(candidates) == 1 and candidates[0].is_file():
-                downloaded = candidates[0]
+        downloaded = Path(downloaded_path)
         if not downloaded.is_file():
             raise ArtifactMaterializationError("S3Hook did not produce a local file")
         self._verify(downloaded, artifact)
@@ -67,13 +65,37 @@ class S3ArtifactStager:
         if artifact.size is not None and path.stat().st_size != artifact.size:
             raise ArtifactMaterializationError(f"artifact size mismatch for {artifact.uri}")
         if artifact.sha256:
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
-            if digest != artifact.sha256:
+            digest = hashlib.sha256()
+            with path.open("rb") as stream:
+                for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            if digest.hexdigest() != artifact.sha256:
                 raise ArtifactMaterializationError(f"artifact sha256 mismatch for {artifact.uri}")
 
     def cleanup(self) -> None:
         if self._owned_root and self.root.is_dir():
-            for child in self.root.iterdir():
-                if child.is_file():
-                    child.unlink()
-            self.root.rmdir()
+            shutil.rmtree(self.root, ignore_errors=True)
+
+
+class S3RawResponseStore:
+    """Persist an SDK response as JSON without putting it in XCom."""
+
+    def __init__(self, *, aws_conn_id: str = "rustfs_default") -> None:
+        self.aws_conn_id = aws_conn_id
+
+    def store(self, payload: dict[str, object], *, uri: str) -> str:
+        parsed = urlsplit(uri)
+        if parsed.scheme != "s3" or not parsed.netloc or not parsed.path.strip("/"):
+            raise ArtifactMaterializationError("raw response URI must be a canonical s3:// URI")
+        try:
+            from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+
+            S3Hook(aws_conn_id=self.aws_conn_id).load_bytes(
+                json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode(),
+                key=parsed.path.lstrip("/"),
+                bucket_name=parsed.netloc,
+                replace=False,
+            )
+        except Exception as error:
+            raise ArtifactMaterializationError("failed to persist Bilibili raw response") from error
+        return uri

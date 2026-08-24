@@ -41,3 +41,19 @@ def test_airflow_variable_registry_round_trip(monkeypatch) -> None:
     assert registry.get(source_video_id="yt-1", account_id="main", request_sha256="b" * 64) is None
     assert registry.upsert(record) == record
     assert registry.get(source_video_id="yt-1", account_id="main", request_sha256="b" * 64) == record
+
+
+def test_airflow_variable_registry_claims_once(monkeypatch) -> None:
+    import airflow.models
+
+    FakeVariable.values = {}
+    monkeypatch.setattr(airflow.models, "Variable", FakeVariable)
+    registry = AirflowVariablePublicationRegistry()
+    record = BilibiliPublicationRecord(
+        source_video_id="yt-claim",
+        account_id="main",
+        request_sha256="c" * 64,
+    )
+
+    assert registry.claim(record) is True
+    assert registry.claim(record) is False
