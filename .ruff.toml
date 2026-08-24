@@ -36,6 +36,19 @@ lines-after-imports = 2
 convention = "google"
 
 [lint.per-file-ignores]
+"packages/homelab-airflow-providers-bilibili/src/**/*.py" = [
+  "PLC0415",  # biliup, Airflow, and S3 imports are intentionally lazy at runtime
+  "D102",     # provider protocol and Airflow adapter methods document behavior inline
+  "D107",     # Airflow constructors follow the framework signature
+]
+"packages/homelab-airflow-providers-bilibili/tests/**/*.py" = [
+  "D101",
+  "D102",
+  "D103",
+  "D107",
+  "PLC0415",
+]
+
 "packages/**/dags/**/*.py" = [
   "PLC0415",  # in-function imports are intentional: lazy runtime config resolution via get_config,
               # and the scripts.* import must live inside the @virtualenv_task body (ships in ibkr-quant wheel)

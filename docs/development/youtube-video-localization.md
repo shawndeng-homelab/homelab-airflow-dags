@@ -12,7 +12,7 @@
 | ASR | Groq `whisper-large-v3` |
 | 翻译 | OpenAI-compatible Chat Completions |
 | TTS | VoxCPM2 服务 |
-| Bilibili 投稿 | `biliup` CLI |
+| Bilibili 投稿 | `biliup==1.2.2` Python SDK（Provider 适配层） |
 
 本文档定义从 YouTube 发现视频、下载、本地化处理到 Bilibili 投稿的目标架构、Provider 边界、数据契约和分阶段交付计划。
 
@@ -310,14 +310,14 @@ POST /v1/jobs/{job_id}/cancel
 
 包名：`homelab-airflow-providers-bilibili`
 
-职责：封装固定版本的 `biliup` CLI/Rust binary，检查登录、刷新凭证、投稿、追加分 P 并标准化稿件结果。
+职责：通过固定版本的 `biliup==1.2.2` Python SDK 适配层检查登录、上传封面、投稿、完整稿件编辑追加分 P、归档查询和状态标准化。上传/追加输入可为本地路径或 RustFS `Artifact`，后者统一经 Amazon `S3Hook` 下载并校验。
 
 ```text
 Connection ID: bilibili_default
 Connection type: bilibili
 Extra:
   credential_secret_path: /var/run/secrets/bilibili/cookies.json
-  uploader: biliup
+  sdk: biliup-python
   uploader_version: pinned
   line: auto
 ```
@@ -329,12 +329,13 @@ class BilibiliHook(BaseHook):
     def check_login(self) -> BilibiliLoginStatus: ...
     def renew_credentials(self) -> BilibiliLoginStatus: ...
     def upload(self, request: BilibiliUploadRequest) -> BilibiliUploadResult: ...
-    def append(self, request: BilibiliAppendRequest) -> BilibiliUploadResult: ...
-    def get_video(self, bvid: str) -> BilibiliVideo: ...
+    def append(self, archive: BilibiliArchiveSnapshot, request: BilibiliAppendRequest) -> BilibiliUploadResult: ...
+    def get_archive(self, aid: int) -> BilibiliArchiveSnapshot: ...
 ```
 
 ```text
-BilibiliLoginSensor
+BilibiliPublicationSensor
+BilibiliArchiveLookupOperator
 BilibiliUploadOperator
 BilibiliAppendOperator
 ```
@@ -561,8 +562,9 @@ Airflow 保存编排状态；Localization Service 保存 job 状态；RustFS 保
 ### Phase 4：Bilibili 投稿
 
 - 完成 Bilibili Provider discovery。
-- 封装固定版本 biliup。
-- 实现登录检查、续期提示、投稿和结果查询。
+- 固定并封装 `biliup==1.2.2` Python SDK。
+- 实现登录检查、投稿、归档查询、审核/发布状态 Sensor 和完整追加。
+- 接入 RustFS Artifact staging、publication record 幂等键和 reconcile 边界。
 - 保存 aid、bvid、投稿响应和映射，接入 Bark 通知。
 
 验收：成片可幂等投稿；凭证失效不会无限重试；重复 DAG run 不重复投稿。

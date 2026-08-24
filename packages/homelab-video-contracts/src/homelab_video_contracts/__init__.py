@@ -4,7 +4,16 @@ from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version
 
 from homelab_video_contracts.artifacts import Artifact
+from homelab_video_contracts.bilibili import BilibiliAppendRequest
+from homelab_video_contracts.bilibili import BilibiliArchivePart
+from homelab_video_contracts.bilibili import BilibiliArchiveSnapshot
+from homelab_video_contracts.bilibili import BilibiliPartInput
+from homelab_video_contracts.bilibili import BilibiliPartResult
+from homelab_video_contracts.bilibili import BilibiliPublicationRecord
+from homelab_video_contracts.bilibili import BilibiliPublicationStatus
 from homelab_video_contracts.bilibili import BilibiliPublishResult
+from homelab_video_contracts.bilibili import BilibiliPublishSettings
+from homelab_video_contracts.bilibili import BilibiliUploadRequest
 from homelab_video_contracts.jobs import JobError
 from homelab_video_contracts.jobs import JobStatus
 from homelab_video_contracts.jobs import JobType
@@ -36,7 +45,16 @@ except PackageNotFoundError:
 __all__ = [
     "Artifact",
     "AudioStrategy",
+    "BilibiliAppendRequest",
+    "BilibiliArchivePart",
+    "BilibiliArchiveSnapshot",
+    "BilibiliPartInput",
+    "BilibiliPartResult",
+    "BilibiliPublicationRecord",
+    "BilibiliPublicationStatus",
     "BilibiliPublishResult",
+    "BilibiliPublishSettings",
+    "BilibiliUploadRequest",
     "JobError",
     "JobStatus",
     "JobType",
