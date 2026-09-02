@@ -1,41 +1,41 @@
-# Homelab Airflow Financial Data Provider
+# Homelab Airflow 金融数据 Provider
 
-An Apache Airflow provider for immutable ingestion of financial market data. Version 1 ingests EODHD US option end-of-day data into S3 as raw JSON, curated Parquet, and a manifest-last publication record.
+这是一个用于不可变采集金融市场数据的 Apache Airflow Provider。v1 只支持 EODHD 的美股期权日终（EOD）数据：保存完整原始响应、标准化 Parquet，以及最后发布的 manifest。
 
-## What it provides
+## 能做什么
 
-`EodhdOptionsEodToS3Operator` collects one US underlying's option EOD records for a requested date. Each successful run writes:
+`EodhdOptionsEodToS3Operator` 针对一个美股标的和一个交易日期采集期权 EOD 记录，并在一次成功运行中产出：
 
-- Original API responses as gzipped JSON, page by page.
-- A normalized, Zstandard-compressed Parquet file.
-- A `current.json` manifest containing artifact checksums, locations, and quality findings.
+- 每页完整 API 响应的 gzip JSON（Raw）。
+- 使用 Zstandard 压缩的标准化 Parquet（Curated）。
+- `current.json` manifest，其中包含产物 URI、SHA-256、运行 ID 与数据质量报告。
 
-The manifest is the publication boundary: consumers should read the manifest first, never infer success merely from the presence of Raw or Parquet objects.
+manifest 是唯一的发布边界。下游应先读取 manifest，而不是仅通过某个 Raw 或 Parquet 文件存在来判断一批数据成功。
 
-## Install
+## 安装
 
-Within this repository, `uv` discovers the package as a workspace member. For a standalone Airflow environment, install the published package together with the Amazon provider:
+本仓库使用 uv workspace 管理该包。独立 Airflow 环境可安装发布后的包：
 
 ```bash
 pip install homelab-airflow-providers-financial-data
 ```
 
-The optional Optopsy adapter needs Pandas and Optopsy:
+使用 Optopsy 适配器时，需要可选依赖：
 
 ```bash
 pip install 'homelab-airflow-providers-financial-data[optopsy]'
 ```
 
-## Configure connections
+## 配置 Airflow Connection
 
-Create an Airflow connection with type `eodhd` and ID `eodhd_default` (or pass another ID to the operator).
+创建类型为 `eodhd` 的 Airflow Connection。默认连接 ID 是 `eodhd_default`，也可通过 Operator 参数传入其他 ID。
 
-| Field | Value |
+| 字段 | 配置值 |
 | --- | --- |
 | Connection type | `eodhd` |
-| Password | Your EODHD API token |
-| Host / schema / login / port | Leave blank |
-| Extra | Optional JSON configuration below |
+| Password | EODHD API Token |
+| Host / schema / login / port | 留空 |
+| Extra | 可选 JSON，见下方示例 |
 
 ```json
 {
@@ -47,13 +47,19 @@ Create an Airflow connection with type `eodhd` and ID `eodhd_default` (or pass a
 }
 ```
 
-`proxy` can be added as an HTTPS URL. The hook retries connection errors, HTTP 429, and 5xx responses; it honours a numeric `Retry-After` header. API tokens are never incorporated into S3 keys, manifests, or raised error messages.
+需要代理时，可在 Extra 中加入 HTTPS URL：
 
-Configure the target S3 credentials through a normal Amazon provider connection, defaulting to `aws_default`.
+```json
+{"proxy": "https://proxy.example.com:8443"}
+```
 
-## Use from a DAG
+Hook 会重试网络异常、HTTP 429 与 5xx 响应，并在 `Retry-After` 是数值时遵守该等待时间。API Token 不会出现在 S3 key、manifest 或 Provider 抛出的异常文本中。
 
-This is an example only. It is intentionally not packaged or registered as a production DAG.
+目标 S3 则通过普通 Amazon Provider Connection 配置，默认 ID 是 `aws_default`。
+
+## 在 DAG 中使用
+
+下面是使用方式示例，不会随 Provider 注册为生产 DAG：
 
 ```python
 from datetime import datetime
@@ -79,33 +85,85 @@ with DAG(
     )
 ```
 
-The operator returns a deliberately small XCom payload: run ID, requested quote date, underlying, curated artifact URIs, and the serialized quality report. It also emits an Airflow Dataset event at:
+Operator 的 XCom 有意保持很小，只返回运行 ID、请求日期、标的、Curated URI 与序列化质量报告。它还会发布以下 Dataset event：
 
 ```text
 s3://<bucket>/<prefix>/curated/dataset=options.eod_quotes
 ```
 
-## Run without an operator
+## 不使用 S3 的本地验证
 
-Models, normalization, quality checks, and storage have no Airflow task-context dependency. They can be composed in an application or an integration test:
+可以。`LocalFilesystemStore` 复用了 Raw、Curated 和 manifest-last 的 key 布局与发布顺序，但写入本地目录。它专用于本地开发和集成验证；生产 DAG 的 Operator 始终使用 S3。
+
+若希望连同真实 EODHD API 一起试跑，可将 `EodhdHook` 与 `LocalFilesystemStore` 组合。这种方式不需要 AWS 或 MinIO，但仍需要有效的 EODHD Connection：
 
 ```python
 from datetime import date
+from pathlib import Path
 
 from homelab_airflow_providers_financial_data.hooks import EodhdHook
 from homelab_airflow_providers_financial_data.ingestion import EodhdOptionsIngestion, new_storage_target
 from homelab_airflow_providers_financial_data.models import EodhdOptionEodRequest
-from homelab_airflow_providers_financial_data.storage import FinancialDataS3Store
+from homelab_airflow_providers_financial_data.storage import LocalFilesystemStore
 
 request = EodhdOptionEodRequest(underlying_symbol="SPY", quote_date=date(2025, 1, 2))
-target = new_storage_target(bucket="your-financial-data-bucket", prefix="financial-data")
-manifest = EodhdOptionsIngestion(EodhdHook("eodhd_default"), FinancialDataS3Store("aws_default")).run(
-    request, target
-)
+target = new_storage_target(bucket="local-bucket", prefix="financial-data")
+store = LocalFilesystemStore(Path(".local-financial-data"))
+
+manifest = EodhdOptionsIngestion(EodhdHook("eodhd_default"), store).run(request, target)
 print(manifest.curated_artifacts[0].uri)
 ```
 
-## S3 layout and publication behavior
+上述代码会在以下位置写入文件：
+
+```text
+.local-financial-data/local-bucket/financial-data/...
+```
+
+完全离线时，可用 fixture Hook 替代 `EodhdHook`。只要对象实现 `iter_option_eod_pages(request)` 并返回 `RawPage`，`EodhdOptionsIngestion` 就能完成整个本地流程；这也是编写集成测试时推荐的方式。
+
+```python
+from datetime import UTC, date, datetime
+from pathlib import Path
+
+from homelab_airflow_providers_financial_data.ingestion import EodhdOptionsIngestion, new_storage_target
+from homelab_airflow_providers_financial_data.models import EodhdOptionEodRequest, RawPage
+from homelab_airflow_providers_financial_data.storage import LocalFilesystemStore
+
+
+class FixtureHook:
+    def iter_option_eod_pages(self, request):
+        yield RawPage(
+            page_number=1,
+            cursor="0",
+            fetched_at=datetime.now(UTC),
+            payload={"fixture": True},
+            records=(
+                {
+                    "contract": "AAPL250117C00200000",
+                    "exp_date": "2025-01-17",
+                    "type": "call",
+                    "strike": 200,
+                    "bid": 5.1,
+                    "ask": 5.3,
+                    "volume": 42,
+                    "open_interest": 100,
+                    "volatility": 0.25,
+                    "bid_date": "2025-01-02 14:59:59",
+                },
+            ),
+        )
+
+
+request = EodhdOptionEodRequest(underlying_symbol="AAPL", quote_date=date(2025, 1, 2))
+target = new_storage_target(bucket="local-bucket", prefix="financial-data", run_id="fixture-run")
+manifest = EodhdOptionsIngestion(FixtureHook(), LocalFilesystemStore(Path(".local-financial-data"))).run(
+    request, target
+)
+print(manifest.model_dump_json(indent=2))
+```
+
+## S3 对象布局与发布行为
 
 ```text
 financial-data/
@@ -117,23 +175,23 @@ financial-data/
     └── quote_date=YYYY-MM-DD/underlying_symbol=AAPL/current.json
 ```
 
-Raw and curated objects are immutable because their S3 keys include the run ID. The provider writes `current.json` only after raw and curated artifacts have succeeded. A later run skips a successful manifest by default; pass `replace=True` to publish a new version without deleting the prior one.
+Raw 和 Curated 对象的 key 含有 `run_id`，因此不可变。所有 Raw 与 Curated 成功后才会写入 `current.json`。同一标的和日期已有成功 manifest 时，默认跳过运行；设置 `replace=True` 会创建一个新的 `run_id` 并在成功后更新 manifest，不会删除旧版本。
 
-Failed runs can leave diagnostic Raw pages, but never update `current.json`. This makes an existing manifest safe for downstream readers while allowing source-response debugging.
+失败运行可能遗留用于排障的 Raw 页面，但绝不会修改 `current.json`。因此下游读者始终可以安全地使用已发布 manifest。
 
-## Curated schema and quality findings
+## Curated schema 与质量报告
 
-The Parquet schema includes `contract`, `underlying_symbol`, `quote_date`, `expiration`, `option_type`, `strike`, OHLC, bid/ask, volume, open interest, IV, the five Greeks, and UTC `observed_at`. It is sorted by:
+Parquet 包含 `contract`、`underlying_symbol`、`quote_date`、`expiration`、`option_type`、`strike`、OHLC、bid/ask、成交量、持仓量、IV、五个 Greeks 和 UTC `observed_at`。输出排序为：
 
 ```text
 quote_date, underlying_symbol, expiration, option_type, strike
 ```
 
-Malformed contracts (missing contract, invalid strike/date/right, or missing observation time) are excluded from the curated file and counted as errors in the manifest quality report. Crossed markets (`ask < bid`) remain available to consumers and are reported as warnings.
+缺失合约号、无效 strike/日期/Call-Put 类型或缺少观测时间的记录，会从 Curated 文件排除，并在 manifest 的质量报告中记为 error。交叉报价（`ask < bid`）仍会保留给消费者，并记为 warning。
 
-EODHD uses `tradetime` to filter this endpoint. It can represent a last trade or, when no trade exists, another option update. Treat `quote_date` as the requested EOD partition and inspect the persisted API response when auditing an individual quote.
+EODHD 的此 endpoint 使用 `tradetime` 过滤数据。它可能是最后成交时间；当没有成交时，也可能反映其他期权更新。因此应将 `quote_date` 理解为所请求的 EOD 分区，审计单条记录时以持久化的原始响应为准。
 
-## Read with Polars or Optopsy
+## 使用 Polars 或 Optopsy 消费
 
 ```python
 import polars as pl
@@ -142,7 +200,7 @@ quotes = pl.scan_parquet("s3://your-financial-data-bucket/financial-data/curated
 print(quotes.filter(pl.col("underlying_symbol") == "AAPL").collect())
 ```
 
-For Optopsy, pass the curated lazy frame to the adapter. It selects only compatible columns before converting to Pandas, and never fabricates bid/ask from a close price:
+Optopsy 适配器会先选择兼容列，再转换到 Pandas；它不会用 close 伪造 bid/ask：
 
 ```python
 from homelab_airflow_providers_financial_data.integrations.optopsy import to_optopsy_frame
