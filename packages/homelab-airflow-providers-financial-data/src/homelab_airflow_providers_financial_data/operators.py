@@ -4,12 +4,10 @@ from __future__ import annotations
 
 from datetime import date
 from typing import Any
-from typing import ClassVar
 
 from airflow.datasets import Dataset
 from airflow.models import BaseOperator
 
-from homelab_airflow_providers_financial_data.datasets import OPTIONS_EOD_QUOTES_DATASET
 from homelab_airflow_providers_financial_data.hooks import EodhdHook
 from homelab_airflow_providers_financial_data.ingestion import EodhdOptionsIngestion
 from homelab_airflow_providers_financial_data.ingestion import new_storage_target
@@ -21,7 +19,6 @@ class EodhdOptionsEodToS3Operator(BaseOperator):
     """Ingest EODHD option quotes and publish a compact XCom summary."""
 
     template_fields = ("underlying_symbol", "quote_date", "bucket", "prefix", "run_id")
-    outlets: ClassVar[list[Dataset]] = [Dataset(OPTIONS_EOD_QUOTES_DATASET)]
 
     def __init__(
         self,
@@ -48,6 +45,8 @@ class EodhdOptionsEodToS3Operator(BaseOperator):
         self.exchange = exchange
         self.replace = replace
         self.run_id = run_id
+        dataset_uri = f"s3://{bucket}/{prefix.strip('/')}/curated/dataset=options.eod_quotes"
+        self.outlets = [Dataset(dataset_uri)]
 
     def execute(self, context: Any) -> dict[str, Any]:
         """Run the service and return only manifest metadata through XCom."""
