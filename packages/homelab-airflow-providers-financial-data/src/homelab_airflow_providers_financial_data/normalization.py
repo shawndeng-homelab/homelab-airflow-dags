@@ -51,12 +51,18 @@ class EodhdOptionNormalizer:
                     return pl.col(name)
             return pl.lit(None)
 
+        def coalesced_field(*names: str) -> pl.Expr:
+            """Return the first non-null value among available upstream aliases."""
+            available = [pl.col(name) for name in names if name in fields]
+            return pl.coalesce(available) if available else pl.lit(None)
+
         expressions = [
             pl.lit("1.0").alias("schema_version"),
             pl.lit("eodhd").alias("source"),
+            field("contract", "contract_name").cast(pl.String).alias("contract"),
             pl.lit(self.underlying_symbol).alias("underlying_symbol"),
             pl.lit(self.quote_date).cast(pl.Date).alias("quote_date"),
-            field("expirationDate", "expiration", "expiry")
+            field("expirationDate", "expiration", "expiry", "exp_date")
             .cast(pl.String)
             .str.to_date(strict=False)
             .alias("expiration"),
@@ -73,7 +79,7 @@ class EodhdOptionNormalizer:
             "close": ("close", "last"),
             "bid": ("bid",),
             "ask": ("ask",),
-            "implied_volatility": ("impliedVolatility", "iv", "implied_volatility"),
+            "implied_volatility": ("impliedVolatility", "iv", "implied_volatility", "volatility"),
             "delta": ("delta",),
             "gamma": ("gamma",),
             "theta": ("theta",),
@@ -87,7 +93,7 @@ class EodhdOptionNormalizer:
             [
                 field("volume").cast(pl.Int64, strict=False).alias("volume"),
                 field("openInterest", "open_interest", "oi").cast(pl.Int64, strict=False).alias("open_interest"),
-                field("lastTradeDateTime", "observed_at", "timestamp")
+                coalesced_field("lastTradeDateTime", "observed_at", "timestamp", "bid_date", "ask_date", "tradetime")
                 .cast(pl.String)
                 .str.to_datetime(strict=False, time_zone="UTC")
                 .alias("observed_at"),
@@ -106,11 +112,14 @@ class EodhdOptionNormalizer:
             frame.select(
                 pl.len().alias("input_records"),
                 (
-                    (pl.col("strike").is_null())
+                    (pl.col("contract").is_null())
+                    | (pl.col("contract").str.len_chars() == 0)
+                    | (pl.col("strike").is_null())
                     | (pl.col("strike") < 0)
                     | pl.col("expiration").is_null()
                     | (pl.col("expiration") < pl.col("quote_date"))
                     | ~pl.col("option_type").is_in(["call", "put"])
+                    | pl.col("observed_at").is_null()
                 )
                 .sum()
                 .alias("rejected_records"),
@@ -143,9 +152,12 @@ class EodhdOptionNormalizer:
     def valid_records(frame: pl.LazyFrame) -> pl.LazyFrame:
         """Keep valid contracts while allowing all quality findings to be persisted."""
         return frame.filter(
-            pl.col("strike").is_not_null()
+            pl.col("contract").is_not_null()
+            & (pl.col("contract").str.len_chars() > 0)
+            & pl.col("strike").is_not_null()
             & (pl.col("strike") >= 0)
             & pl.col("expiration").is_not_null()
             & (pl.col("expiration") >= pl.col("quote_date"))
             & pl.col("option_type").is_in(["call", "put"])
+            & pl.col("observed_at").is_not_null()
         ).drop("source_record_index")

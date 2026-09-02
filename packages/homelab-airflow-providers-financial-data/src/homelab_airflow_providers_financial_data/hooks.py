@@ -68,34 +68,33 @@ class EodhdHook(BaseHook):
         return True, "EODHD credentials were accepted"
 
     def iter_option_eod_pages(self, request: EodhdOptionEodRequest) -> Iterator[RawPage]:
-        """Yield pages, rejecting malformed payloads and repeated cursors."""
-        cursor: str | None = None
-        seen_cursors: set[str] = set()
+        """Yield Marketplace EOD pages, rejecting malformed pagination metadata."""
+        config = self.get_connection_config()
+        offset = 0
         page_number = 0
         while True:
             params: dict[str, str] = {
-                "from": request.quote_date.isoformat(),
-                "to": request.quote_date.isoformat(),
+                "filter[underlying_symbol]": request.underlying_symbol.upper(),
+                "filter[tradetime_from]": request.quote_date.isoformat(),
+                "filter[tradetime_to]": request.quote_date.isoformat(),
+                "page[offset]": str(offset),
+                "page[limit]": str(config.page_limit),
+                "sort": "exp_date,strike",
                 "fmt": "json",
             }
-            if cursor:
-                params["cursor"] = cursor
-            payload = self._request_json(f"options/{request.qualified_symbol}", params)
-            records, next_cursor = self._extract_page(payload)
+            payload = self._request_json("mp/unicornbay/options/eod", params)
+            records, next_offset = self._extract_page(payload, offset)
             page_number += 1
             yield RawPage(
                 page_number=page_number,
                 records=tuple(records),
                 payload=payload,
                 fetched_at=datetime.now(UTC),
-                cursor=cursor,
+                cursor=str(offset),
             )
-            if not next_cursor:
+            if next_offset is None:
                 return
-            if next_cursor in seen_cursors:
-                raise AirflowException("EODHD returned a repeated pagination cursor")
-            seen_cursors.add(next_cursor)
-            cursor = next_cursor
+            offset = next_offset
 
     def _request_json(self, path: str, params: dict[str, str] | None = None) -> Any:
         config = self.get_connection_config()
@@ -132,17 +131,32 @@ class EodhdHook(BaseHook):
         time.sleep(delay)
 
     @staticmethod
-    def _extract_page(payload: Any) -> tuple[list[dict[str, Any]], str | None]:
-        if isinstance(payload, list):
-            records, metadata = payload, {}
-        elif isinstance(payload, dict):
-            records = payload.get("data", payload.get("results", []))
-            metadata = payload.get("pagination", payload)
-        else:
-            raise AirflowException("EODHD response must be an object or array")
-        if not isinstance(records, list) or not all(isinstance(record, dict) for record in records):
-            raise AirflowException("EODHD response does not contain an array of option records")
-        next_cursor = metadata.get("next_cursor") or metadata.get("next") if isinstance(metadata, dict) else None
-        if next_cursor is not None and not isinstance(next_cursor, str):
-            raise AirflowException("EODHD response contains an invalid pagination cursor")
-        return records, next_cursor
+    def _extract_page(payload: Any, offset: int) -> tuple[list[dict[str, Any]], int | None]:
+        """Flatten JSON:API attributes and calculate the next safe page offset."""
+        if not isinstance(payload, dict):
+            raise AirflowException("EODHD options response must be a JSON object")
+        data, meta = payload.get("data"), payload.get("meta")
+        if not isinstance(data, list) or not isinstance(meta, dict):
+            raise AirflowException("EODHD options response is missing data or meta")
+        records: list[dict[str, Any]] = []
+        for item in data:
+            if not isinstance(item, dict) or not isinstance(item.get("attributes"), dict):
+                raise AirflowException("EODHD options response contains an invalid data item")
+            record = dict(item["attributes"])
+            if isinstance(item.get("id"), str):
+                record["source_record_id"] = item["id"]
+            records.append(record)
+        reported_offset, limit, total = meta.get("offset"), meta.get("limit"), meta.get("total")
+        if (
+            not isinstance(reported_offset, int)
+            or reported_offset != offset
+            or not isinstance(limit, int)
+            or not isinstance(total, int)
+            or limit <= 0
+            or total < offset
+        ):
+            raise AirflowException("EODHD options response contains invalid pagination metadata")
+        next_offset = offset + len(records)
+        if len(records) > limit or (next_offset < total and not records):
+            raise AirflowException("EODHD options response has inconsistent pagination")
+        return records, next_offset if next_offset < total else None

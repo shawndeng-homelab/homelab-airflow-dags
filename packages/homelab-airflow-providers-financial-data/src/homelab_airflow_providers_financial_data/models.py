@@ -31,6 +31,7 @@ class EodhdConnectionConfig(ContractModel):
     timeout: float = Field(default=30, gt=0, le=300)
     proxy: HttpUrl | None = None
     max_retries: int = Field(default=4, ge=0, le=10)
+    page_limit: int = Field(default=1000, ge=1, le=1000)
     verify: bool = True
 
 
@@ -39,7 +40,7 @@ class EodhdOptionEodRequest(ContractModel):
 
     underlying_symbol: str = Field(min_length=1, pattern=r"^[A-Za-z0-9.\-]+$")
     quote_date: date
-    exchange: str = "US"
+    exchange: Literal["US"] = "US"
     replace: bool = False
     run_id: str | None = Field(default=None, min_length=1)
 
@@ -142,6 +143,7 @@ class OptionEodQuote(ContractModel):
 
     schema_version: Literal["1.0"] = "1.0"
     source: Literal["eodhd"] = "eodhd"
+    contract: str = Field(min_length=1)
     underlying_symbol: str
     quote_date: date
     expiration: date
