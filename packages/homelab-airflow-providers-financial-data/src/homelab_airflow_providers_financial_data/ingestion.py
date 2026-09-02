@@ -12,12 +12,13 @@ from homelab_airflow_providers_financial_data.models import IngestionManifest
 from homelab_airflow_providers_financial_data.models import StorageTarget
 from homelab_airflow_providers_financial_data.normalization import EodhdOptionNormalizer
 from homelab_airflow_providers_financial_data.storage import FinancialDataS3Store
+from homelab_airflow_providers_financial_data.storage import LocalFilesystemStore
 
 
 class EodhdOptionsIngestion:
     """Run raw capture, curated conversion, and manifest-last publication."""
 
-    def __init__(self, hook: EodhdHook, store: FinancialDataS3Store) -> None:
+    def __init__(self, hook: EodhdHook, store: FinancialDataS3Store | LocalFilesystemStore) -> None:
         """Initialize the service with its source and storage dependencies."""
         self.hook = hook
         self.store = store
