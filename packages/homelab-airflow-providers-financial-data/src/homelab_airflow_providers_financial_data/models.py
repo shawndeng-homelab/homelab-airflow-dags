@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
-from datetime import UTC, date, datetime
+from datetime import UTC
+from datetime import date
+from datetime import datetime
 from decimal import Decimal
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Any
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+from pydantic import BaseModel
+from pydantic import ConfigDict
+from pydantic import Field
+from pydantic import HttpUrl
+from pydantic import model_validator
 
 
 class ContractModel(BaseModel):
@@ -53,6 +60,7 @@ class RawPage(ContractModel):
 
     @model_validator(mode="after")
     def check_fetched_at(self) -> RawPage:
+        """Require the source observation timestamp to be UTC-aware."""
         if self.fetched_at.tzinfo is None or self.fetched_at.utcoffset() != UTC.utcoffset(self.fetched_at):
             raise ValueError("fetched_at must be UTC-aware")
         return self
@@ -67,6 +75,7 @@ class StorageTarget(ContractModel):
 
     @property
     def normalized_prefix(self) -> str:
+        """Return the prefix with boundary slashes removed."""
         return self.prefix.strip("/")
 
 
@@ -82,6 +91,8 @@ class Artifact(ContractModel):
 
 
 class QualitySeverity(StrEnum):
+    """Severity assigned to a data-quality finding."""
+
     WARNING = "warning"
     ERROR = "error"
 
@@ -120,6 +131,8 @@ class IngestionManifest(ContractModel):
 
 
 class OptionType(StrEnum):
+    """US option contract right."""
+
     CALL = "call"
     PUT = "put"
 
@@ -153,6 +166,7 @@ class OptionEodQuote(ContractModel):
 
     @model_validator(mode="after")
     def validate_dates_and_time(self) -> OptionEodQuote:
+        """Enforce the contract's date and UTC timestamp invariants."""
         if self.expiration < self.quote_date:
             raise ValueError("expiration must be on or after quote_date")
         if self.observed_at.tzinfo is None or self.observed_at.utcoffset() != UTC.utcoffset(self.observed_at):
