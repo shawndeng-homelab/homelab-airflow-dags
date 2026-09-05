@@ -1,9 +1,10 @@
-"""Download one EODHD option EOD partition to a local filesystem store.
+r"""Download one EODHD option EOD partition to a local filesystem store.
 
 Example (PowerShell)::
 
     $env:EODHD_API_TOKEN = "your-token"
-    .\\.venv\\Scripts\\python.exe packages/homelab-airflow-providers-financial-data/examples/download_options_to_local.py `
+    $runner = ".\.venv\Scripts\python.exe"
+    & $runner packages/homelab-airflow-providers-financial-data/examples/download_options_to_local.py `
         --symbol AAPL --quote-date 2025-01-02
 """
 
