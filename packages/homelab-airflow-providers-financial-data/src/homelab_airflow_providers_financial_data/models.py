@@ -160,7 +160,7 @@ class OptionEodQuote(ContractModel):
     schema_version: Literal["2.0"] = "2.0"
     source: Literal["eodhd"] = "eodhd"
     contract: str = Field(min_length=1)
-    source_record_id: str | None = None
+    source_record_id: str = Field(min_length=1)
     raw_page_number: int = Field(ge=1)
     raw_record_index: int = Field(ge=0)
     underlying_symbol: str

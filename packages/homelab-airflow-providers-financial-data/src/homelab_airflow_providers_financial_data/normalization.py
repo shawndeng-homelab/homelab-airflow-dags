@@ -15,7 +15,7 @@ from homelab_airflow_providers_financial_data.models import QualityReport
 class EodhdOptionNormalizer:
     """Map EODHD records to the versioned curated options schema."""
 
-    _key_columns = ("source", "contract", "quote_date")
+    _key_columns = ("source", "source_record_id")
     _nonnegative_decimal_columns = (
         "underlying_price",
         "open",
@@ -137,6 +137,8 @@ class EodhdOptionNormalizer:
         invalid = (
             pl.col("contract").is_null()
             | (pl.col("contract").str.len_chars() == 0)
+            | pl.col("source_record_id").is_null()
+            | (pl.col("source_record_id").str.len_chars() == 0)
             | pl.col("raw_page_number").is_null()
             | pl.col("raw_record_index").is_null()
             | pl.col("quote_date").is_null()
@@ -189,8 +191,8 @@ class EodhdOptionNormalizer:
         if duplicate_records:
             issues.append(
                 QualityIssue(
-                    code="duplicate_contract",
-                    message=f"{duplicate_records} duplicate records were removed",
+                    code="duplicate_source_record",
+                    message=f"{duplicate_records} duplicate source records were removed",
                 )
             )
         crossed = int(summary["crossed_quotes"] or 0)
@@ -205,7 +207,7 @@ class EodhdOptionNormalizer:
         )
 
     def ensure_no_conflicting_duplicates(self, frame: pl.LazyFrame) -> None:
-        """Reject duplicate logical keys whose market values disagree."""
+        """Reject duplicate immutable source IDs whose market values disagree."""
         uniqueness_checks = [pl.col(column).n_unique().alias(column) for column in self._comparison_columns]
         field_conflict = pl.any_horizontal(*(pl.col(column) > 1 for column in self._comparison_columns))
         conflicts = (
