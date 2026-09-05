@@ -31,15 +31,27 @@ class EodhdOptionsIngestion:
             return existing
 
         raw_artifacts = []
-        records = []
+        records: list[dict[object, object]] = []
         for page in self.hook.iter_option_eod_pages(request):
             raw_artifacts.append(self.store.write_raw_page(page, target, request.quote_date.isoformat(), symbol))
-            records.extend(page.records)
+            records.extend(
+                {
+                    **record,
+                    "_source_record_id": record.get("source_record_id"),
+                    "_raw_page_number": page.page_number,
+                    "_raw_record_index": record_index,
+                    "_ingested_at": page.fetched_at,
+                }
+                for record_index, record in enumerate(page.records)
+            )
 
         normalizer = EodhdOptionNormalizer(request.quote_date, symbol)
         raw_frame = normalizer.to_frame(records)
         normalized = normalizer.normalize(raw_frame.lazy())
+        normalizer.ensure_no_conflicting_duplicates(normalized)
         report = normalizer.validate(normalized)
+        if report.input_records and not report.accepted_records:
+            raise ValueError("All EODHD option records were rejected; manifest will not be published")
         curated = normalizer.valid_records(normalized)
         curated_artifacts = [self.store.write_parquet(curated, target, request.quote_date.isoformat(), symbol)]
         manifest = IngestionManifest(

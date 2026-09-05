@@ -81,7 +81,7 @@ class StorageTarget(ContractModel):
 
 
 class Artifact(ContractModel):
-    """An immutable object persisted to S3."""
+    """An immutable object persisted by a storage backend."""
 
     uri: str
     key: str
@@ -104,7 +104,9 @@ class QualityIssue(ContractModel):
     code: str
     message: str
     severity: QualitySeverity = QualitySeverity.WARNING
-    record_index: int | None = Field(default=None, ge=0)
+    raw_page_number: int | None = Field(default=None, ge=1)
+    raw_record_index: int | None = Field(default=None, ge=0)
+    source_record_id: str | None = None
 
 
 class QualityReport(ContractModel):
@@ -113,13 +115,14 @@ class QualityReport(ContractModel):
     input_records: int = Field(ge=0)
     accepted_records: int = Field(ge=0)
     rejected_records: int = Field(ge=0)
+    duplicate_records: int = Field(default=0, ge=0)
     issues: tuple[QualityIssue, ...] = ()
 
 
 class IngestionManifest(ContractModel):
     """The atomically published pointer to one successful curated version."""
 
-    schema_version: Literal["1.0"] = "1.0"
+    schema_version: Literal["2.0"] = "2.0"
     source: Literal["eodhd"] = "eodhd"
     dataset: Literal["options.eod_quotes"] = "options.eod_quotes"
     quote_date: date
@@ -141,11 +144,17 @@ class OptionType(StrEnum):
 class OptionEodQuote(ContractModel):
     """Semantic schema for one normalized option EOD quote."""
 
-    schema_version: Literal["1.0"] = "1.0"
+    schema_version: Literal["2.0"] = "2.0"
     source: Literal["eodhd"] = "eodhd"
     contract: str = Field(min_length=1)
+    source_record_id: str | None = None
+    raw_page_number: int = Field(ge=1)
+    raw_record_index: int = Field(ge=0)
     underlying_symbol: str
     quote_date: date
+    source_quote_time_raw: str | None = None
+    source_trade_time_raw: str | None = None
+    ingested_at: datetime
     expiration: date
     option_type: OptionType
     strike: Decimal = Field(ge=0)
@@ -164,13 +173,14 @@ class OptionEodQuote(ContractModel):
     theta: Decimal | None = None
     vega: Decimal | None = Field(default=None, ge=0)
     rho: Decimal | None = None
-    observed_at: datetime
+    currency: str | None = Field(default=None, min_length=3, max_length=3)
+    contract_multiplier: Decimal | None = Field(default=None, gt=0)
 
     @model_validator(mode="after")
     def validate_dates_and_time(self) -> OptionEodQuote:
-        """Enforce the contract's date and UTC timestamp invariants."""
+        """Enforce the contract's date and ingestion-time invariants."""
         if self.expiration < self.quote_date:
             raise ValueError("expiration must be on or after quote_date")
-        if self.observed_at.tzinfo is None or self.observed_at.utcoffset() != UTC.utcoffset(self.observed_at):
-            raise ValueError("observed_at must be UTC-aware")
+        if self.ingested_at.tzinfo is None or self.ingested_at.utcoffset() != UTC.utcoffset(self.ingested_at):
+            raise ValueError("ingested_at must be UTC-aware")
         return self
