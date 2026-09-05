@@ -13,6 +13,7 @@
 /site/
 .env
 .venv/
+/.local-financial-data/
 
 # Airflow runtime (AIRFLOW_HOME=/opt/airflow)
 /airflow/

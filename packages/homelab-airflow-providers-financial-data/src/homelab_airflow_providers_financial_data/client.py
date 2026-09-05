@@ -90,7 +90,7 @@ class EodhdClient:
                     "filter[tradetime_to]": request.quote_date.isoformat(),
                     "page[offset]": str(offset),
                     "page[limit]": str(self.config.page_limit),
-                    "sort": "exp_date,strike",
+                    "sort": "exp_date",
                     "fmt": "json",
                 },
             )
@@ -173,12 +173,15 @@ class EodhdClient:
             not isinstance(reported_offset, int)
             or reported_offset != offset
             or not isinstance(limit, int)
-            or not isinstance(total, int)
             or limit <= 0
-            or total < offset
+            or (total is not None and (not isinstance(total, int) or total < offset))
         ):
             raise RuntimeError("EODHD options response contains invalid pagination metadata")
         next_offset = offset + len(records)
-        if len(records) > limit or (next_offset < total and not records):
+        if len(records) > limit:
             raise RuntimeError("EODHD options response has inconsistent pagination")
-        return records, next_offset if next_offset < total else None
+        if not records:
+            return records, None
+        if total is not None:
+            return records, next_offset if next_offset < total else None
+        return records, next_offset if len(records) == limit else None

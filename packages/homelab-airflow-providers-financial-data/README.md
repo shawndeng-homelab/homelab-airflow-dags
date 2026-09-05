@@ -199,7 +199,7 @@ Raw、Curated 与运行 manifest 的 key 都含有 `run_id`，因此不可变。
 
 ## Curated schema 与质量报告
 
-Parquet 包含合约与行情字段，以及 `source_record_id`、`raw_page_number`、`raw_record_index`、原始时间字符串和 UTC `ingested_at`。其中 `quote_date` 表示请求的 EOD 分区，不冒充交易所行情时间。输出排序为：
+Parquet 包含合约与行情字段，以及 `source_record_id`、`raw_page_number`、`raw_record_index`、原始时间字符串和 UTC `ingested_at`。其中 `quote_date` 是请求的 `tradetime` 活动分区，不冒充交易所的快照日期；快照身份由不可变的 `source_record_id`（EODHD JSON:API `id`）保留。一个 contract 在同一活动日期有多个不同源事件是正常情况，只有同一 `source_record_id` 的重复才会去重或报冲突。输出排序为：
 
 ```text
 quote_date, underlying_symbol, expiration, option_type, strike
@@ -207,7 +207,9 @@ quote_date, underlying_symbol, expiration, option_type, strike
 
 缺失合约号、无效 strike/日期/Call-Put 类型或缺少观测时间的记录，会从 Curated 文件排除，并在 manifest 的质量报告中记为 error。交叉报价（`ask < bid`）仍会保留给消费者，并记为 warning。
 
-EODHD 的此 endpoint 使用 `tradetime` 过滤数据。它可能是最后成交时间；当没有成交时，也可能反映其他期权更新。因此应将 `quote_date` 理解为所请求的 EOD 分区，审计单条记录时以持久化的原始响应为准。
+EODHD 的此 endpoint 使用 `tradetime` 过滤数据。它可能是最后成交时间；当没有成交时，也可能反映其他期权更新。因此应将 `quote_date` 理解为所请求的活动分区，审计单条记录时以持久化的原始响应与 `source_record_id` 为准。
+
+该 endpoint 的 `sort` 参数一次只能使用一个字段。Provider 使用 `exp_date` 拉取页面，并在规范化阶段按完整的 Curated 排序键重新排序。EODHD 响应有时不提供 `meta.total`；Provider 在该情况下以“最后一页不足 `page[limit]` 条”为结束标记。
 
 ## 使用 manifest 消费 Polars 或 Optopsy
 
