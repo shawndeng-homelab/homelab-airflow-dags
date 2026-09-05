@@ -9,6 +9,7 @@ from homelab_airflow_providers_financial_data.ingestion import new_storage_targe
 from homelab_airflow_providers_financial_data.models import EodhdOptionEodRequest
 from homelab_airflow_providers_financial_data.storage import LocalFilesystemStore
 
+
 # Change these values for the partition you want to download.
 SYMBOL = "AAPL"
 QUOTE_DATE = date(2025, 1, 2)
