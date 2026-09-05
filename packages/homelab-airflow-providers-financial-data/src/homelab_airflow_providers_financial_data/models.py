@@ -134,6 +134,19 @@ class IngestionManifest(ContractModel):
     quality_report: QualityReport
 
 
+class ManifestPointer(ContractModel):
+    """Small mutable pointer to one immutable ingestion manifest."""
+
+    schema_version: Literal["2.0"] = "2.0"
+    dataset: Literal["options.eod_quotes"] = "options.eod_quotes"
+    quote_date: date
+    underlying_symbol: str
+    run_id: str
+    manifest_uri: str
+    manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    published_at: datetime
+
+
 class OptionType(StrEnum):
     """US option contract right."""
 
