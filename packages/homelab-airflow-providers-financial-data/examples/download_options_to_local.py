@@ -3,7 +3,7 @@
 Example (PowerShell)::
 
     $env:EODHD_API_TOKEN = "your-token"
-    uv run python packages/homelab-airflow-providers-financial-data/examples/download_options_to_local.py `
+    .\\.venv\\Scripts\\python.exe packages/homelab-airflow-providers-financial-data/examples/download_options_to_local.py `
         --symbol AAPL --quote-date 2025-01-02
 """
 
