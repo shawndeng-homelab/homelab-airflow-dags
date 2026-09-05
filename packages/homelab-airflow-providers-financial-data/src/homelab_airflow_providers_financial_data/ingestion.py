@@ -65,7 +65,7 @@ class EodhdOptionsIngestion:
             curated_artifacts=tuple(curated_artifacts),
             quality_report=report,
         )
-        self.store.publish_manifest(manifest, target)
+        self.store.publish_manifest(manifest, target, expected_current_run_id=existing.run_id if existing else None)
         return manifest
 
 

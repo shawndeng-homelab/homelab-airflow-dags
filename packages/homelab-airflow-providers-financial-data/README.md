@@ -10,7 +10,7 @@
 - 使用 Zstandard 压缩的标准化 Parquet（Curated）。
 - `current.json` manifest，其中包含产物 URI、SHA-256、运行 ID 与数据质量报告。
 
-manifest 是唯一的发布边界。下游应先读取 manifest，而不是仅通过某个 Raw 或 Parquet 文件存在来判断一批数据成功。
+manifest 是唯一的发布边界。下游先读取轻量的 `current.json` 指针，再读取它指向的不可变运行 manifest；不能仅通过某个 Raw 或 Parquet 文件存在来判断一批数据成功。
 
 ## 安装
 
@@ -177,11 +177,13 @@ financial-data/
 │   └── underlying_symbol=AAPL/run_id=<run-id>/page-00001.json.gz
 ├── curated/dataset=options.eod_quotes/schema_version=2.0/source=eodhd/
 │   └── quote_date=YYYY-MM-DD/underlying_symbol=AAPL/run_id=<run-id>/part-00001.parquet
-└── manifests/dataset=options.eod_quotes/source=eodhd/
-    └── quote_date=YYYY-MM-DD/underlying_symbol=AAPL/current.json
+└── manifests/dataset=options.eod_quotes/schema_version=2.0/source=eodhd/
+    └── quote_date=YYYY-MM-DD/underlying_symbol=AAPL/
+        ├── current.json
+        └── runs/<run-id>.json
 ```
 
-Raw 和 Curated 对象的 key 含有 `run_id`，因此不可变。所有 Raw 与 Curated 成功后才会写入 `current.json`。同一标的和日期已有成功 manifest 时，默认跳过运行；设置 `replace=True` 会创建一个新的 `run_id` 并在成功后更新 manifest，不会删除旧版本。
+Raw、Curated 与运行 manifest 的 key 都含有 `run_id`，因此不可变。所有 Raw 与 Curated 成功后才会写入运行 manifest，再通过条件写更新 `current.json`。同一标的和日期已有成功 manifest 时，默认跳过运行；设置 `replace=True` 会创建新的 `run_id` 并在成功后推进指针，不会删除旧版本。S3 使用 ETag 条件写；本地模式使用排他锁和原子替换，两个竞争运行不会静默覆盖彼此。
 
 失败运行可能遗留用于排障的 Raw 页面，但绝不会修改 `current.json`。因此下游读者始终可以安全地使用已发布 manifest。
 
