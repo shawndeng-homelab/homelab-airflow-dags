@@ -82,13 +82,14 @@ with DAG(
         prefix="financial-data",
         eodhd_conn_id="eodhd_default",
         aws_conn_id="aws_default",
+        dataset_uri="s3://financial-data/curated/dataset=options.eod_quotes",
     )
 ```
 
-Operator 的 XCom 有意保持很小，只返回运行 ID、请求日期、标的、Curated URI 与序列化质量报告。它还会发布以下 Dataset event：
+Operator 的 XCom 有意保持很小，只返回运行 ID、请求日期、标的、Curated URI 与序列化质量报告。若需发布 Airflow Dataset event，请显式传入不含 Jinja 模板的稳定 `dataset_uri`；Dataset URI 在 DAG 解析时确定，不能安全地从运行时渲染的 `bucket` 或 `prefix` 推导：
 
 ```text
-s3://<bucket>/<prefix>/curated/dataset=options.eod_quotes
+s3://financial-data/curated/dataset=options.eod_quotes
 ```
 
 ## 不使用 S3 的本地验证
@@ -199,12 +200,26 @@ quote_date, underlying_symbol, expiration, option_type, strike
 
 EODHD 的此 endpoint 使用 `tradetime` 过滤数据。它可能是最后成交时间；当没有成交时，也可能反映其他期权更新。因此应将 `quote_date` 理解为所请求的 EOD 分区，审计单条记录时以持久化的原始响应为准。
 
-## 使用 Polars 或 Optopsy 消费
+## 使用 manifest 消费 Polars 或 Optopsy
+
+下游通过 `FinancialDataManifestReader` 解析当前指针，只扫描已经完整发布的 Curated 文件；不要直接扫描整个 Curated 前缀。
 
 ```python
-import polars as pl
+from datetime import date
+from pathlib import Path
 
-quotes = pl.scan_parquet("s3://your-financial-data-bucket/financial-data/curated/**/*.parquet")
+from homelab_airflow_providers_financial_data.ingestion import new_storage_target
+from homelab_airflow_providers_financial_data.readers import FinancialDataManifestReader
+from homelab_airflow_providers_financial_data.storage import LocalFilesystemStore
+
+target = new_storage_target(bucket="local-bucket", prefix="financial-data", run_id="reader")
+reader = FinancialDataManifestReader(LocalFilesystemStore(Path(".local-financial-data")))
+quotes = reader.scan_current_parquet(target, date(2025, 1, 2).isoformat(), "AAPL")
+```
+
+S3 消费者同样使用该 reader，但传入 `FinancialDataS3Store`，并让 Airflow AWS Connection 提供凭据。
+
+```python
 print(quotes.filter(pl.col("underlying_symbol") == "AAPL").collect())
 ```
 
