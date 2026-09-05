@@ -1,0 +1,4084 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="homelab cluster airflow dags">
+      
+      
+        <meta name="author" content="Shawn Deng">
+      
+      
+        <link rel="canonical" href="https://shawndeng-homelab.github.io/homelab-airflow-dags/development/youtube-video-localization/">
+      
+      
+        <link rel="prev" href="../../market-data/optopsy/">
+      
+      
+        <link rel="next" href="../../reference/homelab_airflow_bark/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>YouTube Video Localization - homelab-airflow-dags</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#youtube-bilibili" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="homelab-airflow-dags" class="md-header__button md-logo" aria-label="homelab-airflow-dags" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            homelab-airflow-dags
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              YouTube Video Localization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/shawndeng-homelab/homelab-airflow-dags" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    shawndeng-homelab/homelab-airflow-dags
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="homelab-airflow-dags" class="md-nav__button md-logo" aria-label="homelab-airflow-dags" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    homelab-airflow-dags
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/shawndeng-homelab/homelab-airflow-dags" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    shawndeng-homelab/homelab-airflow-dags
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Market Data
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Market Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../market-data/optopsy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Optopsy PostgreSQL Ingestion
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    YouTube Video Localization
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    YouTube Video Localization
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 文档状态
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 目标与非目标
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 目标与非目标">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 目标
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 非目标
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 核心架构决策
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 核心架构决策">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Provider 按外部系统拆分
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-rustfs-amazon-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 RustFS 复用 Amazon Provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-ai-k8s" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 外部 AI 服务与 K8s 本地媒体处理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 单一翻译时间轴
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. 总体流程
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-airflow-211-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Airflow 2.11 Provider 实现基线
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Airflow 2.11 Provider 实现基线">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 官方 Provider 结构结论
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-entry-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 包元数据与 entry point
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-airflow-211" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Airflow 2.11 导入约定
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-hookconnection" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4 流程步骤与 Hook/Connection 决策
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-hookoperator-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Hook、Operator 与 Trigger 约束
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-dataset-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.6 Dataset 与 discovery 兼容策略
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Provider 设计
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Provider 设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-youtube-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 YouTube Provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-localization-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Localization Provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-bilibili-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Bilibili Provider
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. 共享数据契约
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-rustfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. RustFS 产物布局
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-asr" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. 外部 ASR 设计
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. 翻译、配音和字幕规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 翻译、配音和字幕规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.1 翻译
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.2 配音
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.3 字幕与渲染
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. 幂等、重试和状态
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      12. 安全与合规
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      13. 测试策略
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    <span class="md-ellipsis">
+      14. 分阶段交付计划
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. 分阶段交付计划">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-0contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 0：Contracts 与基础设施
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-1youtube" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1：YouTube 发现与下载
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-asr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2：外部 ASR 与翻译
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3：配音与渲染
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4bilibili" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4：Bilibili 投稿
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 5：运行加固
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-mvp-dag" class="md-nav__link">
+    <span class="md-ellipsis">
+      15. MVP DAG 草图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16" class="md-nav__link">
+    <span class="md-ellipsis">
+      16. 开发完成定义
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17" class="md-nav__link">
+    <span class="md-ellipsis">
+      17. 上游项目与文档
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_bilibili/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_bark/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    homelab_airflow_bark
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            homelab_airflow_bark
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_bark/bark_client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    bark_client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_bark/get_provider_info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    get_provider_info
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_bark/hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_bark/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    notifications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_bark/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_bark/schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    schemas
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_dags/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    homelab_airflow_dags
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            homelab_airflow_dags
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_dags/common_tasks/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    common_tasks
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2_2" id="__nav_4_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            common_tasks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/common_tasks/exchange_calendars/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    exchange_calendars
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    config
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    constants
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_dags/dags/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    dags
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2_5" id="__nav_4_2_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            dags
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/dags/example_hello_world/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    example_hello_world
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/dags/ibkr_account_snapshot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ibkr_account_snapshot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/dags/optopsy_market_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    optopsy_market_data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/dags/youtube_channel_updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    youtube_channel_updates
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_dags/patch_airflow_ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    patch_airflow_ui
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_financial_data/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    homelab_airflow_providers_financial_data
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            homelab_airflow_providers_financial_data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    datasets
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/get_provider_info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    get_provider_info
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ingestion
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_financial_data/integrations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    integrations
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_4_7" id="__nav_4_4_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            integrations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/integrations/optopsy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    optopsy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/normalization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    normalization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/readers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    readers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_financial_data/storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    storage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_localization/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    homelab_airflow_providers_localization
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            homelab_airflow_providers_localization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_localization/get_provider_info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    get_provider_info
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_localization/hooks/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    hooks
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_5_3" id="__nav_4_5_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            hooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_localization/hooks/localization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    localization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_localization/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_localization/operators/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    operators
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_5_5" id="__nav_4_5_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            operators
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_localization/operators/localization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    localization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_localization/triggers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    triggers
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_5_6" id="__nav_4_5_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            triggers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_localization/triggers/localization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    localization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_airflow_providers_youtube/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    homelab_airflow_providers_youtube
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            homelab_airflow_providers_youtube
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_youtube/datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    datasets
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_youtube/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_youtube/get_provider_info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    get_provider_info
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_youtube/hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_youtube/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_airflow_providers_youtube/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    sensors
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/homelab_video_contracts/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    homelab_video_contracts
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            homelab_video_contracts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/artifacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    artifacts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    base
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/bilibili/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    bilibili
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    jobs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/manifest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    manifest
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rendering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/synthesis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    synthesis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/transcript/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    transcript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/translation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    translation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/homelab_video_contracts/youtube/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    youtube
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 文档状态
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 目标与非目标
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 目标与非目标">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 目标
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 非目标
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 核心架构决策
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 核心架构决策">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Provider 按外部系统拆分
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-rustfs-amazon-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 RustFS 复用 Amazon Provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-ai-k8s" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 外部 AI 服务与 K8s 本地媒体处理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 单一翻译时间轴
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. 总体流程
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-airflow-211-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Airflow 2.11 Provider 实现基线
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Airflow 2.11 Provider 实现基线">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 官方 Provider 结构结论
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-entry-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 包元数据与 entry point
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-airflow-211" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Airflow 2.11 导入约定
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-hookconnection" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4 流程步骤与 Hook/Connection 决策
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-hookoperator-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Hook、Operator 与 Trigger 约束
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-dataset-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.6 Dataset 与 discovery 兼容策略
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Provider 设计
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Provider 设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-youtube-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 YouTube Provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-localization-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Localization Provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-bilibili-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Bilibili Provider
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. 共享数据契约
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-rustfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. RustFS 产物布局
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-asr" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. 外部 ASR 设计
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. 翻译、配音和字幕规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 翻译、配音和字幕规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.1 翻译
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.2 配音
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.3 字幕与渲染
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. 幂等、重试和状态
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      12. 安全与合规
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      13. 测试策略
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    <span class="md-ellipsis">
+      14. 分阶段交付计划
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. 分阶段交付计划">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-0contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 0：Contracts 与基础设施
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-1youtube" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1：YouTube 发现与下载
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-asr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2：外部 ASR 与翻译
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3：配音与渲染
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4bilibili" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4：Bilibili 投稿
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 5：运行加固
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-mvp-dag" class="md-nav__link">
+    <span class="md-ellipsis">
+      15. MVP DAG 草图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16" class="md-nav__link">
+    <span class="md-ellipsis">
+      16. 开发完成定义
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17" class="md-nav__link">
+    <span class="md-ellipsis">
+      17. 上游项目与文档
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="youtube-bilibili">YouTube 视频本地化与 Bilibili 投稿开发计划<a class="headerlink" href="#youtube-bilibili" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 文档状态<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>状态</td>
+<td>Draft</td>
+</tr>
+<tr>
+<td>目标版本</td>
+<td>MVP</td>
+</tr>
+<tr>
+<td>Python</td>
+<td><code>&gt;=3.12,&lt;3.13</code></td>
+</tr>
+<tr>
+<td>Airflow</td>
+<td><code>2.11.0</code></td>
+</tr>
+<tr>
+<td>对象存储</td>
+<td>RustFS（S3-compatible API）</td>
+</tr>
+<tr>
+<td>ASR</td>
+<td>Groq <code>whisper-large-v3</code></td>
+</tr>
+<tr>
+<td>翻译</td>
+<td>OpenAI-compatible Chat Completions</td>
+</tr>
+<tr>
+<td>TTS</td>
+<td>VoxCPM2 服务</td>
+</tr>
+<tr>
+<td>Bilibili 投稿</td>
+<td><code>biliup</code> CLI</td>
+</tr>
+</tbody>
+</table>
+<p>本文档定义从 YouTube 发现视频、下载、本地化处理到 Bilibili 投稿的目标架构、Provider 边界、数据契约和分阶段交付计划。</p>
+<h2 id="2">2. 目标与非目标<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 目标<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<ul>
+<li>定时发现指定 YouTube 频道的新视频。</li>
+<li>下载原视频、元数据和可用的原始字幕。</li>
+<li>使用外部 ASR 生成带词级时间戳的英文转录。</li>
+<li>从同一份翻译时间轴生成中文字幕和中文配音。</li>
+<li>分离人声与背景音，完成中文配音、时长对齐和混音。</li>
+<li>生成 SRT、ASS 和烧录字幕的最终视频。</li>
+<li>使用 <code>biliup</code> 将审核通过的成片投稿到 Bilibili。</li>
+<li>使用 RustFS 保存原始文件、中间产物、成片和第三方原始响应。</li>
+<li>支持阶段级重试、幂等执行、人工审核和失败后续跑。</li>
+</ul>
+<h3 id="22">2.2 非目标<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<ul>
+<li>不在 Airflow scheduler、webserver 或普通 worker 中安装 PyTorch、CUDA、Demucs、Whisper 或 VoxCPM2。</li>
+<li>不自行实现 YouTube 下载协议或 Bilibili 投稿协议。</li>
+<li>不将音视频、字幕全文或第三方完整响应写入 XCom。</li>
+<li>不把 RustFS、Groq、翻译服务或 VoxCPM2 的密钥写入 DAG 参数。</li>
+<li>MVP 不支持多说话人角色配音、口型同步和实时流处理。</li>
+<li>MVP 不以无人审核的全自动公开投稿为默认模式。</li>
+</ul>
+<h2 id="3">3. 核心架构决策<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-provider">3.1 Provider 按外部系统拆分<a class="headerlink" href="#31-provider" title="Permanent link">&para;</a></h3>
+<p>Provider 只封装外部系统的认证、协议和稳定 Airflow 接口。媒体领域模型放入独立 contracts 包，业务编排只存在于 DAG 中。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>packages/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── homelab-airflow-dags
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── homelab-airflow-bark
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── homelab-airflow-providers-youtube
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── homelab-airflow-providers-localization
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── homelab-airflow-providers-bilibili
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>└── homelab-video-contracts
+</code></pre></div>
+<pre class="mermaid"><code>flowchart BT
+    contracts[homelab-video-contracts]
+    youtube[providers-youtube] --&gt; contracts
+    localization[providers-localization] --&gt; contracts
+    bilibili[providers-bilibili] --&gt; contracts
+    dags[homelab-airflow-dags] --&gt; contracts
+    dags --&gt; youtube
+    dags --&gt; localization
+    dags --&gt; bilibili</code></pre>
+<p>禁止 Provider 互相依赖。DAG 是唯一负责串联 YouTube、Localization 和 Bilibili Provider 的组件。</p>
+<h3 id="32-rustfs-amazon-provider">3.2 RustFS 复用 Amazon Provider<a class="headerlink" href="#32-rustfs-amazon-provider" title="Permanent link">&para;</a></h3>
+<p>RustFS 提供 S3-compatible API，因此继续使用 <code>apache-airflow-providers-amazon</code> 的 <code>S3Hook</code>，不创建 RustFS Provider。</p>
+<ul>
+<li>Airflow Connection ID：<code>rustfs_default</code>。</li>
+<li>所有产物使用标准 <code>s3://</code> URI。</li>
+<li>禁止在领域模型中出现 <code>rustfs://</code> 或 <code>minio://</code> URI。</li>
+<li>第一阶段不依赖 RustFS 生命周期规则，由 cleanup DAG 显式清理临时产物。</li>
+</ul>
+<h3 id="33-ai-k8s">3.3 外部 AI 服务与 K8s 本地媒体处理<a class="headerlink" href="#33-ai-k8s" title="Permanent link">&para;</a></h3>
+<p>Airflow Provider 不承载模型推理。Localization Gateway 是轻量控制面，负责幂等、厂商 adapter、状态归一化和产物登记。ASR、翻译、TTS 和可选人声分离使用外部服务；音频预处理、混音、字幕生成和最终 FFmpeg 渲染运行在独立 K8s CPU Job 中，不占用 Airflow worker。Provider 仅提交任务、查询状态、取消任务并返回标准结果。</p>
+<h3 id="34">3.4 单一翻译时间轴<a class="headerlink" href="#34" title="Permanent link">&para;</a></h3>
+<p>字幕和配音必须共享同一份 <code>TranslatedTimeline</code>，不得分别调用翻译模型。它是 SRT、ASS、TTS 输入、审核数据和翻译缓存的唯一来源。</p>
+<h2 id="4">4. 总体流程<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    discover[发现 YouTube 新视频] --&gt; rights[授权与去重检查]
+    rights --&gt; download[yt-dlp 下载]
+    download --&gt; store[原始产物写入 RustFS]
+    store --&gt; subtitle{可靠原字幕可用?}
+    subtitle -- 是 --&gt; normalize[标准化转录时间轴]
+    subtitle -- 否 --&gt; preprocess[提取 16 kHz mono FLAC]
+    preprocess --&gt; asr[Groq whisper-large-v3]
+    asr --&gt; normalize
+    normalize --&gt; translate[上下文翻译]
+    translate --&gt; review{人工审核}
+    review -- 退回 --&gt; translate
+    review -- 通过 --&gt; separate[Demucs 人声分离]
+    separate --&gt; tts[VoxCPM2 分句配音]
+    tts --&gt; align[时长对齐与混音]
+    align --&gt; subs[生成 SRT 与 ASS]
+    subs --&gt; render[FFmpeg 字幕烧录]
+    render --&gt; qc[媒体质量检查]
+    qc --&gt; approval{投稿审批}
+    approval -- 通过 --&gt; upload[biliup 投稿]
+    upload --&gt; persist[保存 aid/bvid 与响应]
+    persist --&gt; notify[Bark 通知]</code></pre>
+<h2 id="5-airflow-211-provider">5. Airflow 2.11 Provider 实现基线<a class="headerlink" href="#5-airflow-211-provider" title="Permanent link">&para;</a></h2>
+<p>本仓库运行时固定为 Apache Airflow <code>2.11.0</code>。当前环境包含 HTTP Provider <code>5.3.2</code> 和 Amazon Provider <code>9.34.0</code>。开发必须使用 Airflow 2.11 的导入路径、discovery 和 Dataset API，不提前使用 Airflow 3 Task SDK。</p>
+<h3 id="51-provider">5.1 官方 Provider 结构结论<a class="headerlink" href="#51-provider" title="Permanent link">&para;</a></h3>
+<p>Airflow 2.11 的 HTTP Provider 运行时布局如下，三个自研 Provider 应遵循同一分层：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>homelab-airflow-providers-&lt;name&gt;/
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── CHANGELOG.md
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── README.md
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── pyproject.toml
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├── src/homelab_airflow_providers_&lt;name&gt;/
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│   ├── __init__.py
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│   ├── get_provider_info.py
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│   ├── py.typed
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│   ├── hooks/&lt;name&gt;.py
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│   ├── operators/&lt;name&gt;.py
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>│   ├── sensors/&lt;name&gt;.py
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│   └── triggers/&lt;name&gt;.py       # 仅异步等待型 Provider
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>└── tests/
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    ├── test_provider_info.py
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    ├── test_hooks.py
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    ├── test_operators.py
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    ├── test_sensors.py
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    └── test_triggers.py
+</code></pre></div>
+<p>官方 Provider 源码使用 <code>provider.yaml</code> 生成 <code>get_provider_info.py</code>，wheel 运行时通过后者 discovery。本仓库暂不引入官方生成器，直接维护 <code>get_provider_info.py</code>，避免两个事实来源。</p>
+<h3 id="52-entry-point">5.2 包元数据与 entry point<a class="headerlink" href="#52-entry-point" title="Permanent link">&para;</a></h3>
+<p>Provider 声明最低兼容范围，应用包负责精确锁定 Airflow：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">[project]</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&gt;=3.12,&lt;3.13&#39;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="s1">&#39;apache-airflow&gt;=2.11.0,&lt;3.0&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="s1">&#39;homelab-video-contracts&gt;=0.1.0,&lt;0.2.0&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">]</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">[project.entry-points.</span><span class="s1">&#39;apache_airflow_provider&#39;</span><span class="k">]</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">provider_info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;homelab_airflow_providers_localization.get_provider_info:get_provider_info&#39;</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">[tool.hatch.build.targets.wheel]</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;src/homelab_airflow_providers_localization&#39;</span><span class="p">]</span>
+</code></pre></div>
+<p>YouTube 和 Bilibili 包使用各自模块路径。每个 distribution 只注册自己的 entry point。</p>
+<p><code>get_provider_info()</code> 必须返回 <code>package-name</code>、<code>name</code>、<code>description</code>、<code>hooks</code>、<code>operators</code> 和 <code>connection-types</code>；Localization 还需声明 <code>triggers</code>。<code>connection-types</code> 中的 <code>connection-type</code> 与 Hook 的 <code>conn_type</code> 必须一致，<code>hook-class-name</code> 使用完整可导入路径。Airflow 2.11 不需要已废弃的 <code>hook-class-names</code>。metadata 函数不得读取 Secret、创建 Hook 或导入重量级 SDK。</p>
+<h3 id="53-airflow-211">5.3 Airflow 2.11 导入约定<a class="headerlink" href="#53-airflow-211" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">conf</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.hooks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseHook</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseOperator</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sensors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSensorOperator</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.triggers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTrigger</span><span class="p">,</span> <span class="n">TriggerEvent</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.utils.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+</code></pre></div>
+<p>禁止使用 <code>from airflow.sdk import Asset, BaseOperator</code>。<code>airflow.sdk</code> 属于 Airflow 3，在本仓库环境中不可导入；升级时另建兼容迁移。</p>
+<h3 id="54-hookconnection">5.4 流程步骤与 Hook/Connection 决策<a class="headerlink" href="#54-hookconnection" title="Permanent link">&para;</a></h3>
+<p>只有跨进程访问外部系统且需要统一认证、重试或错误映射的步骤才封装 Hook。纯媒体算法不创建 Airflow Connection。</p>
+<table>
+<thead>
+<tr>
+<th>流程步骤</th>
+<th>Hook</th>
+<th>Connection</th>
+<th>决策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YouTube 频道发现、元数据</td>
+<td><code>YouTubeHook</code></td>
+<td><code>youtube_default</code></td>
+<td>自定义，API key 与 Data API 配置</td>
+</tr>
+<tr>
+<td>YouTube 视频下载</td>
+<td><code>LocalizationHook</code> 的 ingest/download 能力</td>
+<td><code>localization_default</code></td>
+<td><code>yt-dlp</code>、Cookie、代理和 PO Token 放服务内部</td>
+</tr>
+<tr>
+<td>RustFS 读写</td>
+<td>官方 <code>S3Hook</code></td>
+<td><code>rustfs_default</code>（<code>aws</code> 类型）</td>
+<td>复用 Amazon Provider</td>
+</tr>
+<tr>
+<td>ASR、翻译、TTS、渲染任务</td>
+<td><code>LocalizationHook</code></td>
+<td><code>localization_default</code></td>
+<td>自定义，隐藏 Groq/LLM/VoxCPM2 内部凭证</td>
+</tr>
+<tr>
+<td>等待本地化任务</td>
+<td><code>LocalizationAsyncHook</code> 或异步 client</td>
+<td>同上</td>
+<td>供 Trigger 使用，只查询状态</td>
+</tr>
+<tr>
+<td>FFmpeg、Demucs、字幕生成</td>
+<td>无</td>
+<td>无</td>
+<td>Localization worker 内部计算</td>
+</tr>
+<tr>
+<td>Bilibili 登录、续期、投稿</td>
+<td><code>BilibiliHook</code></td>
+<td><code>bilibili_default</code></td>
+<td>自定义，凭证文件由 Secret 挂载</td>
+</tr>
+<tr>
+<td>Bark 通知</td>
+<td>现有 Bark client/operator</td>
+<td>现有 Bark 配置</td>
+<td>保持现状</td>
+</tr>
+</tbody>
+</table>
+<p>最终只新增三个自定义 Connection type：<code>youtube</code>、<code>localization</code>、<code>bilibili</code>。RustFS 使用已有 <code>aws</code> type；Groq、翻译服务和 VoxCPM2 不直接暴露给 DAG，因此不分别创建 Airflow Connection。</p>
+<h3 id="55-hookoperator-trigger">5.5 Hook、Operator 与 Trigger 约束<a class="headerlink" href="#55-hookoperator-trigger" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Hook 定义 <code>conn_name_attr</code>、<code>default_conn_name</code>、<code>conn_type</code> 和 <code>hook_name</code>。</li>
+<li>Hook 首次调用时构建 client，并提供无副作用的 <code>test_connection() -&gt; tuple[bool, str]</code>。</li>
+<li>Operator 构造函数只保存参数，不访问 Connection、RustFS 或外部 API。</li>
+<li><code>execute()</code> 只返回可序列化小模型或产物 URI，不返回 HTTP Response、音视频或字幕全文。</li>
+<li>URI、video ID 可加入 <code>template_fields</code>；token、Cookie 和 headers 不模板化。</li>
+<li>YouTube 轮询使用 <code>BaseSensorOperator(mode='reschedule')</code>。</li>
+<li>Localization job 等待时间长，MVP 实现 deferrable Operator 和 <code>LocalizationJobTrigger</code>，并保留同步路径。</li>
+<li>Trigger 只传可序列化的 <code>conn_id</code>、<code>job_id</code>、poll interval 和 timeout，并使用异步 HTTP client。</li>
+<li>Trigger 只能查询状态，不得创建任务、写 RustFS 或发布稿件。</li>
+</ul>
+<p>本流程需要先在 worker 中提交 job，再进入 triggerer，因此不使用 <code>start_from_trigger</code>；Operator 在 <code>execute()</code> 中创建 job 后调用 <code>self.defer()</code>。</p>
+<h3 id="56-dataset-discovery">5.6 Dataset 与 discovery 兼容策略<a class="headerlink" href="#56-dataset-discovery" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Airflow 2.11 使用 <code>airflow.datasets.Dataset</code>，不使用 Airflow 3 的 <code>airflow.sdk.Asset</code>。</li>
+<li>使用 <code>inlets</code>、<code>outlets</code> 和 <code>outlet_events</code>，对外函数命名为 <code>*_dataset()</code>。</li>
+<li>Dataset URI 和 extra 明文保存在元数据库中，不得包含凭证、presigned URL 或完整字幕。</li>
+<li>每个 Provider 测试 entry point、<code>provider_info.schema.json</code>、Hook 类路径和 <code>ProvidersManager</code> discovery。</li>
+<li><code>airflow providers list/get/hooks</code> 必须在 Linux 容器或 CI 中验证，不能以 Windows 原生 CLI 为验收环境。</li>
+</ul>
+<h2 id="6-provider">6. Provider 设计<a class="headerlink" href="#6-provider" title="Permanent link">&para;</a></h2>
+<h3 id="61-youtube-provider">6.1 YouTube Provider<a class="headerlink" href="#61-youtube-provider" title="Permanent link">&para;</a></h3>
+<p>包名：<code>homelab-airflow-providers-youtube</code></p>
+<p>职责：通过 Data API/RSS 发现视频、获取元数据并提供 Operator/Sensor/Dataset。它不负责下载、ASR、翻译、渲染、投稿和业务游标持久化。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Connection ID: youtube_default
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Connection type: youtube
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Password: YouTube Data API Key
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Extra:
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  api_base_url: https://www.googleapis.com/youtube/v3
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  timeout: 30
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  proxy: optional
+</code></pre></div>
+<p>下载 Cookie、代理和 PO Token provider 配置属于 Localization Service Secret，不进入 Data API Connection。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">YouTubeHook</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">YouTubeChannel</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">list_channel_videos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">YouTubeVideo</span><span class="p">]:</span> <span class="o">...</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_videos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">YouTubeVideo</span><span class="p">]:</span> <span class="o">...</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>YouTubeChannelVideosOperator
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>YouTubeChannelVideoSensor
+</code></pre></div>
+<p>Dataset URI：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>youtube://channel/{channel_id}/uploads
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>youtube://video/{video_id}
+</code></pre></div>
+<h3 id="62-localization-provider">6.2 Localization Provider<a class="headerlink" href="#62-localization-provider" title="Permanent link">&para;</a></h3>
+<p>包名：<code>homelab-airflow-providers-localization</code></p>
+<p>职责：调用 Localization Service 创建、查询、等待和取消阶段任务，将响应转换为 <code>homelab-video-contracts</code> 模型。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Connection ID: localization_default
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Connection type: localization
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Host: https://localization.internal.example.com
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Password: Service API token
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>Extra:
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>  timeout: 30
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>  poll_interval: 15
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  verify_tls: true
+</code></pre></div>
+<p>Groq、翻译模型和 VoxCPM2 密钥由 Localization Service 管理，不进入 Airflow Connection。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">LocalizationHook</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">submit_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">LocalizationJobRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LocalizationJob</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LocalizationJob</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LocalizationJob</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cancel_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LocalizationJob</span><span class="p">:</span> <span class="o">...</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>VideoDownloadOperator
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>AudioTranscriptionOperator
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>SubtitleTranslationOperator
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>SourceSeparationOperator
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>SpeechSynthesisOperator
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>VideoRenderOperator
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>LocalizationJobTrigger
+</code></pre></div>
+<p>MVP 实现 deferrable Operator/Trigger，并保留 <code>deferrable=False</code> 的同步轮询路径。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>POST /v1/jobs
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>GET  /v1/jobs/{job_id}
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>POST /v1/jobs/{job_id}/cancel
+</code></pre></div>
+<p>请求和响应只包含 S3 URI、配置、任务 ID 和精简状态，不传 base64 音视频。</p>
+<h3 id="63-bilibili-provider">6.3 Bilibili Provider<a class="headerlink" href="#63-bilibili-provider" title="Permanent link">&para;</a></h3>
+<p>包名：<code>homelab-airflow-providers-bilibili</code></p>
+<p>职责：封装固定版本的 <code>biliup</code> CLI/Rust binary，检查登录、刷新凭证、投稿、追加分 P 并标准化稿件结果。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Connection ID: bilibili_default
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Connection type: bilibili
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Extra:
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>  credential_secret_path: /var/run/secrets/bilibili/cookies.json
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>  uploader: biliup
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>  uploader_version: pinned
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>  line: auto
+</code></pre></div>
+<p>Cookie 和 token 必须从 Secret 或只读凭证卷读取，不写入 Connection Extra、XCom 或普通日志。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">BilibiliHook</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_login</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BilibiliLoginStatus</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">renew_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BilibiliLoginStatus</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">BilibiliUploadRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BilibiliUploadResult</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">BilibiliAppendRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BilibiliUploadResult</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bvid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BilibiliVideo</span><span class="p">:</span> <span class="o">...</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>BilibiliLoginSensor
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>BilibiliUploadOperator
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>BilibiliAppendOperator
+</code></pre></div>
+<p>Dataset URI：<code>bilibili://video/{bvid}</code>。</p>
+<h2 id="7">7. 共享数据契约<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<p>包名：<code>homelab-video-contracts</code>。该包不得依赖 Airflow、boto3、HTTP client 或推理库，持久化模型必须包含 <code>schema_version</code>。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>src/homelab_video_contracts/
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>├── artifacts.py
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>├── youtube.py
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>├── transcript.py
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>├── translation.py
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>├── synthesis.py
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>├── rendering.py
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>├── bilibili.py
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>└── manifest.py
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Artifact</span><span class="p">:</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">etag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">version_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">sha256</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">TranscriptWord</span><span class="p">:</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="n">start_ms</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="n">end_ms</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>    <span class="n">probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="k">class</span><span class="w"> </span><span class="nc">TranscriptSegment</span><span class="p">:</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>    <span class="n">segment_id</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>    <span class="n">start_ms</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>    <span class="n">end_ms</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>    <span class="n">words</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TranscriptWord</span><span class="p">]</span>
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="k">class</span><span class="w"> </span><span class="nc">TranslatedSegment</span><span class="p">:</span>
+<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>    <span class="n">segment_id</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>    <span class="n">source_start_ms</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>    <span class="n">source_end_ms</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a>    <span class="n">source_text</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>    <span class="n">translated_text</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>    <span class="n">speaker</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+<a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a>    <span class="n">translation_version</span><span class="p">:</span> <span class="nb">int</span>
+</code></pre></div>
+<p><code>segment_id</code> 在 ASR、翻译、TTS、字幕和审核流程中保持稳定。</p>
+<h2 id="8-rustfs">8. RustFS 产物布局<a class="headerlink" href="#8-rustfs" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>s3://video-localization/youtube/{video_id}/
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>├── manifest.json
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>├── source/
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>│   ├── video.mp4
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>│   ├── metadata.json
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>│   └── original.en.vtt
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>├── audio/
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>│   ├── speech.flac
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>│   ├── vocals.wav
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>│   └── accompaniment.wav
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>├── asr/
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>│   ├── chunks/
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>│   ├── raw/
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>│   └── transcript.json
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>├── translation/
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>│   ├── timeline.zh-CN.json
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>│   ├── subtitle.zh-CN.srt
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>│   └── subtitle.zh-CN.ass
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>├── tts/
+<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>│   ├── segments/
+<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>│   └── dubbed.zh-CN.wav
+<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a>├── render/
+<a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a>│   └── final.zh-CN.mp4
+<a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a>└── publish/
+<a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a>    └── bilibili.json
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nt">endpoint_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://rustfs.example.com</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nt">region_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-east-1</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="nt">config_kwargs</span><span class="p">:</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="nt">s3</span><span class="p">:</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">    </span><span class="nt">addressing_style</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path</span>
+</code></pre></div>
+<p>存储规则：</p>
+<ul>
+<li>启用 bucket versioning。</li>
+<li>每个产物记录 ETag、Version ID、SHA-256、大小和 Content-Type。</li>
+<li><code>manifest.json</code> 是产物索引，不是任务锁。</li>
+<li>大文件必须验证 multipart 上传、下载和失败恢复。</li>
+<li>cleanup DAG 只能删除过期且不被成功发布记录引用的临时产物。</li>
+</ul>
+<h2 id="9-asr">9. 外部 ASR 设计<a class="headerlink" href="#9-asr" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Endpoint: /openai/v1/audio/transcriptions
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>Model: whisper-large-v3
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>Response format: verbose_json
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>Timestamp granularities: segment, word
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>Language: en
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>Temperature: 0
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>ffmpeg<span class="w"> </span>-i<span class="w"> </span>input.mp4<span class="w"> </span>-vn<span class="w"> </span>-ar<span class="w"> </span><span class="m">16000</span><span class="w"> </span>-ac<span class="w"> </span><span class="m">1</span><span class="w"> </span>-c:a<span class="w"> </span>flac<span class="w"> </span>speech.flac
+</code></pre></div>
+<p>预处理不得改变音频时间轴。长音频默认按 10 至 15 分钟切片，相邻切片重叠 1 至 2 秒；每片记录绝对 <code>offset_ms</code>，原始响应写入 RustFS，成功切片可独立复用。</p>
+<p>Localization Service 通过 multipart 上传音频到 Groq。默认不向公网暴露 RustFS，也不把 presigned URL 写入日志。</p>
+<h2 id="10">10. 翻译、配音和字幕规则<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<h3 id="101">10.1 翻译<a class="headerlink" href="#101" title="Permanent link">&para;</a></h3>
+<ul>
+<li>先构建全文上下文、术语表、人名表和标题摘要。</li>
+<li>按上下文块翻译，不进行完全无上下文的逐句翻译。</li>
+<li>输出保留稳定 <code>segment_id</code>。</li>
+<li>译文应考虑原时间窗，过长时优先压缩表达。</li>
+<li>每次人工修改递增 <code>translation_version</code>。</li>
+</ul>
+<h3 id="102">10.2 配音<a class="headerlink" href="#102" title="Permanent link">&para;</a></h3>
+<ul>
+<li>每个翻译段独立生成，支持局部重试和重生成。</li>
+<li>VoxCPM2 reference audio 必须来自已授权素材。</li>
+<li>检查生成音频的静音、峰值、响度、时长和空文件。</li>
+<li>轻微时长差异使用 tempo 调整；差异过大时重新压缩译文并生成。</li>
+</ul>
+<h3 id="103">10.3 字幕与渲染<a class="headerlink" href="#103" title="Permanent link">&para;</a></h3>
+<ul>
+<li>SRT 用于交付和排查，ASS 用于最终烧录。</li>
+<li>横屏与竖屏分别定义 style profile。</li>
+<li>FFmpeg 镜像必须包含 libass、fontconfig 和指定中文字体。</li>
+<li>最终渲染阶段只进行一次必要的视频重编码。</li>
+</ul>
+<h2 id="11">11. 幂等、重试和状态<a class="headerlink" href="#11" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>download: youtube:{video_id}:{format_profile_version}
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>asr: {audio_sha256}:{provider}:{model}:{config_version}
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>translate: {transcript_sha256}:{target_language}:{prompt_version}
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>tts: {translated_segment_sha256}:{voice_profile_version}
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>render: {source_sha256}:{timeline_sha256}:{audio_sha256}:{profile_version}
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>upload: bilibili:{source_video_id}:{render_sha256}:{account_id}
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>示例</th>
+<th>策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transient</td>
+<td>网络错误、429、5xx</td>
+<td>指数退避重试</td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td>Cookie/API key 失效</td>
+<td>停止自动重试并通知</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>视频不可用、音轨缺失</td>
+<td>标记不可重试</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td>ASR 为空、TTS 超时长、渲染异常</td>
+<td>人工审核或局部重跑</td>
+</tr>
+<tr>
+<td>Policy</td>
+<td>无授权、投稿审批未通过</td>
+<td>阻止后续阶段</td>
+</tr>
+</tbody>
+</table>
+<p>Airflow 保存编排状态；Localization Service 保存 job 状态；RustFS 保存不可变产物、原始响应和 manifest；业务数据库保存 YouTube video ID 到 Bilibili aid/bvid 的映射和审核状态。</p>
+<h2 id="12">12. 安全与合规<a class="headerlink" href="#12" title="Permanent link">&para;</a></h2>
+<ul>
+<li>只处理明确拥有下载、翻译、配音和再发布授权的视频。</li>
+<li>投稿前保留 rights check 和 publish approval。</li>
+<li>声音克隆需获得权利人授权并记录 voice profile 授权信息。</li>
+<li>所有凭证通过 Secret 管理。</li>
+<li>日志必须脱敏 Authorization、Cookie、token、presigned URL 和完整 Connection 信息。</li>
+<li>外部 ASR 与翻译服务的数据留存策略必须在启用前完成评估。</li>
+<li><code>biliup</code> README 包含禁止商业用途的声明；商业场景启用前必须确认授权和平台条款。</li>
+</ul>
+<h2 id="13">13. 测试策略<a class="headerlink" href="#13" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Contracts：JSON round-trip、schema version、时间范围、segment ID、S3 URI 和校验和。</li>
+<li>Provider：mock 所有 HTTP/CLI、Provider discovery、Connection schema、日志脱敏和错误映射。</li>
+<li>RustFS：put/get/head/copy/delete、versioning、presigned URL 和 multipart。</li>
+<li>Groq：短音频、长音频切片、词级时间戳、429 和超时。</li>
+<li>Localization：失败续跑、幂等复用、局部重新翻译和重新配音。</li>
+<li>biliup：登录检查、测试账号投稿和凭证失效。</li>
+<li>Airflow：DAG import、动态任务映射、Sensor reschedule、deferrable Trigger 和 Dataset Event。</li>
+<li>媒体：音视频流、总时长、黑屏、响度、字幕字体和安全区域。</li>
+</ul>
+<h2 id="14">14. 分阶段交付计划<a class="headerlink" href="#14" title="Permanent link">&para;</a></h2>
+<h3 id="phase-0contracts">Phase 0：Contracts 与基础设施<a class="headerlink" href="#phase-0contracts" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] 创建 homelab-video-contracts。</li>
+<li>配置 <code>rustfs_default</code> 和测试 bucket。</li>
+<li>[x] 定义版本化 Manifest、Artifact、Job、时间轴、TTS、渲染和发布结果模型。</li>
+<li>完成 RustFS S3 兼容性冒烟测试。</li>
+</ul>
+<p>验收：contracts 测试通过；<code>S3Hook</code> 可完成基础和 multipart 操作。</p>
+<h3 id="phase-1youtube">Phase 1：YouTube 发现与下载<a class="headerlink" href="#phase-1youtube" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] 完成 Provider discovery、Hook、Operator、Sensor 和 Dataset Event。</li>
+<li>[x] 实现 Localization Service 下载契约和 <code>VideoDownloadOperator</code>。</li>
+<li>保存视频、元数据、缩略图和原字幕到 RustFS。</li>
+</ul>
+<p>验收：给定频道 ID 能发现新视频并幂等入库，不泄露凭证。</p>
+<h3 id="phase-2-asr">Phase 2：外部 ASR 与翻译<a class="headerlink" href="#phase-2-asr" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] 创建 Localization Provider，并接入共享 Job contract。</li>
+<li>实现 Groq ASR、长音频切片和时间轴合并。</li>
+<li>实现 Transcript、上下文翻译和 TranslatedTimeline。</li>
+<li>生成 SRT/ASS 预览。</li>
+</ul>
+<p>验收：真实英文视频产生稳定词级时间轴；局部失败可续跑；结果可审核。</p>
+<h3 id="phase-3">Phase 3：配音与渲染<a class="headerlink" href="#phase-3" title="Permanent link">&para;</a></h3>
+<ul>
+<li>接入外部 TTS 和可选的外部人声分离服务。</li>
+<li>实现分句 TTS、时长对齐，并通过 K8s CPU Job 完成本地 FFmpeg 混音和字幕烧录。</li>
+<li>实现媒体质量检查。</li>
+</ul>
+<p>验收：产出可播放的中文配音和烧录字幕版本；修改单句只重跑受影响阶段。</p>
+<h3 id="phase-4bilibili">Phase 4：Bilibili 投稿<a class="headerlink" href="#phase-4bilibili" title="Permanent link">&para;</a></h3>
+<ul>
+<li>完成 Bilibili Provider discovery。</li>
+<li>封装固定版本 biliup。</li>
+<li>实现登录检查、续期提示、投稿和结果查询。</li>
+<li>保存 aid、bvid、投稿响应和映射，接入 Bark 通知。</li>
+</ul>
+<p>验收：成片可幂等投稿；凭证失效不会无限重试；重复 DAG run 不重复投稿。</p>
+<h3 id="phase-5">Phase 5：运行加固<a class="headerlink" href="#phase-5" title="Permanent link">&para;</a></h3>
+<ul>
+<li>加固 deferrable job、增加 cleanup DAG、指标、fallback 和人工重跑入口。</li>
+<li>完成灾难恢复和凭证轮换演练。</li>
+</ul>
+<h2 id="15-mvp-dag">15. MVP DAG 草图<a class="headerlink" href="#15-mvp-dag" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">videos</span> <span class="o">=</span> <span class="n">YouTubeChannelVideosOperator</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="n">downloads</span> <span class="o">=</span> <span class="n">VideoDownloadOperator</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>    <span class="n">localization_conn_id</span><span class="o">=</span><span class="s1">&#39;localization_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>    <span class="n">storage_conn_id</span><span class="o">=</span><span class="s1">&#39;rustfs_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="n">videos</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="n">transcripts</span> <span class="o">=</span> <span class="n">AudioTranscriptionOperator</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>    <span class="n">localization_conn_id</span><span class="o">=</span><span class="s1">&#39;localization_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">downloads</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>
+<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="n">translations</span> <span class="o">=</span> <span class="n">SubtitleTranslationOperator</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a>    <span class="n">localization_conn_id</span><span class="o">=</span><span class="s1">&#39;localization_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">transcript</span><span class="o">=</span><span class="n">transcripts</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a>
+<a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="n">speech</span> <span class="o">=</span> <span class="n">VoiceSynthesisOperator</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+<a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a>    <span class="n">localization_conn_id</span><span class="o">=</span><span class="s1">&#39;localization_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">timeline</span><span class="o">=</span><span class="n">translations</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+<a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a>
+<a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a><span class="n">renders</span> <span class="o">=</span> <span class="n">VideoRenderOperator</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+<a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a>    <span class="n">localization_conn_id</span><span class="o">=</span><span class="s1">&#39;localization_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">downloads</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">timeline</span><span class="o">=</span><span class="n">translations</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">speech</span><span class="o">=</span><span class="n">speech</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+<a id="__codelineno-22-23" name="__codelineno-22-23" href="#__codelineno-22-23"></a>
+<a id="__codelineno-22-24" name="__codelineno-22-24" href="#__codelineno-22-24"></a><span class="n">checked</span> <span class="o">=</span> <span class="n">MediaQualityCheckOperator</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+<a id="__codelineno-22-25" name="__codelineno-22-25" href="#__codelineno-22-25"></a>    <span class="n">localization_conn_id</span><span class="o">=</span><span class="s1">&#39;localization_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-26" name="__codelineno-22-26" href="#__codelineno-22-26"></a><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="n">renders</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+<a id="__codelineno-22-27" name="__codelineno-22-27" href="#__codelineno-22-27"></a>
+<a id="__codelineno-22-28" name="__codelineno-22-28" href="#__codelineno-22-28"></a><span class="n">uploads</span> <span class="o">=</span> <span class="n">BilibiliUploadOperator</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+<a id="__codelineno-22-29" name="__codelineno-22-29" href="#__codelineno-22-29"></a>    <span class="n">bilibili_conn_id</span><span class="o">=</span><span class="s1">&#39;bilibili_default&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-30" name="__codelineno-22-30" href="#__codelineno-22-30"></a><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="n">checked</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+</code></pre></div>
+<p>实际实现必须在翻译后和投稿前增加审核门禁；以上代码仅表达 Operator 依赖关系。</p>
+<h2 id="16">16. 开发完成定义<a class="headerlink" href="#16" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Provider 能被 <code>airflow providers list</code> 正确发现。</li>
+<li>Provider metadata 通过 Airflow 2.11 <code>provider_info.schema.json</code> 校验。</li>
+<li>Connection、Hook、Operator 和模型有类型标注及 Google-style docstring。</li>
+<li>Provider 单元测试不访问真实外部服务。</li>
+<li>DAG import sweep、Ruff、pre-commit、pytest 和文档构建通过。</li>
+<li>日志脱敏覆盖 API key、Cookie、token 和 presigned URL。</li>
+<li>每个阶段有稳定幂等键、产物校验和失败分类。</li>
+<li>真实样本完成一次从 YouTube 到 Bilibili 的人工审核端到端演练。</li>
+</ul>
+<h2 id="17">17. 上游项目与文档<a class="headerlink" href="#17" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://github.com/liuzhao1225/YouDub-webui">YouDub-webui</a>：端到端本地化流程和效果基线。</li>
+<li><a href="https://github.com/biliup/biliup">biliup</a>：Bilibili 登录与投稿执行器。</li>
+<li><a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>：YouTube 下载执行器。</li>
+<li><a href="https://console.groq.com/docs/speech-to-text">Groq Speech-to-Text</a>：外部 Whisper Large V3 服务。</li>
+<li><a href="https://github.com/OpenBMB/VoxCPM">VoxCPM2</a>：中文及跨语言声音克隆 TTS。</li>
+<li><a href="https://ffmpeg.org/ffmpeg-filters.html#subtitles-1">FFmpeg subtitles filter</a>：基于 libass 的字幕烧录。</li>
+<li><a href="https://github.com/rustfs/rustfs">RustFS</a>：S3-compatible 对象存储。</li>
+<li><a href="https://airflow.apache.org/docs/apache-airflow-providers/howto/create-custom-providers.html">Airflow custom providers</a>：entry point 和 metadata 规范。</li>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/2.11.0/authoring-and-scheduling/deferring.html">Airflow 2.11 deferrable operators</a>：Operator/Trigger 生命周期。</li>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/2.11.0/authoring-and-scheduling/datasets.html">Airflow 2.11 data-aware scheduling</a>：Dataset、事件元数据和安全约束。</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by <a href="https://github.com/shawndeng-homelab">Shawn Deng</a>.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/shawndeng-homelab/homelab-airflow-dags" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypiserver.shawndeng.cc" target="_blank" rel="noopener" title="pypiserver.shawndeng.cc" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "search.highlight", "search.share", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>
