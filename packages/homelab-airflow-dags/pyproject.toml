@@ -9,6 +9,7 @@ requires-python = ">=3.12,<3.12.99"
 dependencies = [
     "apache-airflow==2.11.0",
     "apache-airflow-providers-amazon>=9.10.0",
+    "apache-airflow-providers-postgres>=5.13.0",
     "fake-useragent>=2.2.0",
     "loguru>=0.7.3",
     "py-consul>=1.6.0",
@@ -17,6 +18,8 @@ dependencies = [
     "homelab-airflow-bark>=0.2.0,<0.3.0",
     "homelab-airflow-providers-youtube>=0.1.0,<0.2.0",
     "exchange-calendars>=4.12",
+    "optopsy[data]==2.3.0",
+    "psycopg2-binary>=2.9,<3",
 ]
 
 [tool.uv.sources]

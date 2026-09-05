@@ -8,6 +8,8 @@ repo_name: shawndeng-homelab/homelab-airflow-dags
 copyright: Maintained by <a href="https://github.com/shawndeng-homelab">Shawn Deng</a>.
 nav:
   - Home: index.md
+  - Market Data:
+      - Optopsy PostgreSQL Ingestion: market-data/optopsy.md
   - Development:
       - YouTube Video Localization: development/youtube-video-localization.md
   - API Reference: reference/
