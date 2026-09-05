@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import subprocess
 from unittest.mock import Mock
 
+import pendulum
 import pytest
 from homelab_airflow_dags.dags.optopsy_market_data import DATABASE_CONNECTION_ID
 from homelab_airflow_dags.dags.optopsy_market_data import EODHD_CONNECTION_ID
@@ -12,6 +14,8 @@ from homelab_airflow_dags.dags.optopsy_market_data import get_database_url
 from homelab_airflow_dags.dags.optopsy_market_data import get_eodhd_api_key
 from homelab_airflow_dags.dags.optopsy_market_data import normalize_optopsy_symbols
 from homelab_airflow_dags.dags.optopsy_market_data import optopsy_market_data
+from homelab_airflow_dags.dags.optopsy_market_data import run_optopsy_cli
+from homelab_airflow_dags.dags.optopsy_market_data import scheduled_session_date
 
 
 def test_normalize_optopsy_symbols_trims_uppercases_and_deduplicates():
@@ -100,11 +104,51 @@ def test_get_eodhd_api_key_requires_password(mocker):
         get_eodhd_api_key()
 
 
+def test_scheduled_session_date_uses_interval_end_after_holiday():
+    """The first post-holiday run evaluates its actual session date."""
+    context = {
+        "logical_date": pendulum.datetime(2026, 9, 4, 23, tz="UTC"),
+        "data_interval_end": pendulum.datetime(2026, 9, 8, 23, tz="UTC"),
+    }
+
+    assert scheduled_session_date(context).isoformat() == "2026-09-08"
+
+
+def test_run_optopsy_cli_raises_on_partial_download_error(mocker, capsys):
+    """A CLI zero exit code cannot hide an Optopsy skipped window."""
+    process = Mock()
+    process.stdout = iter(["12:00 Error 2026-09-01–2026-09-30: timeout — skipping\n"])
+    process.wait.return_value = 0
+    mocker.patch("homelab_airflow_dags.dags.optopsy_market_data.subprocess.Popen", return_value=process)
+
+    with pytest.raises(RuntimeError, match="download errors"):
+        run_optopsy_cli(["optopsy-data", "download", "SPY", "-v"], {"DATABASE_URL": "postgresql://db"})
+
+    assert "skipping" in capsys.readouterr().out
+
+
+def test_run_optopsy_cli_raises_on_nonzero_exit(mocker):
+    """A genuine CLI process failure is propagated to Airflow."""
+    process = Mock()
+    process.stdout = iter([])
+    process.wait.return_value = 2
+    mocker.patch("homelab_airflow_dags.dags.optopsy_market_data.subprocess.Popen", return_value=process)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        run_optopsy_cli(["optopsy-data", "download", "SPY", "-v"], {})
+
+
 def test_dag_runs_after_market_close_with_bounded_download_concurrency():
     """The production DAG preserves its schedule, holiday gate, and rate-limit boundary."""
     assert optopsy_market_data.schedule_interval == "0 19 * * 1-5"
     assert str(optopsy_market_data.timezone) == "America/New_York"
-    assert {"is_xnys_trading_day", "resolve_symbols", "build_download_work", "download_market_data"} <= set(
-        optopsy_market_data.task_ids
-    )
-    assert optopsy_market_data.get_task("download_market_data").max_active_tis_per_dag == 2
+    expected_tasks = {
+        "is_xnys_trading_day",
+        "resolve_symbols",
+        "initialize_database",
+        "download_options",
+        "download_stocks",
+    }
+    assert expected_tasks <= set(optopsy_market_data.task_ids)
+    assert optopsy_market_data.get_task("download_options").max_active_tis_per_dag == 1
+    assert optopsy_market_data.get_task("download_stocks").max_active_tis_per_dag == 1
