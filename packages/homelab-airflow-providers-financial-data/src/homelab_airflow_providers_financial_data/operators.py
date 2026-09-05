@@ -32,6 +32,7 @@ class EodhdOptionsEodToS3Operator(BaseOperator):
         exchange: str = "US",
         replace: bool = False,
         run_id: str | None = None,
+        dataset_uri: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize an ingestion task with its source and S3 configuration."""
@@ -45,8 +46,7 @@ class EodhdOptionsEodToS3Operator(BaseOperator):
         self.exchange = exchange
         self.replace = replace
         self.run_id = run_id
-        dataset_uri = f"s3://{bucket}/{prefix.strip('/')}/curated/dataset=options.eod_quotes"
-        self.outlets = [Dataset(dataset_uri)]
+        self.outlets = [Dataset(dataset_uri)] if dataset_uri else []
 
     def execute(self, context: Any) -> dict[str, Any]:
         """Run the service and return only manifest metadata through XCom."""
