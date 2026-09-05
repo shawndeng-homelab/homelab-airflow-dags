@@ -96,6 +96,16 @@ s3://financial-data/curated/dataset=options.eod_quotes
 
 可以。`LocalFilesystemStore` 复用了 Raw、Curated 和 manifest-last 的 key 布局与发布顺序，但写入本地目录。它专用于本地开发和集成验证；生产 DAG 的 Operator 始终使用 S3。
 
+仓库提供了可直接运行的下载脚本。它不需要 Airflow scheduler、数据库、S3 或 MinIO：
+
+```powershell
+$env:EODHD_API_TOKEN = "your-token"
+uv run python packages/homelab-airflow-providers-financial-data/examples/download_options_to_local.py `
+  --symbol AAPL --quote-date 2025-01-02
+```
+
+默认写入 `.local-financial-data/local-bucket/financial-data/`。重复运行同一标的和日期时，默认复用已发布版本；需要重新下载并推进 `current.json` 指针时加 `--replace`。可通过 `--output-dir`、`--bucket`、`--prefix` 与 `--run-id` 调整本地布局。
+
 若希望连同真实 EODHD API 一起试跑，可将 `EodhdClient` 与 `LocalFilesystemStore` 组合。这种方式不需要 Airflow、AWS 或 MinIO；只需设置 EODHD 的环境变量：
 
 ```powershell
