@@ -95,13 +95,18 @@ s3://<bucket>/<prefix>/curated/dataset=options.eod_quotes
 
 可以。`LocalFilesystemStore` 复用了 Raw、Curated 和 manifest-last 的 key 布局与发布顺序，但写入本地目录。它专用于本地开发和集成验证；生产 DAG 的 Operator 始终使用 S3。
 
-若希望连同真实 EODHD API 一起试跑，可将 `EodhdHook` 与 `LocalFilesystemStore` 组合。这种方式不需要 AWS 或 MinIO，但仍需要有效的 EODHD Connection：
+若希望连同真实 EODHD API 一起试跑，可将 `EodhdClient` 与 `LocalFilesystemStore` 组合。这种方式不需要 Airflow、AWS 或 MinIO；只需设置 EODHD 的环境变量：
+
+```powershell
+$env:EODHD_API_TOKEN = "your-token"
+# 可选：EODHD_BASE_URL、EODHD_TIMEOUT、EODHD_MAX_RETRIES、EODHD_PAGE_LIMIT
+```
 
 ```python
 from datetime import date
 from pathlib import Path
 
-from homelab_airflow_providers_financial_data.hooks import EodhdHook
+from homelab_airflow_providers_financial_data.client import EodhdClient
 from homelab_airflow_providers_financial_data.ingestion import EodhdOptionsIngestion, new_storage_target
 from homelab_airflow_providers_financial_data.models import EodhdOptionEodRequest
 from homelab_airflow_providers_financial_data.storage import LocalFilesystemStore
@@ -110,7 +115,8 @@ request = EodhdOptionEodRequest(underlying_symbol="SPY", quote_date=date(2025, 1
 target = new_storage_target(bucket="local-bucket", prefix="financial-data")
 store = LocalFilesystemStore(Path(".local-financial-data"))
 
-manifest = EodhdOptionsIngestion(EodhdHook("eodhd_default"), store).run(request, target)
+with EodhdClient.from_environment() as client:
+    manifest = EodhdOptionsIngestion(client, store).run(request, target)
 print(manifest.curated_artifacts[0].uri)
 ```
 
@@ -120,7 +126,7 @@ print(manifest.curated_artifacts[0].uri)
 .local-financial-data/local-bucket/financial-data/...
 ```
 
-完全离线时，可用 fixture Hook 替代 `EodhdHook`。只要对象实现 `iter_option_eod_pages(request)` 并返回 `RawPage`，`EodhdOptionsIngestion` 就能完成整个本地流程；这也是编写集成测试时推荐的方式。
+完全离线时，可用 fixture source 替代 `EodhdClient`。只要对象实现 `iter_option_eod_pages(request)` 并返回 `RawPage`，`EodhdOptionsIngestion` 就能完成整个本地流程；这也是编写集成测试时推荐的方式。
 
 ```python
 from datetime import UTC, date, datetime
@@ -169,7 +175,7 @@ print(manifest.model_dump_json(indent=2))
 financial-data/
 ├── raw/source=eodhd/dataset=options.eod/ingestion_date=YYYY-MM-DD/
 │   └── underlying_symbol=AAPL/run_id=<run-id>/page-00001.json.gz
-├── curated/dataset=options.eod_quotes/schema_version=1.0/source=eodhd/
+├── curated/dataset=options.eod_quotes/schema_version=2.0/source=eodhd/
 │   └── quote_date=YYYY-MM-DD/underlying_symbol=AAPL/run_id=<run-id>/part-00001.parquet
 └── manifests/dataset=options.eod_quotes/source=eodhd/
     └── quote_date=YYYY-MM-DD/underlying_symbol=AAPL/current.json
@@ -181,7 +187,7 @@ Raw 和 Curated 对象的 key 含有 `run_id`，因此不可变。所有 Raw 与
 
 ## Curated schema 与质量报告
 
-Parquet 包含 `contract`、`underlying_symbol`、`quote_date`、`expiration`、`option_type`、`strike`、OHLC、bid/ask、成交量、持仓量、IV、五个 Greeks 和 UTC `observed_at`。输出排序为：
+Parquet 包含合约与行情字段，以及 `source_record_id`、`raw_page_number`、`raw_record_index`、原始时间字符串和 UTC `ingested_at`。其中 `quote_date` 表示请求的 EOD 分区，不冒充交易所行情时间。输出排序为：
 
 ```text
 quote_date, underlying_symbol, expiration, option_type, strike

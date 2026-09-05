@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from datetime import UTC
 from datetime import datetime
+from typing import Any
 from uuid import uuid4
 
+from homelab_airflow_providers_financial_data.client import EodhdClient
 from homelab_airflow_providers_financial_data.hooks import EodhdHook
 from homelab_airflow_providers_financial_data.models import EodhdOptionEodRequest
 from homelab_airflow_providers_financial_data.models import IngestionManifest
@@ -18,7 +20,7 @@ from homelab_airflow_providers_financial_data.storage import LocalFilesystemStor
 class EodhdOptionsIngestion:
     """Run raw capture, curated conversion, and manifest-last publication."""
 
-    def __init__(self, hook: EodhdHook, store: FinancialDataS3Store | LocalFilesystemStore) -> None:
+    def __init__(self, hook: EodhdHook | EodhdClient, store: FinancialDataS3Store | LocalFilesystemStore) -> None:
         """Initialize the service with its source and storage dependencies."""
         self.hook = hook
         self.store = store
@@ -31,7 +33,7 @@ class EodhdOptionsIngestion:
             return existing
 
         raw_artifacts = []
-        records: list[dict[object, object]] = []
+        records: list[dict[str, Any]] = []
         for page in self.hook.iter_option_eod_pages(request):
             raw_artifacts.append(self.store.write_raw_page(page, target, request.quote_date.isoformat(), symbol))
             records.extend(
