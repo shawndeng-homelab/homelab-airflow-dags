@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [homelab-airflow-dags-0.5.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/0c905c086e3f7f38703570c71f3ac8d458c70638..homelab-airflow-dags-0.5.0) - 2026-09-05
+#### Features
+- add optppsy dag - ([106e7b5](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/106e7b557b1c73c8a0e0b1eb56c4345812a59690)) - ShawnDeng-code
+#### Miscellaneous Chores
+- init dag - ([0c905c0](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/0c905c086e3f7f38703570c71f3ac8d458c70638)) - ShawnDeng-code
+
+- - -
+
 ## [homelab-airflow-dags-0.4.5](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/10cefb75d9af08b775a5af895fd0b8f658c2f91c..homelab-airflow-dags-0.4.5) - 2026-08-23
 #### Bug Fixes
 - **(dags)** deduplicate YouTube handles case-insensitively - ([10cefb7](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/10cefb75d9af08b775a5af895fd0b8f658c2f91c)) - ShawnDeng-code

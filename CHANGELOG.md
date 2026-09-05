@@ -2,6 +2,22 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.16.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/106e7b557b1c73c8a0e0b1eb56c4345812a59690..0.16.0) - 2026-09-05
+### Package updates
+- [homelab-airflow-providers-financial-data](packages/homelab-airflow-providers-financial-data) bumped to [homelab-airflow-providers-financial-data-0.1.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/9000549eeee3b79ed0efd540353b86ba0c073b3b..homelab-airflow-providers-financial-data-0.1.0)
+- [homelab-airflow-dags-0.5.0](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.5.0](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.5..homelab-airflow-dags-0.5.0)
+### Global changes
+#### Bug Fixes
+- support eodhd option activity pages - ([8ed0e54](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/8ed0e5488d801fa29fed73841bc2dd0a175bb51b)) - ShawnDeng-code
+#### Features
+- add published manifest reader - ([b14e00f](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/b14e00f8b55e220bf6001b4a4e57bd90c898c03c)) - ShawnDeng-code
+- add optppsy dag - ([106e7b5](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/106e7b557b1c73c8a0e0b1eb56c4345812a59690)) - ShawnDeng-code
+#### Miscellaneous Chores
+- rm file - ([3a05a7e](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/3a05a7ea846838289243fb4e2db6a126451a4ed9)) - ShawnDeng-code
+- init dag - ([0c905c0](https://github.com/shawndeng-homelab/homelab-airflow-dags/commit/0c905c086e3f7f38703570c71f3ac8d458c70638)) - ShawnDeng-code
+
+- - -
+
 ## [0.15.8](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/8d2d9bd735c2583cbd6a7122fdbaa41859473503..0.15.8) - 2026-08-23
 ### Package updates
 - [homelab-airflow-dags-0.4.5](packages/homelab-airflow-dags) bumped to [homelab-airflow-dags-0.4.5](https://github.com/shawndeng-homelab/homelab-airflow-dags/compare/homelab-airflow-dags-0.4.4..homelab-airflow-dags-0.4.5)
