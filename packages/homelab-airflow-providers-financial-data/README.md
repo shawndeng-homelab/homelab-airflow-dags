@@ -96,15 +96,6 @@ s3://financial-data/curated/dataset=options.eod_quotes
 
 可以。`LocalFilesystemStore` 复用了 Raw、Curated 和 manifest-last 的 key 布局与发布顺序，但写入本地目录。它专用于本地开发和集成验证；生产 DAG 的 Operator 始终使用 S3。
 
-仓库提供了一个极简下载脚本。先在脚本顶部修改 `SYMBOL`、`QUOTE_DATE` 与 `OUTPUT_DIR`，它不需要 Airflow scheduler、数据库、S3 或 MinIO：
-
-```powershell
-$env:EODHD_API_TOKEN = "your-token"
-.\.venv\Scripts\python.exe packages/homelab-airflow-providers-financial-data/examples/download_options_to_local.py
-```
-
-默认写入 `.local-financial-data/local-bucket/financial-data/`。脚本刻意设置 `replace=True`，每次运行都会生成一个新的不可变版本并推进 `current.json` 指针，方便反复验证下载结果。
-
 若希望连同真实 EODHD API 一起试跑，可将 `EodhdClient` 与 `LocalFilesystemStore` 组合。这种方式不需要 Airflow、AWS 或 MinIO；只需设置 EODHD 的环境变量：
 
 ```powershell
@@ -156,6 +147,7 @@ class FixtureHook:
             payload={"fixture": True},
             records=(
                 {
+                    "source_record_id": "AAPL250117C00200000-2025-01-02",
                     "contract": "AAPL250117C00200000",
                     "exp_date": "2025-01-17",
                     "type": "call",
@@ -205,7 +197,7 @@ Parquet 包含合约与行情字段，以及 `source_record_id`、`raw_page_numb
 quote_date, underlying_symbol, expiration, option_type, strike
 ```
 
-缺失合约号、无效 strike/日期/Call-Put 类型或缺少观测时间的记录，会从 Curated 文件排除，并在 manifest 的质量报告中记为 error。交叉报价（`ask < bid`）仍会保留给消费者，并记为 warning。
+缺失合约号或 `source_record_id`、无效 strike/日期/Call-Put 类型、缺少原始位置或采集时间的记录，会从 Curated 文件排除，并在 manifest 的质量报告中记为 error。交叉报价（`ask < bid`）仍会保留给消费者，并记为 warning。
 
 EODHD 的此 endpoint 使用 `tradetime` 过滤数据。它可能是最后成交时间；当没有成交时，也可能反映其他期权更新。因此应将 `quote_date` 理解为所请求的活动分区，审计单条记录时以持久化的原始响应与 `source_record_id` 为准。
 
